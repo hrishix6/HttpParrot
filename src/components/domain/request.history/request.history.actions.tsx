@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useAppDispatch } from '../../../redux/hoooks';
-import { clearHistory } from '../../../redux/request.history/history.reducer';
+import { clearHistoryAsync } from '../../../redux/request.history/history.async.actions';
 
 export function RequestHistoryActions() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ export function RequestHistoryActions() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => dispatch(clearHistory())}>
+        <DropdownMenuItem onClick={() => dispatch(clearHistoryAsync())}>
           Clear
         </DropdownMenuItem>
       </DropdownMenuContent>

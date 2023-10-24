@@ -4,7 +4,7 @@ import { timeSince } from '../../../lib/utils';
 import { useState, useEffect } from 'react';
 import { RequestModel } from '../../../types';
 import { useAppDispatch } from '../../../redux/hoooks';
-import { deleteHistoryItem } from '../../../redux/request.history/history.reducer';
+import { deleteHistoryItemAsync } from '../../../redux/request.history/history.async.actions';
 import { populateRequestSection } from '../../../redux/request.section/request.section.reducer';
 
 interface RequestHistoryItemProps {
@@ -22,7 +22,7 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
   );
 
   const handleDelete = (id: string) => {
-    dispatch(deleteHistoryItem(id));
+    dispatch(deleteHistoryItemAsync(id));
   };
 
   const handleAddToCollection = (r: RequestModel) => {
