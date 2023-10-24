@@ -114,3 +114,54 @@ export function determineBodytype(contenTypeHeader: string): ContentType {
   return "unknown";
 
 }
+
+function concatChunks(arrays: Uint8Array[]): [number, Uint8Array] {
+  let totalLength = arrays.reduce((acc, value) => acc + value.length, 0);
+
+  let result = new Uint8Array(totalLength);
+
+  if (!arrays.length) return [totalLength, result];
+
+
+  // for each array - copy it over result
+  // next array is copied right after the previous one
+  let length = 0;
+  for (let array of arrays) {
+    result.set(array, length);
+    length += array.length;
+  }
+
+  return [length, result];
+}
+
+export function readBody(body: ReadableStream<Uint8Array> | null): Promise<[number, Uint8Array]> {
+  return new Promise((resolve, reject) => {
+    let responseSize = 0;
+    let responseBody: Uint8Array[] = [];
+
+    if (body) {
+      const reader = body.getReader();
+
+      reader.read().then(function processText({ done, value }): any {
+        if (done) {
+          console.log(`done reading body`);
+          const result = concatChunks(responseBody);
+          resolve(result);
+          return;
+        }
+
+        if (value) {
+          responseSize += value.length;
+          responseBody.push(value);
+        }
+
+        return reader.read().then(processText);
+      });
+    }
+    else {
+      reject(new Error("body is null"));
+    }
+
+  });
+
+}

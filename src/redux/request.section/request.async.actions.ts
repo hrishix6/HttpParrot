@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
-import { ContentType, RequestModel } from "../../types";
+import { RequestModel } from "../../types";
 import { addtoHistoryAsync } from "../request.history/history.async.actions";
-import { determineBodytype, formatCode } from "../../lib/utils";
-import { setResponseMetadata } from "../response.section/response.reducer";
+import { determineBodytype, formatCode, readBody } from "../../lib/utils";
+import { setResponseMetadata, startLoading } from "../response.section/response.reducer";
 
 export const makeRequestActionAsync = createAsyncThunk<void, void>('request-section/makeRequestActionAsync', async (_, thunkAPI) => {
 
@@ -14,6 +14,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const { url, method, query, headers } = rootState.requestStore;
 
+    dispatch(startLoading(null));
 
     const newReqHistoryItem: RequestModel = {
         id: uuidv4(),
@@ -34,37 +35,39 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         }
     }
 
+    const start = new Date().getTime();
+
     const response = await fetch(url, {
         method,
         headers: fetchHeaders,
     });
 
+    const ms = new Date().getTime() - start;
+
     if (response.ok) {
         const contentTypeHeader = response.headers.get("content-type");
-        let body: any;
-        let bodytype: ContentType = "unknown";
         if (contentTypeHeader) {
-            bodytype = determineBodytype(contentTypeHeader);
+
+            let bodytype = determineBodytype(contentTypeHeader);
+            const [size, chunks] = await readBody(response.body);
 
             if (["js", "json", "text", "html", "xml",].includes(bodytype)) {
-                const unformatted = await response.text();
-                body = await formatCode(unformatted, bodytype)
+                const bodyAsText = new TextDecoder().decode(chunks);
+                const body = await formatCode(bodyAsText, bodytype);
+                dispatch(setResponseMetadata({
+                    body,
+                    contentType: bodytype,
+                    status: response.status,
+                    statusText: response.statusText,
+                    size: size,
+                    time: ms
+                }));
             }
             else {
-                body = await response.blob();
+                //deal with other content types such as img, pdf, csv, zip etc etc.
             }
         }
-        dispatch(setResponseMetadata({
-            body,
-            contentType: bodytype,
-            status: response.status,
-            statusText: response.statusText,
-            size: 0,
-            time: 0
-        }));
-
     }
 
     dispatch(addtoHistoryAsync(newReqHistoryItem));
-
 });
