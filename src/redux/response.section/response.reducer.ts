@@ -7,9 +7,11 @@ export interface ResponseSectionState {
     time: string,
     body: any,
     bodyType: ContentType
+    loading: boolean;
 }
 
 const initialState: ResponseSectionState = {
+    loading: false,
     status: "",
     size: "",
     time: "",
@@ -29,11 +31,18 @@ const responseSlice = createSlice({
             state.time = `${time} ms`;
             state.bodyType = contentType;
             state.body = body;
+            state.loading = false;
+        },
+        startLoading: (state, _) => {
+            state.loading = true;
+        },
+        stopLoading: (state, _) => {
+            state.loading = false;
         }
     }
 });
 
-export const { setResponseMetadata } = responseSlice.actions;
+export const { setResponseMetadata, startLoading, stopLoading } = responseSlice.actions;
 
 export const responseSectionReducer = responseSlice.reducer;
 
@@ -48,6 +57,7 @@ export const selectResponseMetadata = (state: RootState) => {
 export const selectResponseBodyMetadata = (state: RootState) => {
     return {
         body: state.responseStore.body,
-        bodyType: state.responseStore.bodyType
+        bodyType: state.responseStore.bodyType,
+        loading: state.responseStore.loading
     }
 }

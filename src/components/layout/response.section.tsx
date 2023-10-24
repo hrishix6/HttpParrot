@@ -12,19 +12,19 @@ export function ResponseSection() {
   return (
     <section className="flex-1 flex flex-col overflow-hidden p-2">
       <section className="flex gap-2 items-center">
-        <p>
+        <p className="text-lg">
           Status {' : '} <span className="text-semibold">{status}</span> {' , '}
         </p>
-        <p>
+        <p className="text-lg">
           Size {' : '} <span className="text-semibold">{size}</span>
           {' , '}
         </p>
-        <p>
+        <p className="text-lg">
           Time {' : '} <span className="text-semibold">{time}</span>
         </p>
         <Button className="ml-auto">Copy</Button>
       </section>
-      <div className="flex-1 flex flex-col text-sm overflow-y-auto">
+      <div className="flex-1 flex flex-col text-sm overflow-y-auto mt-1">
         <Tabs
           value={tab}
           onValueChange={(e) => {
