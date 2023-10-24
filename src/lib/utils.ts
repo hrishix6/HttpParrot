@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { ContentType } from "../types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -47,4 +48,69 @@ export function timeSince(date: number) {
     const years = Math.floor(elapsedMilliseconds / year);
     return `${years} year${years !== 1 ? 's' : ''} ago`;
   }
+}
+
+
+const options = {
+  "indent_size": 4,
+  "html": {
+    "end_with_newline": true,
+    "js": {
+      "indent_size": 2
+    },
+    "css": {
+      "indent_size": 2
+    }
+  },
+  "css": {
+    "indent_size": 1
+  },
+  "js": {
+    "preserve-newlines": true
+  }
+};
+
+export async function formatCode(str: string, kind: ContentType): Promise<string> {
+  switch (kind) {
+    case "css":
+      return css_beautify(str, options);
+    case "json":
+    case "js":
+      return js_beautify(str, options);
+    case "html":
+      return html_beautify(str, options);
+    default:
+      return str;
+  }
+}
+
+export function determineBodytype(contenTypeHeader: string): ContentType {
+
+  const parts = contenTypeHeader.split(';').map(part => part.trim());
+
+  const media = parts[0];
+
+  const resContentMap: Record<string, ContentType> = {
+    "text/plain": "text",
+    "text/html": "html",
+    "text/csv": "text",
+    "application/xml": "xml",
+    "application/javascript": "js",
+    "application/pdf": "pdf",
+    "application/json": "json",
+    "image/jpeg": "img",
+    "image/png": "img",
+    "image/gif": "img",
+    "audio/mpeg": "audio",
+    "audio/wav": "audio",
+    "video/mp4": "video",
+    "video/ogg": "video",
+    "application/zip": "zip",
+  };
+
+  if (resContentMap[media]) {
+    return resContentMap[media];
+  }
+  return "unknown";
+
 }

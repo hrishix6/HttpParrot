@@ -39,3 +39,14 @@ export interface RequestModel {
     headers: HeaderItem[];
     triggered: number;
 }
+
+export type ContentType = "json" | "js" | "text" | "html" | "xml" | "img" | "unknown" | "audio" | "video" | "pdf" | "css" | "zip";
+
+export interface ResponseModel {
+    status: number;
+    statusText: string;
+    size: number;
+    time: number;
+    body: any;
+    contentType: ContentType
+}
