@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RequestHistory } from '../domain/request.history/request.history';
 import { RequestsSaved } from '../domain/request.saved/request.saved';
+import { useAppDispatch, useAppSelector } from '../../redux/hoooks';
+import { selectHistoryDb } from '../../redux/storage/storage.reducer';
+import { loadHistoryFromDbAsync } from '../../redux/request.history/history.async.actions';
 
 export function ActivitySection() {
+  const dispatch = useAppDispatch();
+  const historyDb = useAppSelector(selectHistoryDb);
   const [tab, setCurrentTab] = useState<string>('history');
+
+  useEffect(() => {
+    if (historyDb) {
+      dispatch(loadHistoryFromDbAsync());
+    }
+  }, [historyDb]);
 
   return (
     <section className="flex flex-col flex-1 overflow-hidden">
