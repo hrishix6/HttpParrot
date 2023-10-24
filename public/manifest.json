@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "hrishix6/httpClient",
+  "version": "1.0.0",
+  "action": {},
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "permissions": ["storage", "tabs"]
+}
