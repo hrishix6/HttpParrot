@@ -1,8 +1,8 @@
 import { RequestModel } from "../../types";
 
 export interface HistoryState {
+    loading: boolean
     history: RequestModel[],
-    filteredHistory: RequestModel[],
     filter: string,
 }
 
