@@ -1,25 +1,26 @@
-import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../redux/hoooks';
-import { selectformattedRequestInfo } from '../../redux/request.section/request.section.reducer';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponseBody } from '../domain/response.section/response.body';
+import { useAppSelector } from '../../redux/hoooks';
+import { selectResponseMetadata } from '../../redux/response.section/response.reducer';
 
 export function ResponseSection() {
   const [tab, setCurrentTab] = useState<string>('response');
+  const { size, status, time } = useAppSelector(selectResponseMetadata);
 
   return (
     <section className="flex-1 flex flex-col overflow-hidden p-2">
       <section className="flex gap-2 items-center">
         <p>
-          Status {' : '} <span className="text-semibold">200</span> {' , '}
+          Status {' : '} <span className="text-semibold">{status}</span> {' , '}
         </p>
         <p>
-          Size {' : '} <span className="text-semibold">200</span>
+          Size {' : '} <span className="text-semibold">{size}</span>
           {' , '}
         </p>
         <p>
-          Time {' : '} <span className="text-semibold">200</span>
+          Time {' : '} <span className="text-semibold">{time}</span>
         </p>
         <Button className="ml-auto">Copy</Button>
       </section>
