@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { ContentType } from "../types";
+import { ContentType, Token } from "../types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -164,4 +164,18 @@ export function readBody(body: ReadableStream<Uint8Array> | null): Promise<[numb
 
   });
 
+}
+
+export function splitTokens(input: string) {
+  const parts = input.split(/({{.*?}})/);
+  return parts.filter(part => part.trim() !== "");
+}
+
+export function getTokens(arr: string[]): Token[] {
+  return arr.map(str => {
+    return {
+      highlight: str.startsWith("{{") && str.endsWith("}}"),
+      text: str
+    }
+  });
 }
