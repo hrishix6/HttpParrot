@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import Prism from 'prismjs';
 import { useAppSelector } from '../../../redux/hoooks';
-import { selectResponseBodyMetadata } from '../../../redux/response.section/response.reducer';
+import {
+  selectResponseBody,
+  selectResponseBodyLoading,
+  selectResponseBodytype
+} from '../../../redux/response.section/response.reducer';
 import { Spinner } from '@/components/ui/spinner';
 
 export function ResponseBody() {
-  const { body, bodyType, loading } = useAppSelector(
-    selectResponseBodyMetadata
-  );
+  const body = useAppSelector(selectResponseBody);
+  const bodytype = useAppSelector(selectResponseBodytype);
+  const loading = useAppSelector(selectResponseBodyLoading);
 
-  const langType = ['js', 'css', 'html', 'xml'].includes(bodyType)
-    ? bodyType
+  const langType = ['js', 'css', 'html', 'xml'].includes(bodytype)
+    ? bodytype
     : 'js';
 
   useEffect(() => {
