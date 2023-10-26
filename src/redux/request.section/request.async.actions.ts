@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
-import { RequestModel } from "../../types";
+import { RequestModel, ResponseHeader } from "../../types";
 import { addtoHistoryAsync } from "../request.history/history.async.actions";
 import { determineBodytype, formatCode, readBody } from "../../lib/utils";
 import { setResponseMetadata, startLoading } from "../response.section/response.reducer";
@@ -37,14 +37,29 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const start = new Date().getTime();
 
-    const response = await fetch(url, {
-        method,
-        headers: fetchHeaders,
-    });
+    const abortController = new AbortController();
 
-    const ms = new Date().getTime() - start;
 
-    if (response.ok) {
+    setTimeout(() => {
+        //kill request after 30 seconds.
+        abortController.abort();
+    }, 30000);
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: fetchHeaders,
+            signal: abortController.signal
+        });
+
+        const ms = new Date().getTime() - start;
+
+        const responseheaders: ResponseHeader[] = [];
+
+        for (let [resKey, resVal] of response.headers.entries()) {
+            responseheaders.push({ name: resKey, value: resVal });
+        }
+
         const contentTypeHeader = response.headers.get("content-type");
         if (contentTypeHeader) {
 
@@ -60,14 +75,41 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
                     status: response.status,
                     statusText: response.statusText,
                     size: size,
-                    time: ms
+                    time: ms,
+                    headers: responseheaders,
+                    ok: response.ok
                 }));
             }
             else {
                 //deal with other content types such as img, pdf, csv, zip etc etc.
             }
         }
+        else {
+            dispatch(setResponseMetadata({
+                body: null,
+                contentType: "unknown",
+                headers: responseheaders,
+                ok: response.ok,
+                size: 0,
+                time: ms,
+                status: response.status,
+                statusText: response.statusText
+            }));
+        }
+    } catch (error) {
+
+        dispatch(setResponseMetadata({
+            body: null,
+            contentType: "unknown",
+            headers: [],
+            ok: false,
+            size: 0,
+            time: 0,
+            status: 0,
+            statusText: ""
+        }));
     }
+
 
     dispatch(addtoHistoryAsync(newReqHistoryItem));
 });

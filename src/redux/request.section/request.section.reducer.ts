@@ -2,7 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../store";
 import { makeRequestActionAsync } from "./request.async.actions";
-import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel } from "../../types";
+import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token } from "../../types";
+import { getTokens, splitTokens } from "../../lib/utils";
 
 export interface RequestSectionState {
     method: RequestMethod,
@@ -10,11 +11,12 @@ export interface RequestSectionState {
     query: QueryItem[],
     headers: HeaderItem[],
     userEditingUrl: boolean,
+    urltokns: Token[],
 }
 
 
 const initialState: RequestSectionState = {
-    userEditingUrl: false,
+    userEditingUrl: true,
     method: "get",
     url: '',
     query: [],
@@ -23,7 +25,8 @@ const initialState: RequestSectionState = {
         name: 'Accept',
         value: "*/*",
         enabled: true,
-    }]
+    }],
+    urltokns: []
 };
 
 export const getQueryString = (query: QueryItem[]) => {
@@ -83,17 +86,20 @@ const requestSectionSlice = createSlice({
             state.query = query;
             state.headers = headers;
             state.url = url;
+            state.urltokns = getTokens(splitTokens(url));
         },
         setMethod: (state, action: PayloadAction<RequestMethod>) => {
             state.method = action.payload;
         },
         setUrl: (state, action: PayloadAction<string>) => {
-            state.userEditingUrl = true;
             state.url = action.payload;
         },
-
+        userWantsToEditUrl: (state) => {
+            state.userEditingUrl = true;
+        },
         userDoneEditingUrl: (state) => {
             state.userEditingUrl = false;
+            state.urltokns = getTokens(splitTokens(state.url));
         },
         //query
         initQueryItems: (state, action: PayloadAction<QueryItem[]>) => {
@@ -106,7 +112,7 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].name = name;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-
+                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         updateQueryItemValue: (state, action: PayloadAction<UpdateQueryItemValue>) => {
@@ -116,7 +122,7 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].value = value;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-
+                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         updateQueryItemEnabled: (state, action: PayloadAction<UpdateQueryItemEnabled>) => {
@@ -126,7 +132,7 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].enabled = !state.query[itemIndex].enabled;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-
+                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         addQueryItem: (state, _) => {
@@ -145,6 +151,7 @@ const requestSectionSlice = createSlice({
                 state.query.splice(itemIndex, 1);
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
+                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
 
@@ -203,7 +210,7 @@ const requestSectionSlice = createSlice({
     }
 });
 
-export const { userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
+export const { userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
 
 export const requestSectionReducer = requestSectionSlice.reducer;
 
@@ -216,3 +223,5 @@ export const selectQuery = (state: RootState) => state.requestStore.query;
 export const selectHeaders = (state: RootState) => state.requestStore.headers;
 
 export const selectUserEditingUrl = (state: RootState) => state.requestStore.userEditingUrl;
+
+export const selectUrlTokens = (state: RootState) => state.requestStore.urltokns;
