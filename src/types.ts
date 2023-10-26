@@ -21,6 +21,11 @@ export interface HeaderItem {
     enabled: boolean;
 };
 
+export interface ResponseHeader {
+    name: string;
+    value: string;
+}
+
 export type InsertHeader = Pick<HeaderItem, "name" | "value">;
 
 export type UpdateHeaderName = Pick<HeaderItem, "id" | "name">;
@@ -48,5 +53,19 @@ export interface ResponseModel {
     size: number;
     time: number;
     body: any;
-    contentType: ContentType
+    contentType: ContentType;
+    headers: ResponseHeader[];
+    ok: boolean;
+}
+
+export interface RequestCollectionModel {
+    id: string;
+    name: string;
+    created: number;
+    requests: RequestModel[]
+}
+
+export interface Token {
+    text: string;
+    highlight: boolean;
 }
