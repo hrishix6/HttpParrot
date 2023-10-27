@@ -5,17 +5,24 @@ import { makeRequestActionAsync } from "./request.async.actions";
 import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token } from "../../types";
 import { getTokens, splitTokens } from "../../lib/utils";
 
+export type RequestFormMode = "update" | "insert";
+
 export interface RequestSectionState {
+    id: string;
+    name: string;
     method: RequestMethod,
     url: string,
     query: QueryItem[],
     headers: HeaderItem[],
     userEditingUrl: boolean,
     urltokns: Token[],
+    mode: RequestFormMode
 }
 
 
 const initialState: RequestSectionState = {
+    id: "",
+    name: "",
     userEditingUrl: true,
     method: "get",
     url: '',
@@ -25,8 +32,14 @@ const initialState: RequestSectionState = {
         name: 'Accept',
         value: "*/*",
         enabled: true,
+    }, {
+        id: uuidv4(),
+        name: 'User-Agent',
+        value: "hrishix6/HttpClient",
+        enabled: true,
     }],
-    urltokns: []
+    urltokns: [],
+    mode: "insert"
 };
 
 export const getQueryString = (query: QueryItem[]) => {
@@ -76,22 +89,58 @@ const getUpdatedUrl = (url: string, queryStr: string) => {
     return baeUrl;
 }
 
+
+/**
+ * When mode = "insert" new uuid will be generated and item will be saved (if user is trying to save request).
+ * When mode = 'update' the request item in saved requests will be updated with new values from form.
+ * When user clicks 'View' on history item -> form will be populated with mode - 'insert' and other fields.
+ * when user clicks 'View' on saved request -> form will be populated with mode - 'update', 'id' and other fields
+*/
+
 const requestSectionSlice = createSlice({
     name: "request-section",
     initialState,
     reducers: {
-        populateRequestSection: (state, action: PayloadAction<RequestModel>) => {
-            const { url, query, headers, method } = action.payload;
+        populateRequestSection: (state, action: PayloadAction<{ model: RequestModel, mode: RequestFormMode }>) => {
+            const { mode, model } = action.payload;
+            const { id, name, method, url, query, headers } = model;
+            state.id = id;
+            state.name = name;
+            state.mode = mode;
             state.method = method;
             state.query = query;
             state.headers = headers;
             state.url = url;
             state.urltokns = getTokens(splitTokens(url));
         },
+        clearRequestSection: (state) => {
+            state.mode = "insert";
+            state.name = "";
+            state.userEditingUrl = true;
+            state.method = "get",
+                state.url = '';
+            state.query = [];
+            state.headers = [{
+                id: uuidv4(),
+                name: 'Accept',
+                value: "*/*",
+                enabled: true,
+            }, {
+                id: uuidv4(),
+                name: 'User-Agent',
+                value: "hrishix6/HttpClient",
+                enabled: true,
+            }];
+            state.urltokns = [];
+        },
+        setName: (state, action: PayloadAction<string>) => {
+            state.name = action.payload;
+        },
         setMethod: (state, action: PayloadAction<RequestMethod>) => {
             state.method = action.payload;
         },
         setUrl: (state, action: PayloadAction<string>) => {
+            state.userEditingUrl = true;
             state.url = action.payload;
         },
         userWantsToEditUrl: (state) => {
@@ -210,7 +259,7 @@ const requestSectionSlice = createSlice({
     }
 });
 
-export const { userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
+export const { clearRequestSection, setName, userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
 
 export const requestSectionReducer = requestSectionSlice.reducer;
 
@@ -225,3 +274,7 @@ export const selectHeaders = (state: RootState) => state.requestStore.headers;
 export const selectUserEditingUrl = (state: RootState) => state.requestStore.userEditingUrl;
 
 export const selectUrlTokens = (state: RootState) => state.requestStore.urltokns;
+
+export const selectName = (state: RootState) => state.requestStore.name;
+
+export const selectFormMode = (state: RootState) => state.requestStore.mode;

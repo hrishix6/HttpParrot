@@ -13,7 +13,7 @@ export function RequestHistoryFilter({
   return (
     <div className="pl-1 pt-1 flex gap-2">
       <Input
-        placeholder="search collection"
+        placeholder="search history"
         value={filter}
         onChange={handleChange}
       />

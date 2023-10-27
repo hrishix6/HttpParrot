@@ -43,6 +43,7 @@ export interface RequestModel {
     query: QueryItem[];
     headers: HeaderItem[];
     triggered: number;
+    created?: number;
 }
 
 export type ContentType = "json" | "js" | "text" | "html" | "xml" | "img" | "unknown" | "audio" | "video" | "pdf" | "css" | "zip";

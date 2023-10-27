@@ -9,7 +9,7 @@ export function Navbar() {
           aria-description="github repository"
           target="_blank"
         >
-          hrishix6/HttpClient/v1
+          hrishix6/HttpClient
         </a>
       </h3>
       <ThemeToggle />

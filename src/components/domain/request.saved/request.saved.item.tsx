@@ -1,18 +1,18 @@
 import { Badge } from '@/components/ui/badge';
-import { RequestHistoryItemActions } from './request.history.item.actions';
+import { RequestSavedItemActions } from './request.saved.item.actions';
 import { timeSince } from '../../../lib/utils';
 import { useState, useEffect } from 'react';
 import { RequestModel } from '../../../types';
 import { useAppDispatch } from '../../../redux/hoooks';
-import { deleteHistoryItemAsync } from '../../../redux/request.history/history.async.actions';
+import { deleteSavedRequestByIdAsync } from '../../../redux/request.saved/request.saved.async.actions';
 import { populateRequestSection } from '../../../redux/request.section/request.section.reducer';
 
-interface RequestHistoryItemProps {
+interface RequestSavedItemProps {
   children?: React.ReactNode;
   request: RequestModel;
 }
 
-export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
+export function RequestSavedItem({ request }: RequestSavedItemProps) {
   const dispatch = useAppDispatch();
 
   const { method, name, url, triggered } = request;
@@ -22,11 +22,11 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
   );
 
   const handleDelete = (id: string) => {
-    dispatch(deleteHistoryItemAsync(id));
+    dispatch(deleteSavedRequestByIdAsync(id));
   };
 
   const handleViewInRequestSection = (r: RequestModel) => {
-    dispatch(populateRequestSection({ model: r, mode: 'insert' }));
+    dispatch(populateRequestSection({ model: r, mode: 'update' }));
   };
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
   }, []);
 
   return (
-    <RequestHistoryItemActions
+    <RequestSavedItemActions
       handleDelete={handleDelete}
       handleViewInRequestSection={handleViewInRequestSection}
       request={request}
@@ -56,6 +56,6 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
           <p className="text-xs">{humanReadableTriggered}</p>
         </div>
       </div>
-    </RequestHistoryItemActions>
+    </RequestSavedItemActions>
   );
 }

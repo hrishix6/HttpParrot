@@ -6,44 +6,49 @@ import { ResponseSection } from './components/layout/response.section';
 import { Sidebar } from './components/layout/sidebar';
 import { ThemeWrapper } from './components/domain/theme/theme.wrapper';
 import { ActivitySection } from './components/layout/activity.section';
-import { useEffect } from 'react';
-import {
-  CollectionDatabase,
-  HistoryDatabase,
-  initDatabase
-} from './redux/storage/db';
-import { useAppDispatch } from './redux/hoooks';
-import { setProviders } from './redux/storage/storage.reducer';
+import { useEffect, useState } from 'react';
+import { historyDb, collectionDB, initDatabase } from './lib/db';
+import { Spinner } from './components/ui/spinner';
 
 function App() {
-  const dispatch = useAppDispatch();
+  const [apploading, setappLoading] = useState(true);
 
   useEffect(() => {
     initDatabase()
       .then((db) => {
-        const historydb = new HistoryDatabase(db);
-        const collectiondb = new CollectionDatabase(db);
-        dispatch(setProviders({ historydb, collectiondb }));
+        historyDb.setDb(db);
+        collectionDB.setDb(db);
       })
       .catch((e) => {
         console.error(e);
+      })
+      .finally(() => {
+        setappLoading(false);
       });
   }, []);
 
   return (
     <ThemeWrapper>
-      <div className="flex flex-col h-screen overflow-hidden">
-        <Header />
-        <Main>
-          <Sidebar>
-            <ActivitySection />
-          </Sidebar>
-          <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-            <RequestSection />
-            <ResponseSection />
+      <div className="flex flex-col h-screen overflow-hidden relative">
+        {apploading ? (
+          <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center">
+            <Spinner />
           </div>
-        </Main>
-        <Footer />
+        ) : (
+          <>
+            <Header />
+            <Main>
+              <Sidebar>
+                <ActivitySection />
+              </Sidebar>
+              <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+                <RequestSection />
+                <ResponseSection />
+              </div>
+            </Main>
+            <Footer />
+          </>
+        )}
       </div>
     </ThemeWrapper>
   );

@@ -18,15 +18,21 @@ import {
   getQueryItems,
   initQueryItems,
   userDoneEditingUrl,
-  selectUserEditingUrl
+  selectUserEditingUrl,
+  selectName,
+  selectFormMode
 } from '../../../redux/request.section/request.section.reducer';
 import { RequestMethod } from '../../../types';
 import { RequestQuery } from './request.query';
 import { makeRequestActionAsync } from '../../../redux/request.section/request.async.actions';
 import { RequestHeaders } from './request.headers';
 import { useEffect, useState } from 'react';
+import { RequestActionsDropDown } from './request.actions.dropdown';
+import { RequestMetaHeader } from './request.meta.header';
 
 export function RequestForm() {
+  const mode = useAppSelector(selectFormMode);
+  const name = useAppSelector(selectName);
   const method = useAppSelector(selectMethod);
   const isUserEditingUrl = useAppSelector(selectUserEditingUrl);
   const url = useAppSelector(selectUrl);
@@ -58,6 +64,7 @@ export function RequestForm() {
 
   return (
     <div className="flex-1 flex flex-col gap-1 overflow-hidden">
+      <RequestMetaHeader mode={mode} request_name={name} />
       <section className="flex gap-2 px-2 pt-2">
         <div>
           <Select
@@ -98,8 +105,9 @@ export function RequestForm() {
             }}
           />
         </div>
-        <div>
+        <div className="flex items-center">
           <Button onClick={handleMakingRequest}>Send</Button>
+          <RequestActionsDropDown />
         </div>
       </section>
       <section className="flex-1 flex flex-col overflow-hidden px-2 pt-2">

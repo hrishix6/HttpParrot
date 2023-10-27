@@ -1,6 +1,5 @@
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Settings2 } from 'lucide-react';
+import { RequestSavedActions } from './request.saved.actions';
 
 interface RequestSavedFilterProps {
   filter: string;
@@ -18,9 +17,7 @@ export function RequestSavedFilter({
         value={filter}
         onChange={handleChange}
       />
-      <Button variant={'ghost'} size={'icon'}>
-        <Settings2 className="h-5 w-5" />
-      </Button>
+      <RequestSavedActions />
     </div>
   );
 }

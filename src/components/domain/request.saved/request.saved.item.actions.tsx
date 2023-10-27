@@ -6,19 +6,19 @@ import {
 } from '@/components/ui/context-menu';
 import { RequestModel } from '../../../types';
 
-interface RequestHistoryActionsProps {
+interface RequestSavedItemActionsProps {
   children?: React.ReactNode;
   request: RequestModel;
   handleDelete: (id: string) => void;
   handleViewInRequestSection: (r: RequestModel) => void;
 }
 
-export function RequestHistoryItemActions({
+export function RequestSavedItemActions({
   children,
   request,
   handleDelete,
   handleViewInRequestSection
-}: RequestHistoryActionsProps) {
+}: RequestSavedItemActionsProps) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
