@@ -8,12 +8,15 @@ import {
 } from '@/components/ui/table';
 import { useAppSelector } from '../../../redux/hoooks';
 import { selectResponseHeaders } from '../../../redux/response.section/response.reducer';
+import { EmptyHeaders } from './empty.headers';
 
 export function ResponseHeaders() {
   const headers = useAppSelector(selectResponseHeaders);
 
-  return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+  let headerComponent;
+
+  if (headers.length) {
+    headerComponent = (
       <Table className="table-fixed">
         <TableHeader>
           <TableRow>
@@ -30,6 +33,14 @@ export function ResponseHeaders() {
           ))}
         </TableBody>
       </Table>
+    );
+  } else {
+    headerComponent = <EmptyHeaders />;
+  }
+
+  return (
+    <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+      {headerComponent}
     </div>
   );
 }

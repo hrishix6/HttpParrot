@@ -84,7 +84,7 @@ export async function formatCode(str: string, kind: ContentType): Promise<string
   }
 }
 
-export function determineBodytype(contenTypeHeader: string): ContentType {
+export function determineBodytype(contenTypeHeader: string): [string, ContentType] {
 
   const parts = contenTypeHeader.split(';').map(part => part.trim());
 
@@ -98,20 +98,21 @@ export function determineBodytype(contenTypeHeader: string): ContentType {
     "application/javascript": "js",
     "application/pdf": "pdf",
     "application/json": "json",
-    "image/jpeg": "img",
-    "image/png": "img",
-    "image/gif": "img",
-    "audio/mpeg": "audio",
-    "audio/wav": "audio",
-    "video/mp4": "video",
-    "video/ogg": "video",
+    "image/jpeg": "jpeg",
+    "image/png": "png",
+    "image/gif": "gif",
+    "audio/mpeg": "mpeg",
+    "audio/wav": "wav",
+    "video/mp4": "mp4",
+    "video/ogg": "ogg",
     "application/zip": "zip",
   };
 
   if (resContentMap[media]) {
-    return resContentMap[media];
+    return [media, resContentMap[media]];
   }
-  return "unknown";
+
+  return ["application/octet-stream", "unknown"];
 
 }
 

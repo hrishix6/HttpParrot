@@ -63,13 +63,14 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         const contentTypeHeader = response.headers.get("content-type");
         if (contentTypeHeader) {
 
-            let bodytype = determineBodytype(contentTypeHeader);
+            let [mimetype, bodytype] = determineBodytype(contentTypeHeader);
             const [size, chunks] = await readBody(response.body);
 
             if (["js", "json", "text", "html", "xml",].includes(bodytype)) {
                 const bodyAsText = new TextDecoder().decode(chunks);
                 const body = await formatCode(bodyAsText, bodytype);
                 dispatch(setResponseMetadata({
+                    mimeType: mimetype,
                     body,
                     contentType: bodytype,
                     status: response.status,
@@ -81,11 +82,22 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
                 }));
             }
             else {
-                //deal with other content types such as img, pdf, csv, zip etc etc.
+                dispatch(setResponseMetadata({
+                    mimeType: mimetype,
+                    body: chunks,
+                    contentType: bodytype,
+                    status: response.status,
+                    statusText: response.statusText,
+                    size: size,
+                    time: ms,
+                    headers: responseheaders,
+                    ok: response.ok
+                }));
             }
         }
         else {
             dispatch(setResponseMetadata({
+                mimeType: "application/octet-stream",
                 body: null,
                 contentType: "unknown",
                 headers: responseheaders,
@@ -97,8 +109,8 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
             }));
         }
     } catch (error) {
-
         dispatch(setResponseMetadata({
+            mimeType: "application/octet-stream",
             body: null,
             contentType: "unknown",
             headers: [],

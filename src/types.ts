@@ -46,9 +46,10 @@ export interface RequestModel {
     created?: number;
 }
 
-export type ContentType = "json" | "js" | "text" | "html" | "xml" | "img" | "unknown" | "audio" | "video" | "pdf" | "css" | "zip";
+export type ContentType = "ogg" | "mp4" | "wav" | "mpeg" | "gif" | "png" | "jpeg" | "json" | "js" | "text" | "html" | "xml" | "img" | "unknown" | "audio" | "video" | "pdf" | "css" | "zip";
 
 export interface ResponseModel {
+    mimeType: string;
     status: number;
     statusText: string;
     size: number;

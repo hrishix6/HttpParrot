@@ -3,7 +3,7 @@ import { RequestModel } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 import { collectionDB } from "../../lib/db";
 import { RootState } from "../store";
-import { RequestFormMode, clearRequestSection } from "../request.section/request.section.reducer";
+import { RequestFormMode, clearRequestSection, resetFormModeAfterDeletion } from "../request.section/request.section.reducer";
 
 
 export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, string>('saved-requests/saveRequestAsync', async (newName, thunkAPI) => {
@@ -82,7 +82,19 @@ export const loadSavedRequestsAsync = createAsyncThunk<RequestModel[], void>("sa
     }
 });
 
-export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, __) => {
+export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, thunkAPI) => {
+
+    const { getState, dispatch } = thunkAPI;
+
+    const rootState = getState() as RootState;
+
+    const requestFormstate = rootState.requestStore;
+
+    //some saved request is opened in form or not
+    if (requestFormstate.mode == "update") {
+        //it is open, we need to change mode to insert and remove the id.
+        dispatch(resetFormModeAfterDeletion());
+    }
 
     try {
         if (collectionDB.isInitialized) {
@@ -93,7 +105,19 @@ export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requ
     }
 });
 
-export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("saved-requests/deleteSavedRequestByIdAsync", async (id, _) => {
+export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("saved-requests/deleteSavedRequestByIdAsync", async (id, thunkAPI) => {
+
+    const { getState, dispatch } = thunkAPI;
+
+    const rootState = getState() as RootState;
+
+    const requestFormstate = rootState.requestStore;
+
+    //if request being deleted is open in form or not
+    if (requestFormstate.mode == "update" && requestFormstate.id === id) {
+        //it is open, we need to change mode to insert and remove the id.
+        dispatch(resetFormModeAfterDeletion());
+    }
 
     try {
         if (collectionDB.isInitialized) {

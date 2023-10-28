@@ -14,16 +14,50 @@
 - [prismjs](https://prismjs.com/)
 - [beautifier.io](https://beautifier.io/)
 
-## It's not fully functional yet, Working on following things
+## What's implemented
+
+- sending request with any method, url.
+- format text responses with highlighting (json, xml, html, js, css)
+- show response metadata (response status, time, size).
+- handle binary response (zip, audio, video, pdf, images).
+- save request history to persist between sessions.
+- save requests by giving them a name.
+
+## Todo
 
 - request collections
-- editable json/text/xml body
+- editable json/text/xml/formdata body
 - Basic / Bearer authentication
-- handle binary responses (file/img/blob etc)
 - import/export collections
 - generate code snippets for various languages for making request(eg, curl, node, C# etc)
 - generate OpenAPI spec for collection
 - add variables support to collection so user can set some defaults and then use them in requests.
+
+## Screeshots
+
+- Light mode
+
+  <img style="display:block" src="./public/ui-light.PNG" alt="light mode">
+
+- Dark mode
+
+  <img style="display:block" src="./public/ui-dark.PNG" alt="dark mode">
+
+- HTML/xml response view
+
+  <img style="display:block" src="./public/html-res.PNG" alt="html or xml response">
+
+- JSON response view
+
+  <img style="display:block" src="./public/json-res.PNG" alt="json response">
+
+- binary file response view
+
+  <img style="display:block" src="./public/binary-res.PNG" alt="file response">
+
+- error response view
+
+  <img style="display:block" src="./public/error-res.PNG" alt="error response">
 
 ## How to use
 
@@ -46,11 +80,6 @@
 - <p style="display:flex; align-items:center; gap:3px;">
    <span style="display:block"> you should see an extension icon in toolbar, click the extension icon -> </span>
    <img style="display:block" src="./public/icons/icon16.png">
-  </p>
-
-- new tab should open with extension ui,
-  <p>
-    <img src="./public/ui.PNG" />
   </p>
 
 - exntension relies on `indexed db` to store data, make sure you have reasonably updated version of chrome.

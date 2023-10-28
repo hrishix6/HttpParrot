@@ -13,6 +13,16 @@ import { Input } from '@/components/ui/input';
 import { Plus, Minus } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
+function EmptyQueryParamsMessage() {
+  return (
+    <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center">
+      <p className="text-lg font-semibold p-1 bg-background flex items-center">
+        Click <Plus className="text-primary h-5 w-5 mx-1" /> to add query params
+      </p>
+    </div>
+  );
+}
+
 export function RequestQuery() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const query = useAppSelector(selectQuery);
@@ -38,51 +48,55 @@ export function RequestQuery() {
           <Plus className="h-5 w-5" />
         </Button>
       </div>
-      <div className="flex-1 flex flex-col gap-2 overflow-y-auto p-2">
-        {query.map((x) => (
-          <div className="flex gap-2 items-center" key={x.id}>
-            <div>
-              <Checkbox
-                className="block"
-                checked={x.enabled}
-                onCheckedChange={(_) => {
-                  dispatch(updateQueryItemEnabled({ id: x.id }));
+      <div className="flex-1 flex flex-col gap-2 overflow-y-auto p-2 relative">
+        {query.length ? (
+          query.map((x) => (
+            <div className="flex gap-2 items-center" key={x.id}>
+              <div>
+                <Checkbox
+                  className="block"
+                  checked={x.enabled}
+                  onCheckedChange={(_) => {
+                    dispatch(updateQueryItemEnabled({ id: x.id }));
+                  }}
+                />
+              </div>
+              <Input
+                type="text"
+                value={x.name}
+                placeholder="name"
+                onChange={(e) => {
+                  dispatch(
+                    updateQueryItemName({ id: x.id, name: e.target.value })
+                  );
                 }}
               />
-            </div>
-            <Input
-              type="text"
-              value={x.name}
-              placeholder="name"
-              onChange={(e) => {
-                dispatch(
-                  updateQueryItemName({ id: x.id, name: e.target.value })
-                );
-              }}
-            />
-            <Input
-              type="text"
-              value={x.value}
-              placeholder="value"
-              onChange={(e) => {
-                dispatch(
-                  updateQueryItemValue({ id: x.id, value: e.target.value })
-                );
-              }}
-            />
-            <div>
-              <Button
-                variant={'link'}
-                size={'icon'}
-                onClick={(_) => {
-                  dispatch(removeQueryItem(x.id));
+              <Input
+                type="text"
+                value={x.value}
+                placeholder="value"
+                onChange={(e) => {
+                  dispatch(
+                    updateQueryItemValue({ id: x.id, value: e.target.value })
+                  );
                 }}
-              >
-                <Minus className="h-5 w-5" />
-              </Button>
+              />
+              <div>
+                <Button
+                  variant={'link'}
+                  size={'icon'}
+                  onClick={(_) => {
+                    dispatch(removeQueryItem(x.id));
+                  }}
+                >
+                  <Minus className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <EmptyQueryParamsMessage />
+        )}
         <div ref={bottomRef}></div>
       </div>
     </section>

@@ -113,6 +113,11 @@ const requestSectionSlice = createSlice({
             state.url = url;
             state.urltokns = getTokens(splitTokens(url));
         },
+        resetFormModeAfterDeletion: (state) => {
+            state.mode = "insert";
+            state.id = "";
+            state.name = ""
+        },
         clearRequestSection: (state) => {
             state.mode = "insert";
             state.name = "";
@@ -259,7 +264,7 @@ const requestSectionSlice = createSlice({
     }
 });
 
-export const { clearRequestSection, setName, userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
+export const { resetFormModeAfterDeletion, clearRequestSection, setName, userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
 
 export const requestSectionReducer = requestSectionSlice.reducer;
 
