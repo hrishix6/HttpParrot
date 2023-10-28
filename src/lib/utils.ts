@@ -5,11 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function addHours(date: Date, hours: number) {
-  const n = date.setTime(date.getTime() + (hours * 3600 * 1000));
-  return n;
-}
-
 export function timeSince(date: number) {
   const now = new Date();
   const elapsedMilliseconds = now.getTime() - date;
@@ -49,7 +44,6 @@ export function timeSince(date: number) {
     return `${years} year${years !== 1 ? 's' : ''} ago`;
   }
 }
-
 
 const options = {
   "indent_size": 4,
