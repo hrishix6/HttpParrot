@@ -4,7 +4,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu';
-import { RequestModel } from '../../../types';
+import { RequestModel } from '@/common/types';
 
 interface RequestSavedItemActionsProps {
   children?: React.ReactNode;

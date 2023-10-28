@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
 import {
   clearResponse,
   selectIfResponseOk,
   selectResponseSize,
   selectResponseStatus,
   selectResponseTime
-} from '../../../redux/response.section/response.reducer';
+} from './redux/response.reducer';
 
 export function ResponseSectionHeader() {
   const size = useAppSelector(selectResponseSize);

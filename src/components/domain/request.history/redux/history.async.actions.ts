@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RequestModel } from "../../types";
-import { historyDb } from "../../lib/db";
+import { RequestModel } from "@/common/types";
+import { historyDb } from "@/lib/db";
 
 export const addtoHistoryAsync = createAsyncThunk<RequestModel, RequestModel>('history/addtoHistoryAsync', async (model, _) => {
     //try to store request history item in indexedb

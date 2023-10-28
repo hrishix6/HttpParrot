@@ -1,14 +1,14 @@
-import { Footer } from './components/layout/footer';
-import { Header } from './components/layout/header';
-import { Main } from './components/layout/main';
-import { RequestSection } from './components/layout/request.section';
-import { ResponseSection } from './components/layout/response.section';
-import { Sidebar } from './components/layout/sidebar';
-import { ThemeWrapper } from './components/domain/theme/theme.wrapper';
-import { ActivitySection } from './components/layout/activity.section';
+import { Footer } from '../components/layout/footer';
+import { Header } from '../components/layout/header';
+import { Main } from '../components/layout/main';
+import { RequestSection } from '../components/layout/request.section';
+import { ResponseSection } from '../components/layout/response.section';
+import { Sidebar } from '../components/layout/sidebar';
+import { ThemeWrapper } from '../components/domain/theme/theme.wrapper';
+import { ActivitySection } from '../components/layout/activity.section';
 import { useEffect, useState } from 'react';
-import { historyDb, collectionDB, initDatabase } from './lib/db';
-import { Spinner } from './components/ui/spinner';
+import { historyDb, collectionDB, initDatabase } from '@/lib/db';
+import { Spinner } from '../components/ui/spinner';
 
 function App() {
   const [apploading, setappLoading] = useState(true);

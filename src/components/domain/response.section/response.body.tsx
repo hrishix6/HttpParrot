@@ -1,10 +1,10 @@
-import { useAppSelector } from '../../../redux/hoooks';
+import { useAppSelector } from '../../../common/hoooks';
 import {
   selectMimeType,
   selectResponseBody,
   selectResponseBodyLoading,
   selectResponseBodytype
-} from '../../../redux/response.section/response.reducer';
+} from './redux/response.reducer';
 import { Spinner } from '@/components/ui/spinner';
 import { TextBody } from './text.body';
 import { BinaryBody } from './binary.body';

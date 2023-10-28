@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectMethod,
   selectUrl,
@@ -21,10 +21,10 @@ import {
   selectUserEditingUrl,
   selectName,
   selectFormMode
-} from '../../../redux/request.section/request.section.reducer';
-import { RequestMethod } from '../../../types';
+} from './redux/request.section.reducer';
+import { RequestMethod } from '@/common/types';
 import { RequestQuery } from './request.query';
-import { makeRequestActionAsync } from '../../../redux/request.section/request.async.actions';
+import { makeRequestActionAsync } from './redux/request.async.actions';
 import { RequestHeaders } from './request.headers';
 import { useEffect, useState } from 'react';
 import { RequestActionsDropDown } from './request.actions.dropdown';

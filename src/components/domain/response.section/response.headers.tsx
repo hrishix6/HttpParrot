@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { useAppSelector } from '../../../redux/hoooks';
-import { selectResponseHeaders } from '../../../redux/response.section/response.reducer';
+import { useAppSelector } from '../../../common/hoooks';
+import { selectResponseHeaders } from './redux/response.reducer';
 import { EmptyHeaders } from './empty.headers';
 
 export function ResponseHeaders() {

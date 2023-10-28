@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { RequestModel } from "../../types";
+import { RootState } from "@/common/store";
+import { RequestModel } from "@/common/types";
 import { saveRequestAsync, loadSavedRequestsAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
 
 

@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { Input } from '@/components/ui/input';
 import {
   selectUrl,
@@ -7,8 +7,8 @@ import {
   setUrl,
   userDoneEditingUrl,
   userWantsToEditUrl
-} from '../../../redux/request.section/request.section.reducer';
-import { Token } from '../../../types';
+} from './redux/request.section.reducer';
+import { Token } from '@/common/types';
 import { useEffect, useRef } from 'react';
 
 interface RequestUrlInterpolatedProps {

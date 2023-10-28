@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { ContentType, ResponseModel, ResponseHeader } from "../../types";
+import { RootState } from "@/common/store";
+import { ContentType, ResponseModel, ResponseHeader } from "@/common/types";
 
 
 export interface ResponseSectionState {

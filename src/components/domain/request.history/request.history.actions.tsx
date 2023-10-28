@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAppDispatch } from '../../../redux/hoooks';
-import { clearHistoryAsync } from '../../../redux/request.history/history.async.actions';
+import { useAppDispatch } from '../../../common/hoooks';
+import { clearHistoryAsync } from './redux/history.async.actions';
 
 export function RequestHistoryActions() {
   const dispatch = useAppDispatch();

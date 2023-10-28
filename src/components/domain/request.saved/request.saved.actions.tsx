@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAppDispatch } from '../../../redux/hoooks';
-import { deleteSavedRequestsAsync } from '../../../redux/request.saved/request.saved.async.actions';
+import { useAppDispatch } from '../../../common/hoooks';
+import { deleteSavedRequestsAsync } from './redux/request.saved.async.actions';
 
 export function RequestSavedActions() {
   const dispatch = useAppDispatch();

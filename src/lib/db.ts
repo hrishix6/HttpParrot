@@ -1,4 +1,4 @@
-import { RequestModel } from "../types";
+import { RequestModel } from "@/common/types";
 
 export function initDatabase(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {

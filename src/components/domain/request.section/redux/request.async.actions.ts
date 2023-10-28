@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "@/common/store";
 import { v4 as uuidv4 } from "uuid";
-import { RequestModel, ResponseHeader } from "../../types";
-import { addtoHistoryAsync } from "../request.history/history.async.actions";
-import { determineBodytype, formatCode, readBody } from "../../lib/utils";
-import { setResponseMetadata, startLoading } from "../response.section/response.reducer";
+import { RequestModel, ResponseHeader } from "@/common/types";
+import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
+import { determineBodytype, formatCode, readBody } from "@/lib/utils";
+import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
 
 export const makeRequestActionAsync = createAsyncThunk<void, void>('request-section/makeRequestActionAsync', async (_, thunkAPI) => {
 

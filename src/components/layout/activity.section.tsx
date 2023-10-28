@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RequestHistory } from '../domain/request.history/request.history';
 import { RequestsSaved } from '../domain/request.saved/request.saved';
-import { loadHistoryFromDbAsync } from '../../redux/request.history/history.async.actions';
-import { useAppDispatch } from '../../redux/hoooks';
-import { loadSavedRequestsAsync } from '../../redux/request.saved/request.saved.async.actions';
+import { loadHistoryFromDbAsync } from '../domain/request.history/redux/history.async.actions';
+import { useAppDispatch } from '../../common/hoooks';
+import { loadSavedRequestsAsync } from '../domain/request.saved/redux/request.saved.async.actions';
 
 export function ActivitySection() {
   const dispatch = useAppDispatch();

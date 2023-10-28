@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
 import {
   addHeader,
   updateHeaderEnabled,
@@ -6,7 +6,7 @@ import {
   updateHeaderValue,
   selectHeaders,
   removeHeader
-} from '../../../redux/request.section/request.section.reducer';
+} from './redux/request.section.reducer';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

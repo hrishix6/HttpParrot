@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RequestModel } from "../../types";
+import { RequestModel } from "@/common/types";
 import { v4 as uuidv4 } from "uuid";
-import { collectionDB } from "../../lib/db";
-import { RootState } from "../store";
-import { RequestFormMode, clearRequestSection, resetFormModeAfterDeletion } from "../request.section/request.section.reducer";
+import { collectionDB } from "@/lib/db";
+import { RootState } from "@/common/store";
+import { RequestFormMode, clearRequestSection, resetFormModeAfterDeletion } from "../../request.section/redux/request.section.reducer";
 
 
 export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, string>('saved-requests/saveRequestAsync', async (newName, thunkAPI) => {

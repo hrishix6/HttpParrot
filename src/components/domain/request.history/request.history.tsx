@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { RequestHistoryItem } from './request.history.item';
-import { RequestModel } from '../../../types';
+import { RequestModel } from '@/common/types';
 import { RequestHistoryFilter } from './request.history.filter';
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectFilter,
   selectHistory,
   setFilter
-} from '../../../redux/request.history/history.reducer';
+} from './redux/history.reducer';
 
 export function RequestHistory() {
   const [search, setSearch] = useState('');

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { ContentType } from '../../../types';
-import { useAppDispatch } from '../../../redux/hoooks';
-import { discardBody } from '../../../redux/response.section/response.reducer';
+import { ContentType } from '@/common/types';
+import { useAppDispatch } from '@/common/hoooks';
+import { discardBody } from './redux/response.reducer';
 
 interface BinaryBodyProps {
   bodyType: ContentType;

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { RequestSavedFilter } from './request.saved.filter';
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectFilter,
   selectSavedRequests,
   setFilter
-} from '../../../redux/request.saved/request.saved.reducer';
-import { RequestModel } from '../../../types';
+} from './redux/request.saved.reducer';
+import { RequestModel } from '@/common/types';
 import { RequestSavedItem } from './request.saved.item';
 
 export function RequestsSaved() {

@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { ContentType, Token } from "../types";
+import { ContentType, Token } from "@/common/types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

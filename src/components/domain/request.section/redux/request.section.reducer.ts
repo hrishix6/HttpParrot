@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../store";
+import { RootState } from "@/common/store";
 import { makeRequestActionAsync } from "./request.async.actions";
-import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token } from "../../types";
-import { getTokens, splitTokens } from "../../lib/utils";
+import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token } from "@/common/types";
+import { getTokens, splitTokens } from "@/lib/utils";
 
 export type RequestFormMode = "update" | "insert";
 

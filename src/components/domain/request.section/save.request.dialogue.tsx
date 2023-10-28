@@ -12,9 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../redux/hoooks';
-import { saveRequestAsync } from '../../../redux/request.saved/request.saved.async.actions';
-import { selectName } from '../../../redux/request.section/request.section.reducer';
+import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
+import { saveRequestAsync } from '../request.saved/redux/request.saved.async.actions';
+import { selectName } from './redux/request.section.reducer';
 
 interface Props {
   open: boolean;

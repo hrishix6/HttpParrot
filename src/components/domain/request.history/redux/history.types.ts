@@ -1,4 +1,4 @@
-import { RequestModel } from "../../types";
+import { RequestModel } from "@/common/types";
 
 export interface HistoryState {
     loading: boolean

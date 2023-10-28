@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ContentType } from '../../../types';
+import { ContentType } from '@/common/types';
 import Prism from 'prismjs';
 
 interface TextBodyProps {

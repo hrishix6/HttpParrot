@@ -9,8 +9,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SaveRequestDialogue } from './save.request.dialogue';
 import { useState } from 'react';
-import { useAppDispatch } from '../../../redux/hoooks';
-import { clearRequestSection } from '../../../redux/request.section/request.section.reducer';
+import { useAppDispatch } from '../../../common/hoooks';
+import { clearRequestSection } from './redux/request.section.reducer';
 
 export function RequestActionsDropDown() {
   const dispatch = useAppDispatch();

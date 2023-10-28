@@ -1,11 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { RequestSavedItemActions } from './request.saved.item.actions';
-import { timeSince } from '../../../lib/utils';
+import { timeSince } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { RequestModel } from '../../../types';
-import { useAppDispatch } from '../../../redux/hoooks';
-import { deleteSavedRequestByIdAsync } from '../../../redux/request.saved/request.saved.async.actions';
-import { populateRequestSection } from '../../../redux/request.section/request.section.reducer';
+import { RequestModel } from '@/common/types';
+import { useAppDispatch } from '@/common/hoooks';
+import { deleteSavedRequestByIdAsync } from './redux/request.saved.async.actions';
+import { populateRequestSection } from '../request.section/redux/request.section.reducer';
 
 interface RequestSavedItemProps {
   children?: React.ReactNode;

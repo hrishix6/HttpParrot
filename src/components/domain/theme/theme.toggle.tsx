@@ -5,10 +5,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { setTheme } from '../../../redux/theme/theme.reducer';
-import { useAppDispatch } from '../../../redux/hoooks';
+import { setTheme } from './redux/theme.reducer';
+import { useAppDispatch } from '../../../common/hoooks';
 
 export function ThemeToggle() {
   const dispatch = useAppDispatch();
