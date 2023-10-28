@@ -37,27 +37,27 @@
 
 - Light mode
 
-  <img style="display:block" src="./public/ui-light.PNG" alt="light mode">
+  <img style="display:block" src="./public/screenshots/ui-light.PNG" alt="light mode">
 
 - Dark mode
 
-  <img style="display:block" src="./public/ui-dark.PNG" alt="dark mode">
+  <img style="display:block" src="./public/screenshots/ui-dark.PNG" alt="dark mode">
 
 - HTML/xml response view
 
-  <img style="display:block" src="./public/html-res.PNG" alt="html or xml response">
+  <img style="display:block" src="./public/screenshots/html-res.PNG" alt="html or xml response">
 
 - JSON response view
 
-  <img style="display:block" src="./public/json-res.PNG" alt="json response">
+  <img style="display:block" src="./public/screenshots/json-res.PNG" alt="json response">
 
 - binary file response view
 
-  <img style="display:block" src="./public/binary-res.PNG" alt="file response">
+  <img style="display:block" src="./public/screenshots/binary-res.PNG" alt="file response">
 
 - error response view
 
-  <img style="display:block" src="./public/error-res.PNG" alt="error response">
+  <img style="display:block" src="./public/screenshots/error-res.PNG" alt="error response">
 
 ## How to use
 
