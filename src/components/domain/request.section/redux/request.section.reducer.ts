@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "@/common/store";
-import { makeRequestActionAsync } from "./request.async.actions";
+import { generateCodeSnippetAsync, makeRequestActionAsync } from "./request.async.actions";
 import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token } from "@/common/types";
 import { getTokens, splitTokens } from "@/lib/utils";
 
@@ -261,6 +261,13 @@ const requestSectionSlice = createSlice({
             .addCase(makeRequestActionAsync.rejected, (_, __) => {
                 console.log(`req failed`);
             })
+            .addCase(generateCodeSnippetAsync.fulfilled, (_, __) => {
+                console.log(`snippet generated`);
+            }).addCase(generateCodeSnippetAsync.pending, (_, __) => {
+                console.log(`snippet gen started`);
+            }).addCase(generateCodeSnippetAsync.rejected, (_, __) => {
+                console.log(`snippet gen failed`);
+            });
     }
 });
 
