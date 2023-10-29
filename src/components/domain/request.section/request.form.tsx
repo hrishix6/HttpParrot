@@ -15,13 +15,13 @@ import {
   selectUrl,
   setMethod,
   setUrl,
-  getQueryItems,
   initQueryItems,
   userDoneEditingUrl,
   selectUserEditingUrl,
   selectName,
   selectFormMode
 } from './redux/request.section.reducer';
+import { getQueryItems } from './utils/form.helpers';
 import { RequestMethod } from '@/common/types';
 import { RequestQuery } from './request.query';
 import { makeRequestActionAsync } from './redux/request.async.actions';
@@ -29,6 +29,7 @@ import { RequestHeaders } from './request.headers';
 import { useEffect, useState } from 'react';
 import { RequestActionsDropDown } from './request.actions.dropdown';
 import { RequestMetaHeader } from './request.meta.header';
+import { BodyForm } from './request.body/body.form';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
@@ -146,7 +147,7 @@ export function RequestForm() {
               className="flex-1 overflow-hidden flex flex-col"
               value="body"
             >
-              Request Body
+              <BodyForm />
             </TabsContent>
           )}
           {tab === 'auth' && (
