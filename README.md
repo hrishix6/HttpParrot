@@ -3,7 +3,7 @@
     <span style="display:block">HttpClient</span>
 </h1>
 
-<p style="text-align:center">chrome extension for API testing baked right into browser.</p>
+<p style="text-align:center">API testing tool baked right into chrome</p>
 
 ## Built using
 
@@ -13,20 +13,23 @@
 - [shadcn ui](https://ui.shadcn.com/)
 - [prismjs](https://prismjs.com/)
 - [beautifier.io](https://beautifier.io/)
+- [handlebars](https://handlebarsjs.com/)
 
 ## What's implemented
 
 - sending request with any method, url.
+- editable json/text/xml/formdata/urlencoded body
 - format text responses with highlighting (json, xml, html, js, css)
 - show response metadata (response status, time, size).
 - handle binary response (zip, audio, video, pdf, images).
 - save request history to persist between sessions.
-- save requests by giving them a name.
+- save requests with name.
+
+`If you have got some feature ideas, create an issue, it would be fun exercise, Working on below now`
 
 ## Todo
 
 - request collections
-- editable json/text/xml/formdata body
 - Basic / Bearer authentication
 - import/export collections
 - generate code snippets for various languages for making request(eg, curl, node, C# etc)
