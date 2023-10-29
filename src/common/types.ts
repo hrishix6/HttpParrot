@@ -71,3 +71,6 @@ export interface Token {
     text: string;
     highlight: boolean;
 }
+
+
+export type SupportedSnippetLang = "js" | "curl";
