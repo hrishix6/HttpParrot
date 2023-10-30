@@ -43,10 +43,8 @@ async function HandleDuplication(tab) {
 
   if (tab.title === queryOptions.title) {
     await chrome.tabs.remove(mytab.id);
+    await UpdateExtensionRules(tab.id);
   }
-
-  await UpdateExtensionRules(tab.id);
-
 }
 
 /**
