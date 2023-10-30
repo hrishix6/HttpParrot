@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "@/common/store";
-import { generateCodeSnippetAsync, makeRequestActionAsync, makeRequestActionAsync } from "./request.async.actions";
+import { generateCodeSnippetAsync, makeRequestActionAsync } from "./request.async.actions";
 import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token, SupportedBodyType, FormDataItem, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateFormDataItemEnabled } from "@/common/types";
 import { getTokens, splitTokens } from "@/lib/utils";
 import { getQueryString, getUpdatedUrl } from "../utils/form.helpers";

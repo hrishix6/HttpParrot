@@ -1,7 +1,7 @@
 {{#with request}}
 curl -X {{method}} \
 {{#each headers}}
-  -H "{{this.name}}: {{this.value}}"
+  -H "{{this.name}}: {{this.value}}" \
 {{/each}}
   -d "{{{body}}}" \
 "{{url}}"
