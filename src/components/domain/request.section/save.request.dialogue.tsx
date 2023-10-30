@@ -7,6 +7,14 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import {} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +22,11 @@ import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
 import { saveRequestAsync } from '../request.saved/redux/request.saved.async.actions';
-import { selectName } from './redux/request.section.reducer';
+import {
+  selectName,
+  selectRequestCollection
+} from './redux/request.section.reducer';
+import { selectCollections } from '../request.saved/redux/request.saved.reducer';
 
 interface Props {
   open: boolean;
@@ -22,20 +34,29 @@ interface Props {
 }
 
 export function SaveRequestDialogue({ onOpenChange, open }: Props) {
-  const name = useAppSelector(selectName);
+  const rName = useAppSelector(selectName);
+  const rCollection = useAppSelector(selectRequestCollection);
+  const collections = useAppSelector(selectCollections);
   const dispatch = useAppDispatch();
   const [requestName, setRequestName] = useState('');
+  const [collection, setSelectedCollection] = useState('default');
 
   useEffect(() => {
-    console.log(`name from form- ${name}`);
-    if (name) {
-      setRequestName(name);
+    if (rName) {
+      setRequestName(rName);
     }
-  }, [name]);
+  }, [rName]);
+
+  useEffect(() => {
+    if (rCollection) {
+      setSelectedCollection(rCollection);
+    }
+  }, [rCollection]);
 
   const handleSaveRequest = () => {
-    dispatch(saveRequestAsync(requestName));
+    dispatch(saveRequestAsync({ name: requestName, collectionId: collection }));
     setRequestName('');
+    setSelectedCollection('default');
     onOpenChange(false);
   };
 
@@ -62,8 +83,29 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
             />
           </div>
           <div className="flex flex-col gap-3">
-            <Label htmlFor="collection">Collection</Label>
-            <Input id="collection" type="text" disabled value={'default'} />
+            <Select
+              value={collection}
+              onValueChange={(e) => {
+                console.log(e);
+                setSelectedCollection(e);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="collection" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem key={'default'} value={'default'}>
+                    Default
+                  </SelectItem>
+                  {collections.map((x) => (
+                    <SelectItem key={x.id} value={x.id}>
+                      {x.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>

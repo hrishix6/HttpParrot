@@ -19,7 +19,8 @@ import {
   userDoneEditingUrl,
   selectUserEditingUrl,
   selectName,
-  selectFormMode
+  selectFormMode,
+  selectRequestCollectionName
 } from './redux/request.section.reducer';
 import { getQueryItems } from './utils/form.helpers';
 import { RequestMethod } from '@/common/types';
@@ -34,6 +35,7 @@ import { BodyForm } from './request.body/body.form';
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
   const name = useAppSelector(selectName);
+  const collectionName = useAppSelector(selectRequestCollectionName);
   const method = useAppSelector(selectMethod);
   const isUserEditingUrl = useAppSelector(selectUserEditingUrl);
   const url = useAppSelector(selectUrl);
@@ -65,7 +67,11 @@ export function RequestForm() {
 
   return (
     <div className="flex-1 flex flex-col gap-1 overflow-hidden">
-      <RequestMetaHeader mode={mode} request_name={name} />
+      <RequestMetaHeader
+        mode={mode}
+        request_name={name}
+        collection={collectionName}
+      />
       <section className="flex gap-2 px-2 pt-2">
         <div>
           <Select
