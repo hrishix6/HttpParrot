@@ -86,6 +86,9 @@ export interface Token {
     highlight: boolean;
 }
 
+
+export type SupportedSnippetLang = "js" | "curl";
+
 export const immutableHeaders: HeaderItem[] = [
     {
         id: '-1',
