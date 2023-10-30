@@ -5,7 +5,7 @@ chrome.tabs.onCreated.addListener(HandleDuplication);
 async function bootStrapExtension() {
   const queryOptions = {
     url: 'chrome-extension://nflkmjkabjappoejnfcapabcpjbolpce/index.html',
-    title: 'hrishix6 | HttpClient'
+    title: 'hrishix6 | HttpParrot'
   };
 
   const [mytab] = await chrome.tabs.query(queryOptions);
@@ -26,7 +26,7 @@ async function bootStrapExtension() {
 async function HandleDuplication(tab) {
   const queryOptions = {
     url: 'chrome-extension://nflkmjkabjappoejnfcapabcpjbolpce/index.html',
-    title: 'hrishix6 | HttpClient'
+    title: 'hrishix6 | HttpParrot'
   };
 
   const [mytab] = await chrome.tabs.query(queryOptions);

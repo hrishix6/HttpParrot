@@ -112,7 +112,7 @@ export const immutableHeaders: HeaderItem[] = [
         id: '-4',
         enabled: true,
         name: 'User-Agent',
-        value: "hrishix6/HttpClient",
+        value: "hrishix6/HttpParrot",
     },
 ]
 

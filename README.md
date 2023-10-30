@@ -1,9 +1,14 @@
 <h1 style="display:flex; align-items:center; gap:5px; justify-content:center;">
-    <img style="display:block" src="./public/icons/icon48.png">
-    <span style="display:block">HttpClient</span>
+    <img src="./public/icons/icon48.png" alt="logo">
+    <span style="display:block">HttpParrot</span>
 </h1>
 
 <p style="text-align:center">API testing tool baked right into chrome</p>
+
+## Motivation
+
+In light of the outrage surrounding my (ex) favourite API testing tool - Postman and many others e.g Kong's Insomnia, making controversial decisions about their product, I've decided to embark on the journey of rolling my own API client tool. I thought it would be a fun and challenging exercise. I will try
+to replicate most essential features that such a tool should posses.
 
 ## Built using
 
@@ -15,52 +20,29 @@
 - [beautifier.io](https://beautifier.io/)
 - [handlebars](https://handlebarsjs.com/)
 
-## What's implemented
+## Features
 
+- intuitive UI.
+- Completely offline storage for saved requests/collections.
 - sending request with any method, url.
 - editable json/text/xml/formdata/urlencoded body
-- format text responses with highlighting (json, xml, html, js, css)
+- formatted & highlighted text responses. (json, xml, html, js, css etc).
 - show response metadata (response status, time, size).
 - handle binary response (zip, audio, video, pdf, images).
 - save request history to persist between sessions.
-- save requests with name.
-
-`If you have got some feature ideas, create an issue, it would be fun exercise, Working on below now`
+- save requests and group using collections.
 
 ## Todo
 
-- request collections
-- Basic / Bearer authentication
-- import/export collections
-- generate code snippets for various languages for making request(eg, curl, node, C# etc)
-- generate OpenAPI spec for collection
+- Basic / Bearer authentication.
+- import/export collections.
+- generate code snippets for various languages for making request(eg, curl, node, C# etc).
+- generate OpenAPI spec for collection.
 - add variables support to collection so user can set some defaults and then use them in requests.
 
 ## Screeshots
 
-- Light mode
-
-  <img style="display:block" src="./public/screenshots/ui-light.PNG" alt="light mode">
-
-- Dark mode
-
-  <img style="display:block" src="./public/screenshots/ui-dark.PNG" alt="dark mode">
-
-- HTML/xml response view
-
-  <img style="display:block" src="./public/screenshots/html-res.PNG" alt="html or xml response">
-
-- JSON response view
-
-  <img style="display:block" src="./public/screenshots/json-res.PNG" alt="json response">
-
-- binary file response view
-
-  <img style="display:block" src="./public/screenshots/binary-res.PNG" alt="file response">
-
-- error response view
-
-  <img style="display:block" src="./public/screenshots/error-res.PNG" alt="error response">
+<img style="display:block" src="./public/screenshots/collections.PNG" alt="ui">
 
 ## How to use
 
@@ -85,12 +67,12 @@
    <img style="display:block" src="./public/icons/icon16.png">
   </p>
 
-- exntension relies on `indexed db` to store data, make sure you have reasonably updated version of chrome.
+- exntension relies on `indexed db` to store data , please use reasonably update browser.
 
 ## Contributions
 
-- This is personal project that I am building just for fun and learning, not planning to publish.
-- If you are still interested in contributing, pick up an issue and send PR.
+I'm working on this as a personal project purely for the joy of learning, with no intentions of publishing it.
+If you're still enthusiastic about contributing, feel free to select an issue and submit a pull request."
 
 ## License
 

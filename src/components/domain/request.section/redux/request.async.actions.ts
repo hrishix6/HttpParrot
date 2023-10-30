@@ -39,7 +39,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     //add immutable headers;
     fetchHeaders["accept"] = "*/*";
-    fetchHeaders["user-agent"] = "hrishix6/HttpClient";
+    fetchHeaders["user-agent"] = "hrishix6/HttpParrot";
 
     const start = new Date().getTime();
 

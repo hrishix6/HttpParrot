@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "hrishix6/httpClient",
+  "name": "hrishix6/HttpParrot",
   "description": "Http client for API testing.",
   "version": "1.0.0",
    "icons": {
