@@ -39,7 +39,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     //add immutable headers;
     fetchHeaders["accept"] = "*/*";
-    fetchHeaders["user-agent"] = "hrishix6/HttpClient";
+    fetchHeaders["user-agent"] = "hrishix6/HttpParrot";
 
     const start = new Date().getTime();
 
@@ -131,6 +131,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const newReqHistoryItem: RequestModel = {
         id: uuidv4(),
+        collectionId: "",
         method,
         name: url,
         url: url,

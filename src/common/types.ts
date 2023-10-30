@@ -58,6 +58,7 @@ export interface RequestModel {
     formItems?: FormDataItem[];
     enableTextBody?: boolean,
     textBody?: string
+    collectionId: string;
 }
 
 export type ContentType = "ogg" | "mp4" | "wav" | "mpeg" | "gif" | "png" | "jpeg" | "json" | "js" | "text" | "html" | "xml" | "img" | "unknown" | "audio" | "video" | "pdf" | "css" | "zip";
@@ -78,7 +79,6 @@ export interface RequestCollectionModel {
     id: string;
     name: string;
     created: number;
-    requests: RequestModel[]
 }
 
 export interface Token {
@@ -112,7 +112,7 @@ export const immutableHeaders: HeaderItem[] = [
         id: '-4',
         enabled: true,
         name: 'User-Agent',
-        value: "hrishix6/HttpClient",
+        value: "hrishix6/HttpParrot",
     },
 ]
 

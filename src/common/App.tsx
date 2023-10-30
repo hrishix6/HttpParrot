@@ -7,7 +7,12 @@ import { Sidebar } from '../components/layout/sidebar';
 import { ThemeWrapper } from '../components/domain/theme/theme.wrapper';
 import { ActivitySection } from '../components/layout/activity.section';
 import { useEffect, useState } from 'react';
-import { historyDb, collectionDB, initDatabase } from '@/lib/db';
+import {
+  historyRepo,
+  collectionRepo,
+  initDatabase,
+  requestRepo
+} from '@/lib/db';
 import { Spinner } from '../components/ui/spinner';
 
 function App() {
@@ -16,8 +21,9 @@ function App() {
   useEffect(() => {
     initDatabase()
       .then((db) => {
-        historyDb.setDb(db);
-        collectionDB.setDb(db);
+        historyRepo.setDb(db);
+        collectionRepo.setDb(db);
+        requestRepo.setDb(db);
       })
       .catch((e) => {
         console.error(e);

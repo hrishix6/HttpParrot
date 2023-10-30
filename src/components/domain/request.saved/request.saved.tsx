@@ -2,48 +2,17 @@ import { useEffect, useState } from 'react';
 import { RequestSavedFilter } from './request.saved.filter';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
-  selectFilter,
+  selectCollections,
   selectSavedRequests,
   setFilter
 } from './redux/request.saved.reducer';
-import { RequestModel } from '@/common/types';
-import { RequestSavedItem } from './request.saved.item';
+import { DefaultCollection, RequestCollection } from './request.collection';
 
 export function RequestsSaved() {
   const [search, setSearch] = useState('');
-
   const dispatch = useAppDispatch();
-
-  const filter = useAppSelector(selectFilter);
-
   const saved = useAppSelector(selectSavedRequests);
-
-  const requestFilter = (item: RequestModel, filter: string) => {
-    if (filter && filter.trim() !== '') {
-      let nameMatch = false,
-        methodMatch = false,
-        urlMatch = false;
-      const { name, method, url } = item;
-      const filterNormalized = filter.toLowerCase();
-      if (name && name.trim() !== '') {
-        nameMatch = name.toLowerCase().includes(filterNormalized);
-      }
-
-      if (method && method.trim() !== '') {
-        methodMatch = method.toLocaleLowerCase().includes(filterNormalized);
-      }
-
-      if (url && url.trim() !== '') {
-        urlMatch = url.toLocaleLowerCase().includes(filterNormalized);
-      }
-
-      return nameMatch || methodMatch || urlMatch;
-    }
-
-    return true;
-  };
-
-  const filteredSaved = saved.filter((x) => requestFilter(x, filter));
+  const collections = useAppSelector(selectCollections);
 
   useEffect(() => {
     const bouncerId = setTimeout(() => {
@@ -61,9 +30,16 @@ export function RequestsSaved() {
   return (
     <>
       <RequestSavedFilter filter={search} handleChange={handleFilterChange} />
-      <div className="flex-1 overflow-y-auto mt-2">
-        {filteredSaved.map((item) => (
-          <RequestSavedItem key={item.id} request={item} />
+      <div className="flex-1 overflow-y-auto mt-2 flex flex-col gap-1">
+        <DefaultCollection
+          requests={saved.filter((x) => x.collectionId == 'default')}
+        />
+        {collections.map((item) => (
+          <RequestCollection
+            key={item.id}
+            model={item}
+            requests={saved.filter((x) => x.collectionId === item.id)}
+          />
         ))}
       </div>
     </>

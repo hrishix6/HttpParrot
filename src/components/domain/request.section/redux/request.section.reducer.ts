@@ -11,6 +11,8 @@ export type RequestFormMode = "update" | "insert";
 export interface RequestSectionState {
     id: string;
     name: string;
+    collectionId: string;
+    collectionName?: string;
     method: RequestMethod,
     url: string,
     query: QueryItem[],
@@ -27,6 +29,8 @@ export interface RequestSectionState {
 
 const initialState: RequestSectionState = {
     id: "",
+    collectionId: "default",
+    collectionName: "",
     name: "",
     userEditingUrl: true,
     method: "get",
@@ -53,10 +57,12 @@ const requestSectionSlice = createSlice({
     name: "request-section",
     initialState,
     reducers: {
-        populateRequestSection: (state, action: PayloadAction<{ model: RequestModel, mode: RequestFormMode }>) => {
-            const { mode, model } = action.payload;
-            const { id, name, method, url, query, headers, bodytype, enableTextBody, textBody, formItems } = model;
+        populateRequestSection: (state, action: PayloadAction<{ model: RequestModel, mode: RequestFormMode, collectionName?: string }>) => {
+            const { mode, model, collectionName } = action.payload;
+            const { id, name, method, url, query, headers, bodytype, enableTextBody, textBody, formItems, collectionId } = model;
             state.id = id;
+            state.collectionId = collectionId;
+            state.collectionName = collectionName;
             state.name = name;
             state.mode = mode;
             state.method = method;
@@ -71,10 +77,13 @@ const requestSectionSlice = createSlice({
         },
         resetFormModeAfterDeletion: (state) => {
             state.mode = "insert";
+            state.collectionId = "default"
             state.id = "";
             state.name = ""
         },
         clearRequestSection: (state) => {
+            state.id = "";
+            state.collectionId = "default";
             state.mode = "insert";
             state.name = "";
             state.userEditingUrl = true;
@@ -290,6 +299,10 @@ export const selectUserEditingUrl = (state: RootState) => state.requestStore.use
 export const selectUrlTokens = (state: RootState) => state.requestStore.urltokns;
 
 export const selectName = (state: RootState) => state.requestStore.name;
+
+export const selectRequestCollection = (state: RootState) => state.requestStore.collectionId;
+
+export const selectRequestCollectionName = (state: RootState) => state.requestStore.collectionName;
 
 export const selectFormMode = (state: RootState) => state.requestStore.mode;
 
