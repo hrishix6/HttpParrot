@@ -4,7 +4,7 @@ chrome.tabs.onCreated.addListener(HandleDuplication);
 
 async function bootStrapExtension() {
   const queryOptions = {
-    url: 'chrome-extension://nflkmjkabjappoejnfcapabcpjbolpce/index.html',
+    url: 'chrome-extension://*/hrishix6_httpparrot.html',
     title: 'hrishix6 | HttpParrot'
   };
 
@@ -16,7 +16,7 @@ async function bootStrapExtension() {
     }
   } else {
     //tab doesn't exist, create a new tab.
-    await chrome.tabs.create({ url: 'index.html' });
+    await chrome.tabs.create({ url: 'hrishix6_httpparrot.html' });
   }
 }
 
@@ -25,7 +25,7 @@ async function bootStrapExtension() {
  */
 async function HandleDuplication(tab) {
   const queryOptions = {
-    url: 'chrome-extension://nflkmjkabjappoejnfcapabcpjbolpce/index.html',
+    url: 'chrome-extension://*/hrishix6_httpparrot.html',
     title: 'hrishix6 | HttpParrot'
   };
 

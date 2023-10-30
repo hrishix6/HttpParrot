@@ -1,0 +1,17 @@
+[{
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "origin", "operation": "remove" },
+        { "header": "cookie", "operation": "remove" },
+        { "header": "Sec-Ch-Ua", "operation": "remove" },
+        { "header": "Sec-Ch-Ua-Mobile", "operation": "remove" },
+        { "header": "Sec-Ch-Ua-Platform", "operation": "remove" },
+        { "header": "User-Agent", "operation": "set", "value":"hrishix6/HttpParrot"},
+        { "header": "Dnt", "operation": "set", "value":"0"}
+    ]
+    },
+    "condition": {"urlFilter" : "*"}
+}]

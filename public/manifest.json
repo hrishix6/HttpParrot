@@ -9,13 +9,21 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "action": {},
+  "action": {
+  },
   "background": {
     "service_worker": "service-worker.js"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
+  "declarative_net_request" : {
+    "rule_resources" : [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules_1.json"
+    }]
+  },
   "host_permissions": ["https://*/*", "http://*/*"],
-  "permissions": ["storage", "tabs"]
+  "permissions": ["storage", "tabs","declarativeNetRequest","declarativeNetRequestWithHostAccess","declarativeNetRequestFeedback"]
 }
