@@ -6,6 +6,7 @@ import { addtoHistoryAsync } from "../../request.history/redux/history.async.act
 import { determineBodytype, formatCode, readBody } from "@/lib/utils";
 import { getCodeSnippet } from "@/lib/snippets";
 import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
+import { getBody, getContentType } from "../utils/form.helpers";
 
 export const makeRequestActionAsync = createAsyncThunk<void, void>('request-section/makeRequestActionAsync', async (_, thunkAPI) => {
 
@@ -13,33 +14,36 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const rootState = getState() as RootState;
 
-    const { url, method, query, headers } = rootState.requestStore;
+    const { url, method, query, headers, formItems, bodyType, enableTextBody, textBody } = rootState.requestStore;
 
     dispatch(startLoading(null));
-
-    const newReqHistoryItem: RequestModel = {
-        id: uuidv4(),
-        method,
-        name: url,
-        url: url,
-        query: query,
-        headers: headers,
-        triggered: new Date().getTime()
-    }
 
     const fetchHeaders: Record<string, any> = {};
     for (const h of headers) {
         if (h.enabled) {
             if (h.name && h.value) {
-                fetchHeaders[h.name] = h.value;
+                fetchHeaders[h.name.toLocaleLowerCase()] = h.value;
             }
         }
     }
 
+    let fetchBody;
+    if (method !== "get") {
+
+        fetchBody = getBody({ bodyType, formItems, bodyTextEnabled: enableTextBody, bodyText: textBody });
+        //since fetch automatically adds correct header when body is formdata.
+        if (bodyType !== "formdata") {
+            fetchHeaders["content-type"] = getContentType(bodyType);
+        }
+    }
+
+    //add immutable headers;
+    fetchHeaders["accept"] = "*/*";
+    fetchHeaders["user-agent"] = "hrishix6/HttpClient";
+
     const start = new Date().getTime();
 
     const abortController = new AbortController();
-
 
     setTimeout(() => {
         //kill request after 30 seconds.
@@ -47,10 +51,12 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
     }, 30000);
 
     try {
+        console.log(fetchBody);
         const response = await fetch(url, {
             method,
             headers: fetchHeaders,
-            signal: abortController.signal
+            signal: abortController.signal,
+            ...(method !== "get" ? { body: fetchBody } : { body: null })
         });
 
         const ms = new Date().getTime() - start;
@@ -123,6 +129,21 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         }));
     }
 
+    const newReqHistoryItem: RequestModel = {
+        id: uuidv4(),
+        method,
+        name: url,
+        url: url,
+        query: query,
+        headers: headers,
+        triggered: new Date().getTime(),
+        ...(method !== "get" ? {
+            bodytype: bodyType,
+            textBody: textBody,
+            enableTextBody: enableTextBody,
+            formItems
+        } : {})
+    }
 
     dispatch(addtoHistoryAsync(newReqHistoryItem));
 });

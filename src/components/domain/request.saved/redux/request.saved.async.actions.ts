@@ -13,7 +13,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
 
     const rootState = getState() as RootState;
 
-    const { url, query, headers, method, id, mode } = rootState.requestStore;
+    const { url, query, headers, method, id, mode, bodyType, textBody, enableTextBody, formItems } = rootState.requestStore;
 
     if (mode == "insert") {
         const requestModel: RequestModel = {
@@ -25,6 +25,12 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             method,
             triggered: new Date().getTime(),
             created: new Date().getTime(),
+            ...(method !== "get" ? {
+                bodytype: bodyType,
+                textBody: textBody,
+                enableTextBody: enableTextBody,
+                formItems
+            } : {})
         }
 
         try {
@@ -49,6 +55,12 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             method,
             triggered: new Date().getTime(),
             created: new Date().getTime(),
+            ...(method !== "get" ? {
+                bodytype: bodyType,
+                textBody: textBody,
+                enableTextBody: enableTextBody,
+                formItems
+            } : {})
         }
 
         try {
