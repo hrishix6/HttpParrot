@@ -10,9 +10,13 @@ import { populateRequestSection } from '../request.section/redux/request.section
 interface RequestSavedItemProps {
   children?: React.ReactNode;
   request: RequestModel;
+  collectionName: string;
 }
 
-export function RequestSavedItem({ request }: RequestSavedItemProps) {
+export function RequestSavedItem({
+  request,
+  collectionName
+}: RequestSavedItemProps) {
   const dispatch = useAppDispatch();
 
   const { method, name, url, triggered } = request;
@@ -26,7 +30,9 @@ export function RequestSavedItem({ request }: RequestSavedItemProps) {
   };
 
   const handleViewInRequestSection = (r: RequestModel) => {
-    dispatch(populateRequestSection({ model: r, mode: 'update' }));
+    dispatch(
+      populateRequestSection({ model: r, mode: 'update', collectionName })
+    );
   };
 
   useEffect(() => {
