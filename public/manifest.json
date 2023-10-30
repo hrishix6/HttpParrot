@@ -17,13 +17,6 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
-  "declarative_net_request" : {
-    "rule_resources" : [{
-      "id": "ruleset_1",
-      "enabled": true,
-      "path": "rules_1.json"
-    }]
-  },
   "host_permissions": ["https://*/*", "http://*/*"],
   "permissions": ["storage", "tabs","declarativeNetRequest","declarativeNetRequestWithHostAccess","declarativeNetRequestFeedback"]
 }
