@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
-import { RequestModel } from "@/common/types";
-import { saveRequestAsync, loadSavedRequestsAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
+import { RequestCollectionModel, RequestModel } from "@/common/types";
+import { loadCollectionsAsync, addNewCollectionAsync, saveRequestAsync, loadSavedRequestsAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
 
 
 
 export interface RequestSavedState {
     loading: boolean
+    collections: RequestCollectionModel[]
     saved: RequestModel[],
     filter: string
 }
@@ -15,6 +16,7 @@ export interface RequestSavedState {
 const initialState: RequestSavedState = {
     loading: false,
     saved: [],
+    collections: [{ id: "default", created: new Date().getTime(), name: "Default" }],
     filter: ''
 };
 
@@ -51,6 +53,16 @@ export const savedRequestsSlice = createSlice({
             .addCase(loadSavedRequestsAsync.rejected, (state, _) => {
                 state.loading = false;
             })
+            .addCase(loadCollectionsAsync.pending, (state, _) => {
+                state.loading = true;
+            })
+            .addCase(loadCollectionsAsync.fulfilled, (state, action) => {
+                state.collections = action.payload;
+                state.loading = false;
+            })
+            .addCase(loadCollectionsAsync.rejected, (state, _) => {
+                state.loading = false;
+            })
             .addCase(deleteSavedRequestsAsync.fulfilled, (state, _) => {
                 state.saved = [];
             })
@@ -60,7 +72,13 @@ export const savedRequestsSlice = createSlice({
                 if (itemIndex > -1) {
                     state.saved.splice(itemIndex, 1);
                 }
-            });;
+            }).addCase(addNewCollectionAsync.fulfilled, (state, action) => {
+                state.collections.push(action.payload);
+            }).addCase(addNewCollectionAsync.pending, (_, __) => {
+                console.log('adding item to collection');
+            }).addCase(addNewCollectionAsync.rejected, (_, __) => {
+                console.log("failed to add collection");
+            });
     }
 });
 
@@ -72,3 +90,5 @@ export const savedRequestsReducer = savedRequestsSlice.reducer;
 export const selectFilter = (state: RootState) => state.savedRequestsStore.filter;
 
 export const selectSavedRequests = (state: RootState) => state.savedRequestsStore.saved;
+
+export const selectCollections = (state: RootState) => state.savedRequestsStore.collections;

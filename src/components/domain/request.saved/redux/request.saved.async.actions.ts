@@ -1,15 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RequestModel } from "@/common/types";
+import { RequestCollectionModel, RequestModel } from "@/common/types";
 import { v4 as uuidv4 } from "uuid";
-import { collectionDB } from "@/lib/db";
+import { collectionRepo, requestRepo } from "@/lib/db";
 import { RootState } from "@/common/store";
 import { RequestFormMode, clearRequestSection, resetFormModeAfterDeletion } from "../../request.section/redux/request.section.reducer";
 
 
-export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, string>('saved-requests/saveRequestAsync', async (newName, thunkAPI) => {
+export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, { name: string, collectionId: string }>('saved-requests/saveRequestAsync', async (arg, thunkAPI) => {
     //try to store request history item in indexedb
 
     const { getState, dispatch } = thunkAPI;
+
+    const { name: newName, collectionId } = arg;
 
     const rootState = getState() as RootState;
 
@@ -19,6 +21,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
         const requestModel: RequestModel = {
             id: uuidv4(),
             name: newName,
+            collectionId,
             headers,
             url,
             query,
@@ -34,7 +37,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
         }
 
         try {
-            const id = await collectionDB?.insert(requestModel);
+            const id = await requestRepo?.insert(requestModel);
             console.log(`stored item in db with id ${id}`);
         } catch (error) {
             console.log(`couldn't store in indexedDB ${error}`);
@@ -53,6 +56,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             url,
             query,
             method,
+            collectionId,
             triggered: new Date().getTime(),
             created: new Date().getTime(),
             ...(method !== "get" ? {
@@ -64,7 +68,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
         }
 
         try {
-            const updatedId = await collectionDB?.updateById(requestModel);
+            const updatedId = await requestRepo?.updateById(requestModel);
             console.log(`stored item in db with id ${updatedId}`);
         } catch (error) {
             console.log(`couldn't store in indexedDB ${error}`);
@@ -82,8 +86,8 @@ export const loadSavedRequestsAsync = createAsyncThunk<RequestModel[], void>("sa
 
     try {
         let models: RequestModel[] = [];
-        if (collectionDB.isInitialized) {
-            models = await collectionDB?.getAll();
+        if (requestRepo.isInitialized) {
+            models = await requestRepo?.getAll();
         }
 
         return models;
@@ -93,6 +97,23 @@ export const loadSavedRequestsAsync = createAsyncThunk<RequestModel[], void>("sa
         return [];
     }
 });
+
+export const loadCollectionsAsync = createAsyncThunk<RequestCollectionModel[], void>("saved-requests/loadCollectionsAsync", async (_, __) => {
+
+    try {
+        let models: RequestCollectionModel[] = [];
+        if (requestRepo.isInitialized) {
+            models = await collectionRepo?.getAll();
+        }
+
+        return models;
+
+    } catch (error) {
+        console.log(`unable to load request items from db: ${error}`);
+        return [];
+    }
+});
+
 
 export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, thunkAPI) => {
 
@@ -109,8 +130,8 @@ export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requ
     }
 
     try {
-        if (collectionDB.isInitialized) {
-            await collectionDB?.deleteAll();
+        if (requestRepo.isInitialized) {
+            await requestRepo?.deleteAll();
         }
     } catch (error) {
         console.log(`couldn't clear saved requests of indexeddb`);
@@ -132,8 +153,8 @@ export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("sav
     }
 
     try {
-        if (collectionDB.isInitialized) {
-            await collectionDB?.deleteById(id);
+        if (requestRepo.isInitialized) {
+            await requestRepo?.deleteById(id);
         }
     } catch (error) {
         console.log(`couldn't delete item from requests of indexeddb`);
@@ -141,3 +162,20 @@ export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("sav
 
     return id;
 });
+
+export const addNewCollectionAsync = createAsyncThunk<RequestCollectionModel, string>('saved-requests/addNewCollectionAsync', async (newName, _) => {
+
+    const newCollection: RequestCollectionModel = {
+        id: uuidv4(),
+        name: newName,
+        created: new Date().getTime()
+    }
+
+    try {
+        const id = await collectionRepo?.insert(newCollection);
+        console.log(`stored item in db with id ${id}`);
+    } catch (error) {
+        console.log(`couldn't store in indexedDB ${error}`);
+    }
+    return newCollection;
+})
