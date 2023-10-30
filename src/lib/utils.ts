@@ -85,6 +85,8 @@ export function determineBodytype(contenTypeHeader: string): [string, ContentTyp
   const media = parts[0];
 
   const resContentMap: Record<string, ContentType> = {
+    "text/css": "css",
+    "text/javascript": "js",
     "text/plain": "text",
     "text/html": "html",
     "text/csv": "text",
