@@ -4,7 +4,10 @@ import { RequestHistory } from '../domain/request.history/request.history';
 import { RequestsSaved } from '../domain/request.saved/request.saved';
 import { loadHistoryFromDbAsync } from '../domain/request.history/redux/history.async.actions';
 import { useAppDispatch } from '../../common/hoooks';
-import { loadSavedRequestsAsync } from '../domain/request.saved/redux/request.saved.async.actions';
+import {
+  loadCollectionsAsync,
+  loadSavedRequestsAsync
+} from '../domain/request.saved/redux/request.saved.async.actions';
 
 export function ActivitySection() {
   const dispatch = useAppDispatch();
@@ -12,6 +15,7 @@ export function ActivitySection() {
 
   useEffect(() => {
     dispatch(loadHistoryFromDbAsync());
+    dispatch(loadCollectionsAsync());
     dispatch(loadSavedRequestsAsync());
   }, []);
 
