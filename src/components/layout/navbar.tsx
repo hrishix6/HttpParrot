@@ -8,7 +8,7 @@ export function Navbar() {
         <Bird className="h-5 w-5 text-primary" />
         <h3 className="text-primary font-semibold text-lg border-solid">
           <a
-            href="https://github.com/hrishix6/http-client"
+            href="https://github.com/hrishix6/HttpParrot"
             aria-description="github repository"
             target="_blank"
           >
