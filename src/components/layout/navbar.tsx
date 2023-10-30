@@ -12,7 +12,7 @@ export function Navbar() {
             aria-description="github repository"
             target="_blank"
           >
-            hrishix6/HttpParrot
+            HttpParrot
           </a>
         </h3>
       </div>
