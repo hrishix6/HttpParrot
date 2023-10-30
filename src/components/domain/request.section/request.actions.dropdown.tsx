@@ -1,4 +1,4 @@
-import { ChevronDown, SaveIcon, EraserIcon } from 'lucide-react';
+import { ChevronDown, SendIcon, Code } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -33,8 +33,11 @@ export function RequestActionsDropDown() {
             <span className="sr-only">Request actions</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Request</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuLabel className="flex items-center gap-2">
+            <SendIcon className="h-4 w-4" />
+            <span>Request</span>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
@@ -42,7 +45,6 @@ export function RequestActionsDropDown() {
                 handleOpenChange(true);
               }}
             >
-              <SaveIcon className="mr-2 h-4 w-4" />
               <span>Save</span>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -51,10 +53,14 @@ export function RequestActionsDropDown() {
                 dispatch(clearRequestSection());
               }}
             >
-              <EraserIcon className="mr-2 h-4 w-4" />
               <span>Clear</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className="flex items-center gap-2">
+            <Code className="h-4 w-4" />
+            <span>Code snippets</span>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
@@ -62,14 +68,14 @@ export function RequestActionsDropDown() {
                 dispatch(generateCodeSnippetAsync('curl'));
               }}
             >
-              Curl snippet
+              Curl
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 dispatch(generateCodeSnippetAsync('js'));
               }}
             >
-              Fetch snippet
+              Fetch
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

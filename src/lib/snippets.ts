@@ -1,8 +1,6 @@
 import { SupportedSnippetLang } from "@/common/types";
 import { RequestSectionState } from "../components/domain/request.section/redux/request.section.reducer";
 
-
-
 interface SnippetData {
     request?: {
         method: string,
