@@ -131,6 +131,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const newReqHistoryItem: RequestModel = {
         id: uuidv4(),
+        collectionId: "",
         method,
         name: url,
         url: url,
