@@ -1,4 +1,3 @@
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -12,33 +11,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectMethod,
-  selectUrl,
   setMethod,
-  setUrl,
-  initQueryItems,
-  userDoneEditingUrl,
-  selectUserEditingUrl,
   selectName,
   selectFormMode,
   selectRequestCollectionName
 } from './redux/request.section.reducer';
-import { getQueryItems } from './utils/form.helpers';
 import { RequestMethod } from '@/common/types';
 import { RequestQuery } from './request.query';
 import { makeRequestActionAsync } from './redux/request.async.actions';
 import { RequestHeaders } from './request.headers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { RequestActionsDropDown } from './request.actions.dropdown';
 import { RequestMetaHeader } from './request.meta.header';
 import { BodyForm } from './request.body/body.form';
+import { RequestUrl } from './request.url';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
   const name = useAppSelector(selectName);
   const collectionName = useAppSelector(selectRequestCollectionName);
   const method = useAppSelector(selectMethod);
-  const isUserEditingUrl = useAppSelector(selectUserEditingUrl);
-  const url = useAppSelector(selectUrl);
   const dispatch = useAppDispatch();
 
   const [tab, setCurrentTab] = useState<string>('query');
@@ -47,23 +39,6 @@ export function RequestForm() {
     e.preventDefault();
     dispatch(makeRequestActionAsync());
   };
-
-  useEffect(() => {
-    let bouncerId: any;
-    if (isUserEditingUrl) {
-      const queryStr = url && url.split('?')[1];
-      if (queryStr) {
-        bouncerId = setTimeout(() => {
-          dispatch(initQueryItems(getQueryItems(queryStr)));
-        }, 500);
-      } else {
-        dispatch(initQueryItems([]));
-      }
-    }
-    return () => {
-      clearTimeout(bouncerId);
-    };
-  }, [url, isUserEditingUrl]);
 
   return (
     <div className="flex-1 flex flex-col gap-1 overflow-hidden">
@@ -100,17 +75,7 @@ export function RequestForm() {
           </Select>
         </div>
         <div className="flex-1">
-          <Input
-            placeholder="url"
-            value={url}
-            onBlur={(_) => {
-              console.log('focus gone, user has stopped editing..');
-              dispatch(userDoneEditingUrl());
-            }}
-            onChange={(e) => {
-              dispatch(setUrl(e.target.value));
-            }}
-          />
+          <RequestUrl />
         </div>
         <div className="flex items-center">
           <Button onClick={handleMakingRequest}>Send</Button>
