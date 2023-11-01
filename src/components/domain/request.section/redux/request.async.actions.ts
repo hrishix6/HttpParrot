@@ -3,7 +3,7 @@ import { RootState } from "@/common/store";
 import { v4 as uuidv4 } from "uuid";
 import { RequestModel, ResponseHeader, SupportedSnippetLang } from "@/common/types";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
-import { determineBodytype, formatCode, readBody } from "@/lib/utils";
+import { determineBodytype, formatCode, readBody, splitTokens, substituteVariables } from "@/lib/utils";
 import { getCodeSnippet } from "@/lib/snippets";
 import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
 import { getBody, getContentType } from "../utils/form.helpers";
@@ -14,7 +14,24 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const rootState = getState() as RootState;
 
-    const { url, method, query, headers, formItems, bodyType, enableTextBody, textBody } = rootState.requestStore;
+    const { url, method, query, headers, formItems, bodyType, enableTextBody, textBody, collectionId } = rootState.requestStore;
+
+    let fetchUrl = url;
+    if (collectionId) {
+        console.log('substituting variables of collection ', collectionId);
+        const variables = rootState.savedRequestsStore.collections.find(x => x.id === collectionId)?.variables;
+
+        if (variables) {
+            const varMap = variables.reduce((prev, curr) => {
+                prev[curr.name] = curr.value;
+                return prev;
+            }, {} as Record<string, string>);
+
+            const urlSubstituted = substituteVariables(splitTokens(url), varMap);
+            console.log(urlSubstituted);
+            fetchUrl = urlSubstituted;
+        }
+    }
 
     dispatch(startLoading(null));
 
@@ -52,7 +69,7 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     try {
         console.log(fetchBody);
-        const response = await fetch(url, {
+        const response = await fetch(fetchUrl, {
             method,
             headers: fetchHeaders,
             signal: abortController.signal,
@@ -133,8 +150,8 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         id: uuidv4(),
         collectionId: "",
         method,
-        name: url,
-        url: url,
+        name: fetchUrl,
+        url: fetchUrl,
         query: query,
         headers: headers,
         triggered: new Date().getTime(),

@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { ContentType, Token } from "@/common/types";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { ContentType, Token } from '@/common/types';
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function timeSince(date: number) {
@@ -19,7 +19,7 @@ export function timeSince(date: number) {
   const year = 365.25 * day;
 
   if (elapsedMilliseconds < second) {
-    return "just now";
+    return 'just now';
   }
   if (elapsedMilliseconds < minute) {
     const seconds = Math.floor(elapsedMilliseconds / 1000);
@@ -46,70 +46,74 @@ export function timeSince(date: number) {
 }
 
 const options = {
-  "indent_size": 4,
-  "html": {
-    "end_with_newline": true,
-    "js": {
-      "indent_size": 2
+  indent_size: 4,
+  html: {
+    end_with_newline: true,
+    js: {
+      indent_size: 2
     },
-    "css": {
-      "indent_size": 2
+    css: {
+      indent_size: 2
     }
   },
-  "css": {
-    "indent_size": 1
+  css: {
+    indent_size: 1
   },
-  "js": {
-    "preserve-newlines": true
+  js: {
+    'preserve-newlines': true
   }
 };
 
-export async function formatCode(str: string, kind: ContentType): Promise<string> {
+export async function formatCode(
+  str: string,
+  kind: ContentType
+): Promise<string> {
   switch (kind) {
-    case "css":
+    case 'css':
       return css_beautify(str, options);
-    case "json":
-    case "js":
+    case 'json':
+    case 'js':
       return js_beautify(str, options);
-    case "html":
+    case 'html':
       return html_beautify(str, options);
     default:
       return str;
   }
 }
 
-export function determineBodytype(contenTypeHeader: string): [string, ContentType] {
-
-  const parts = contenTypeHeader.split(';').map(part => part.trim());
+export function determineBodytype(
+  contenTypeHeader: string
+): [string, ContentType] {
+  const parts = contenTypeHeader.split(';').map((part) => part.trim());
 
   const media = parts[0];
 
   const resContentMap: Record<string, ContentType> = {
-    "text/css": "css",
-    "text/javascript": "js",
-    "text/plain": "text",
-    "text/html": "html",
-    "text/csv": "text",
-    "application/xml": "xml",
-    "application/javascript": "js",
-    "application/pdf": "pdf",
-    "application/json": "json",
-    "image/jpeg": "jpeg",
-    "image/png": "png",
-    "image/gif": "gif",
-    "audio/mpeg": "mpeg",
-    "audio/wav": "wav",
-    "video/mp4": "mp4",
-    "video/ogg": "ogg",
-    "application/zip": "zip",
+    'text/css': 'css',
+    'text/javascript': 'js',
+    'text/plain': 'text',
+    'text/html': 'html',
+    'text/csv': 'text',
+    'application/xml': 'xml',
+    'application/javascript': 'js',
+    'application/pdf': 'pdf',
+    'application/json': 'json',
+    'image/jpeg': 'jpeg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/svg+xml': 'svg',
+    'audio/mpeg': 'mpeg',
+    'audio/wav': 'wav',
+    'video/mp4': 'mp4',
+    'video/ogg': 'ogg',
+    'application/zip': 'zip'
   };
 
   if (resContentMap[media]) {
     return [media, resContentMap[media]];
   }
 
-  return ["application/octet-stream", "unknown"];
-
+  return ['application/octet-stream', 'unknown'];
 }
 
 function concatChunks(arrays: Uint8Array[]): [number, Uint8Array] {
@@ -118,7 +122,6 @@ function concatChunks(arrays: Uint8Array[]): [number, Uint8Array] {
   let result = new Uint8Array(totalLength);
 
   if (!arrays.length) return [totalLength, result];
-
 
   // for each array - copy it over result
   // next array is copied right after the previous one
@@ -131,7 +134,9 @@ function concatChunks(arrays: Uint8Array[]): [number, Uint8Array] {
   return [length, result];
 }
 
-export function readBody(body: ReadableStream<Uint8Array> | null): Promise<[number, Uint8Array]> {
+export function readBody(
+  body: ReadableStream<Uint8Array> | null
+): Promise<[number, Uint8Array]> {
   return new Promise((resolve, reject) => {
     let responseSize = 0;
     let responseBody: Uint8Array[] = [];
@@ -154,25 +159,45 @@ export function readBody(body: ReadableStream<Uint8Array> | null): Promise<[numb
 
         return reader.read().then(processText);
       });
+    } else {
+      reject(new Error('body is null'));
     }
-    else {
-      reject(new Error("body is null"));
-    }
-
   });
-
 }
 
 export function splitTokens(input: string) {
   const parts = input.split(/({{.*?}})/);
-  return parts.filter(part => part.trim() !== "");
+  return parts.filter((part) => part.trim() !== '');
+}
+
+export function substituteVariables(
+  inp: string[],
+  variables: Record<string, string>
+): string {
+  const result = [];
+  for (const token of inp) {
+    if (token.startsWith('{{') && token.endsWith('}}')) {
+      const key = token.slice(2, -2)?.trim();
+      if (variables[key]) {
+        result.push(variables[key]);
+      } else {
+        result.push('');
+      }
+    } else {
+      result.push(token);
+    }
+  }
+
+  return result.join('');
 }
 
 export function getTokens(arr: string[]): Token[] {
-  return arr.map(str => {
+  return arr.map((str) => {
     return {
-      highlight: str.startsWith("{{") && str.endsWith("}}"),
+      highlight: str.startsWith('{{') && str.endsWith('}}'),
       text: str
-    }
+    };
   });
 }
+
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));

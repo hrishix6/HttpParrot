@@ -1,10 +1,12 @@
+const APP_URL = "index.html";
+const APP_TITLE = 'hrishix6 | HttpParrot';
+
 /**
  * bootstrap application in  a tab, handle duplication, load extension session rules for CORS.
  */
 async function bootStrapExtension() {
   const queryOptions = {
-    url: 'chrome-extension://*/hrishix6_httpparrot.html',
-    title: 'hrishix6 | HttpParrot'
+    title: APP_TITLE
   };
 
   let myApp;
@@ -18,15 +20,11 @@ async function bootStrapExtension() {
     myApp = mytab.id;
   } else {
     //tab doesn't exist, create a new tab.
-    const createdTab = await chrome.tabs.create({ url: 'hrishix6_httpparrot.html' });
+    const createdTab = await chrome.tabs.create({ url: APP_URL});
     myApp = createdTab.id;
   }
 
-  console.log(`id of tab created/updated :${myApp}`);
-
   await UpdateExtensionRules(myApp);
-
-  console.log(`session rules are updated for tab`);
 
 }
 
@@ -35,8 +33,7 @@ async function bootStrapExtension() {
  */
 async function HandleDuplication(tab) {
   const queryOptions = {
-    url: 'chrome-extension://*/hrishix6_httpparrot.html',
-    title: 'hrishix6 | HttpParrot'
+    title: APP_TITLE
   };
 
   const [mytab] = await chrome.tabs.query(queryOptions);

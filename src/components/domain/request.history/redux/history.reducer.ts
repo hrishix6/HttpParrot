@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/common/store'
 import { HistoryState } from "./history.types";
-import { addtoHistoryAsync, loadHistoryFromDbAsync, clearHistoryAsync, deleteHistoryItemAsync } from './history.async.actions';
+import { addtoHistoryAsync, clearHistoryAsync, deleteHistoryItemAsync } from './history.async.actions';
+import { RequestModel } from '@/common/types';
 
 const initialState: HistoryState = {
-    loading: false,
     history: [],
     filter: ''
 };
@@ -13,6 +13,9 @@ export const historySlice = createSlice({
     name: "history",
     initialState,
     reducers: {
+        populateHistory: (state, action: PayloadAction<RequestModel[]>) => {
+            state.history = action.payload;
+        },
         setFilter: (state, action: PayloadAction<string>) => {
             state.filter = action.payload;
         },
@@ -21,16 +24,6 @@ export const historySlice = createSlice({
         builder
             .addCase(addtoHistoryAsync.fulfilled, (state, action) => {
                 state.history.unshift(action.payload);
-            })
-            .addCase(loadHistoryFromDbAsync.pending, (state, _) => {
-                state.loading = true;
-            })
-            .addCase(loadHistoryFromDbAsync.fulfilled, (state, action) => {
-                state.history = action.payload;
-                state.loading = false;
-            })
-            .addCase(loadHistoryFromDbAsync.rejected, (state, _) => {
-                state.loading = false;
             })
             .addCase(clearHistoryAsync.fulfilled, (state, _) => {
                 state.history = [];
@@ -45,7 +38,7 @@ export const historySlice = createSlice({
     }
 });
 
-export const { setFilter } = historySlice.actions;
+export const { setFilter, populateHistory } = historySlice.actions;
 
 export const historyReducer = historySlice.reducer;
 

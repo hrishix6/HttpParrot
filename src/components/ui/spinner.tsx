@@ -1,3 +1,5 @@
+import { BirdIcon } from 'lucide-react';
+
 export function Spinner() {
-  return <div className="spinner"></div>;
+  return <BirdIcon className="h-10 w-10 animate-bounce" />;
 }

@@ -2,9 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "@/common/store";
 import { generateCodeSnippetAsync, makeRequestActionAsync } from "./request.async.actions";
-import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, Token, SupportedBodyType, FormDataItem, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateFormDataItemEnabled } from "@/common/types";
-import { getTokens, splitTokens } from "@/lib/utils";
-import { getQueryString, getUpdatedUrl } from "../utils/form.helpers";
+import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, SupportedBodyType, FormDataItem, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateFormDataItemEnabled } from "@/common/types";
+import { getUpdatedUrl, getQueryString } from "../utils/form.helpers";
 
 export type RequestFormMode = "update" | "insert";
 
@@ -18,7 +17,6 @@ export interface RequestSectionState {
     query: QueryItem[],
     headers: HeaderItem[],
     userEditingUrl: boolean,
-    urltokns: Token[],
     mode: RequestFormMode,
     bodyType: SupportedBodyType,
     formItems: FormDataItem[],
@@ -37,7 +35,6 @@ const initialState: RequestSectionState = {
     url: '',
     query: [],
     headers: [],
-    urltokns: [],
     mode: "insert",
     bodyType: "formdata",
     formItems: [],
@@ -69,7 +66,6 @@ const requestSectionSlice = createSlice({
             state.query = query;
             state.headers = headers;
             state.url = url;
-            state.urltokns = getTokens(splitTokens(url));
             state.bodyType = bodytype || "formdata";
             state.enableTextBody = enableTextBody!;
             state.textBody = textBody || "";
@@ -91,7 +87,6 @@ const requestSectionSlice = createSlice({
             state.url = '';
             state.query = [];
             state.headers = [];
-            state.urltokns = [];
             state.formItems = [];
             state.bodyType = "formdata";
             state.enableTextBody = true;
@@ -112,7 +107,6 @@ const requestSectionSlice = createSlice({
         },
         userDoneEditingUrl: (state) => {
             state.userEditingUrl = false;
-            state.urltokns = getTokens(splitTokens(state.url));
         },
 
         //query=================================================================================================
@@ -126,7 +120,6 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].name = name;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         updateQueryItemValue: (state, action: PayloadAction<UpdateQueryItemValue>) => {
@@ -136,7 +129,6 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].value = value;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         updateQueryItemEnabled: (state, action: PayloadAction<UpdateQueryItemEnabled>) => {
@@ -146,7 +138,6 @@ const requestSectionSlice = createSlice({
                 state.query[itemIndex].enabled = !state.query[itemIndex].enabled;
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
         addQueryItem: (state, _) => {
@@ -165,7 +156,6 @@ const requestSectionSlice = createSlice({
                 state.query.splice(itemIndex, 1);
                 const queryStr = getQueryString(state.query);
                 state.url = getUpdatedUrl(state.url, queryStr);
-                state.urltokns = getTokens(splitTokens(state.url));
             }
         },
 
@@ -295,8 +285,6 @@ export const selectQuery = (state: RootState) => state.requestStore.query;
 export const selectHeaders = (state: RootState) => state.requestStore.headers;
 
 export const selectUserEditingUrl = (state: RootState) => state.requestStore.userEditingUrl;
-
-export const selectUrlTokens = (state: RootState) => state.requestStore.urltokns;
 
 export const selectName = (state: RootState) => state.requestStore.name;
 

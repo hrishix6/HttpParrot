@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { RequestCollectionModel, RequestModel } from '@/common/types';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, Settings2 } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAppSelector } from '@/common/hoooks';
 import { selectFilter } from './redux/request.saved.reducer';
 import { RequestSavedItem } from './request.saved.item';
+import { CollectionActions } from './request.collection.actions';
 
 interface RequestCollectionProps {
   model: RequestCollectionModel;
@@ -57,10 +58,7 @@ export function RequestCollection({ model, requests }: RequestCollectionProps) {
             )}
             <span className="sr-only">expand or minimize collection</span>
           </Button>
-          <Button variant="link" size="icon">
-            <Settings2 className="h-4 w-4" />
-            <span className="sr-only">Collection options</span>
-          </Button>
+          <CollectionActions model={model} />
         </div>
       </div>
       {open && (
@@ -76,18 +74,4 @@ export function RequestCollection({ model, requests }: RequestCollectionProps) {
       )}
     </section>
   );
-}
-
-interface DefaultCollectionProps {
-  requests: RequestModel[];
-}
-
-export function DefaultCollection({ requests }: DefaultCollectionProps) {
-  const model: RequestCollectionModel = {
-    id: 'default',
-    name: 'Default',
-    created: 0
-  };
-
-  return <RequestCollection model={model} requests={requests} />;
 }

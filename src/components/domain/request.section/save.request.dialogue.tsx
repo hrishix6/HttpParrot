@@ -39,7 +39,7 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
   const collections = useAppSelector(selectCollections);
   const dispatch = useAppDispatch();
   const [requestName, setRequestName] = useState('');
-  const [collection, setSelectedCollection] = useState('default');
+  const [collection, setSelectedCollection] = useState('');
 
   useEffect(() => {
     if (rName) {
@@ -95,9 +95,6 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem key={'default'} value={'default'}>
-                    Default
-                  </SelectItem>
                   {collections.map((x) => (
                     <SelectItem key={x.id} value={x.id}>
                       {x.name}

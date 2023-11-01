@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './common/App.tsx';
+import { App } from './components/domain/app/app.tsx';
 import './common/css/index.css';
 import './common/css/vendor/prism.css';
 import { Provider } from 'react-redux';

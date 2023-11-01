@@ -82,39 +82,6 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
     }
 });
 
-export const loadSavedRequestsAsync = createAsyncThunk<RequestModel[], void>("saved-requests/loadSavedRequestsAsync", async (_, __) => {
-
-    try {
-        let models: RequestModel[] = [];
-        if (requestRepo.isInitialized) {
-            models = await requestRepo?.getAll();
-        }
-
-        return models;
-
-    } catch (error) {
-        console.log(`unable to load request items from db: ${error}`);
-        return [];
-    }
-});
-
-export const loadCollectionsAsync = createAsyncThunk<RequestCollectionModel[], void>("saved-requests/loadCollectionsAsync", async (_, __) => {
-
-    try {
-        let models: RequestCollectionModel[] = [];
-        if (requestRepo.isInitialized) {
-            models = await collectionRepo?.getAll();
-        }
-
-        return models;
-
-    } catch (error) {
-        console.log(`unable to load request items from db: ${error}`);
-        return [];
-    }
-});
-
-
 export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, thunkAPI) => {
 
     const { getState, dispatch } = thunkAPI;
@@ -168,6 +135,7 @@ export const addNewCollectionAsync = createAsyncThunk<RequestCollectionModel, st
     const newCollection: RequestCollectionModel = {
         id: uuidv4(),
         name: newName,
+        variables: [],
         created: new Date().getTime()
     }
 

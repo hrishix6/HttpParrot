@@ -32,11 +32,12 @@ export function ResponseBody() {
 
   return (
     <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
-      {bodyCompoent}
-      {loading && (
-        <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center">
+      {loading ? (
+        <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center text-primary">
           <Spinner />
         </div>
+      ) : (
+        bodyCompoent
       )}
     </div>
   );

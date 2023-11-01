@@ -6,7 +6,7 @@ import {
   selectSavedRequests,
   setFilter
 } from './redux/request.saved.reducer';
-import { DefaultCollection, RequestCollection } from './request.collection';
+import { RequestCollection } from './request.collection';
 
 export function RequestsSaved() {
   const [search, setSearch] = useState('');
@@ -31,9 +31,6 @@ export function RequestsSaved() {
     <>
       <RequestSavedFilter filter={search} handleChange={handleFilterChange} />
       <div className="flex-1 overflow-y-auto mt-2 flex flex-col gap-1">
-        <DefaultCollection
-          requests={saved.filter((x) => x.collectionId == 'default')}
-        />
         {collections.map((item) => (
           <RequestCollection
             key={item.id}

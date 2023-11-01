@@ -14,22 +14,6 @@ export const addtoHistoryAsync = createAsyncThunk<RequestModel, RequestModel>('h
     return model;
 });
 
-export const loadHistoryFromDbAsync = createAsyncThunk<RequestModel[], void>("history/loadHistoryFromDbAsync", async (_, __) => {
-
-    try {
-        let models: RequestModel[] = [];
-        if (historyRepo.isInitialized) {
-            models = await historyRepo?.getAll();
-        }
-
-        return models;
-
-    } catch (error) {
-        console.log(`unable to load history items from db: ${error}`);
-        return [];
-    }
-});
-
 export const clearHistoryAsync = createAsyncThunk<void, void>("history/clearHistoryAsync", async (_, __) => {
 
     try {

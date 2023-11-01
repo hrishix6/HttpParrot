@@ -46,6 +46,14 @@ const responseSlice = createSlice({
         },
         startLoading: (state, _) => {
             state.loading = true;
+            state.status = "";
+            state.size = "";
+            state.time = "";
+            state.body = "";
+            state.bodyType = "unknown";
+            state.headers = [];
+            state.ok = false;
+            state.mimeType = ""
         },
         stopLoading: (state, _) => {
             state.loading = false;

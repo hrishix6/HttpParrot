@@ -17,7 +17,7 @@ export function BinaryBody({ bodyType, mimeType, chunks }: BinaryBodyProps) {
     const blobUrl = window.URL.createObjectURL(blob);
     const dlink = document.createElement('a');
     dlink.href = blobUrl;
-    dlink.download = `hrishix6_HttpParrot_file.${bodyType}`;
+    dlink.download = `HttpParrot_file.${bodyType}`;
     dlink.style.display = 'none';
     document.body.appendChild(dlink);
     dlink.click();

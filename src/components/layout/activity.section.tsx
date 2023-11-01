@@ -1,23 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RequestHistory } from '../domain/request.history/request.history';
 import { RequestsSaved } from '../domain/request.saved/request.saved';
-import { loadHistoryFromDbAsync } from '../domain/request.history/redux/history.async.actions';
-import { useAppDispatch } from '../../common/hoooks';
-import {
-  loadCollectionsAsync,
-  loadSavedRequestsAsync
-} from '../domain/request.saved/redux/request.saved.async.actions';
 
 export function ActivitySection() {
-  const dispatch = useAppDispatch();
   const [tab, setCurrentTab] = useState<string>('history');
-
-  useEffect(() => {
-    dispatch(loadHistoryFromDbAsync());
-    dispatch(loadCollectionsAsync());
-    dispatch(loadSavedRequestsAsync());
-  }, []);
 
   return (
     <section className="flex flex-col flex-1 overflow-hidden">

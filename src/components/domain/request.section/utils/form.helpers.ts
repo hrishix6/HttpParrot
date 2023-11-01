@@ -3,21 +3,18 @@ import { v4 as uuidv4 } from "uuid";
 
 //URL===================================================================================
 
-export const getQueryString = (query: QueryItem[]) => {
+export function getQueryString(items: QueryItem[]) {
 
-    const enabledItems = query.filter(x => x.enabled);
-
+    const enabledItems = items.filter(x => x.enabled);
     if (enabledItems.length) {
-        const paramObj: Record<string, string> = {};
-        for (let param of enabledItems) {
-            if (param.name) {
-                paramObj[param.name] = param.value;
-            }
-        }
+        const queryString = enabledItems.map(item => {
+            const { name: key, value } = item;
+            const encodedKey = encodeURIComponent(key).replace(/%7B/g, '{').replace(/%7D/g, '}');
+            const encodedValue = encodeURIComponent(value).replace(/%7B/g, '{').replace(/%7D/g, '}');
+            return `${encodedKey}=${encodedValue}`;
+        }).join('&');
 
-        const q = `${new URLSearchParams(paramObj).toString()}`
-
-        return q;
+        return `${queryString}`;
     }
 
     return "";

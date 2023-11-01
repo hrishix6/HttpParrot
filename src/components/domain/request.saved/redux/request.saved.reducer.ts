@@ -1,12 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
 import { RequestCollectionModel, RequestModel } from "@/common/types";
-import { loadCollectionsAsync, addNewCollectionAsync, saveRequestAsync, loadSavedRequestsAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
-
-
+import { addNewCollectionAsync, saveRequestAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
 
 export interface RequestSavedState {
-    loading: boolean
     collections: RequestCollectionModel[]
     saved: RequestModel[],
     filter: string
@@ -14,9 +11,8 @@ export interface RequestSavedState {
 
 
 const initialState: RequestSavedState = {
-    loading: false,
     saved: [],
-    collections: [{ id: "default", created: new Date().getTime(), name: "Default" }],
+    collections: [],
     filter: ''
 };
 
@@ -24,9 +20,25 @@ export const savedRequestsSlice = createSlice({
     name: "saved-requests",
     initialState,
     reducers: {
+        populateSavedRequests: (state, action: PayloadAction<RequestModel[]>) => {
+            state.saved = action.payload;
+        },
+        populateSavedCollections: (state, action: PayloadAction<RequestCollectionModel[]>) => {
+            state.collections = action.payload;
+        },
         setFilter: (state, action: PayloadAction<string>) => {
             state.filter = action.payload;
         },
+
+        updateCollection: (state, action: PayloadAction<RequestCollectionModel>) => {
+            const { id, name, variables } = action.payload;
+            const itemIndex = state.collections.findIndex(x => x.id === id);
+            if (itemIndex > -1) {
+                state.collections[itemIndex].name = name;
+                state.collections[itemIndex].variables = variables;
+            }
+        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -42,26 +54,6 @@ export const savedRequestsSlice = createSlice({
                         state.saved[itemIndex] = model;
                     }
                 }
-            })
-            .addCase(loadSavedRequestsAsync.pending, (state, _) => {
-                state.loading = true;
-            })
-            .addCase(loadSavedRequestsAsync.fulfilled, (state, action) => {
-                state.saved = action.payload;
-                state.loading = false;
-            })
-            .addCase(loadSavedRequestsAsync.rejected, (state, _) => {
-                state.loading = false;
-            })
-            .addCase(loadCollectionsAsync.pending, (state, _) => {
-                state.loading = true;
-            })
-            .addCase(loadCollectionsAsync.fulfilled, (state, action) => {
-                state.collections = action.payload;
-                state.loading = false;
-            })
-            .addCase(loadCollectionsAsync.rejected, (state, _) => {
-                state.loading = false;
             })
             .addCase(deleteSavedRequestsAsync.fulfilled, (state, _) => {
                 state.saved = [];
@@ -83,7 +75,7 @@ export const savedRequestsSlice = createSlice({
 });
 
 
-export const { setFilter } = savedRequestsSlice.actions;
+export const { setFilter, updateCollection, populateSavedCollections, populateSavedRequests } = savedRequestsSlice.actions;
 
 export const savedRequestsReducer = savedRequestsSlice.reducer;
 
