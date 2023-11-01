@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RequestCollectionModel, RequestModel } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -13,8 +13,15 @@ interface RequestCollectionProps {
 }
 
 export function RequestCollection({ model, requests }: RequestCollectionProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(() => {
+    const saved = localStorage.getItem(`col-${model.id}`);
+    return saved === 'true';
+  });
   const filter = useAppSelector(selectFilter);
+
+  useEffect(() => {
+    localStorage.setItem(`col-${model.id}`, `${open}`);
+  }, [open]);
 
   const requestFilter = (item: RequestModel, filter: string) => {
     if (filter && filter.trim() !== '') {

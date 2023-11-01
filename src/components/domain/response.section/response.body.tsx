@@ -19,7 +19,7 @@ export function ResponseBody() {
   let bodyCompoent;
 
   if (body) {
-    if (['js', 'css', 'html', 'text', 'xml', 'json'].includes(bodytype)) {
+    if (['js', 'css', 'html', 'xml', 'json'].includes(bodytype)) {
       bodyCompoent = <TextBody bodyType={bodytype} text={body} />;
     } else {
       bodyCompoent = (

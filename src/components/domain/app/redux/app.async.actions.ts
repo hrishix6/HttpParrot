@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { initDatabase, historyRepo, collectionRepo, requestRepo } from "@/lib/db";
+import { initDatabase, historyRepo, collectionRepo, requestRepo, mimeRepo } from "@/lib/db";
 import { populateHistory } from "../../request.history/redux/history.reducer";
 import { populateSavedCollections, populateSavedRequests } from "../../request.saved/redux/request.saved.reducer";
 import { delay } from "@/lib/utils";
@@ -16,6 +16,13 @@ export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppData
         historyRepo.setDb(db);
         collectionRepo.setDb(db);
         requestRepo.setDb(db);
+        mimeRepo.setDb(db);
+
+        const mimeinitSuccess = await mimeRepo.init();
+
+        if (!mimeinitSuccess) {
+            throw new Error("app data loading failed");
+        }
 
         //seed operations..
         await collectionRepo.seed();
@@ -47,5 +54,4 @@ export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppData
         console.log(error);
         throw new Error("app data loading failed");
     }
-
 });

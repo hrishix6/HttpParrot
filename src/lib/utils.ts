@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { ContentType, Token } from '@/common/types';
+import { MimeRecord, Token } from '@/common/types';
+import { mimeRepo } from './db';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -66,7 +67,7 @@ const options = {
 
 export async function formatCode(
   str: string,
-  kind: ContentType
+  kind: string
 ): Promise<string> {
   switch (kind) {
     case 'css':
@@ -81,39 +82,20 @@ export async function formatCode(
   }
 }
 
-export function determineBodytype(
-  contenTypeHeader: string
-): [string, ContentType] {
+export async function determineBodytypeAsync(contenTypeHeader: string): Promise<MimeRecord> {
   const parts = contenTypeHeader.split(';').map((part) => part.trim());
-
   const media = parts[0];
 
-  const resContentMap: Record<string, ContentType> = {
-    'text/css': 'css',
-    'text/javascript': 'js',
-    'text/plain': 'text',
-    'text/html': 'html',
-    'text/csv': 'text',
-    'application/xml': 'xml',
-    'application/javascript': 'js',
-    'application/pdf': 'pdf',
-    'application/json': 'json',
-    'image/jpeg': 'jpeg',
-    'image/png': 'png',
-    'image/gif': 'gif',
-    'image/svg+xml': 'svg',
-    'audio/mpeg': 'mpeg',
-    'audio/wav': 'wav',
-    'video/mp4': 'mp4',
-    'video/ogg': 'ogg',
-    'application/zip': 'zip'
-  };
-
-  if (resContentMap[media]) {
-    return [media, resContentMap[media]];
+  try {
+    const mimeRecord = await mimeRepo.getById(media);
+    return mimeRecord;
+  } catch (error) {
+    return {
+      id: "application/octet-stream",
+      compressible: true,
+      extensions: ["unknown"]
+    }
   }
-
-  return ['application/octet-stream', 'unknown'];
 }
 
 function concatChunks(arrays: Uint8Array[]): [number, Uint8Array] {
@@ -187,7 +169,6 @@ export function substituteVariables(
       result.push(token);
     }
   }
-
   return result.join('');
 }
 

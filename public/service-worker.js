@@ -1,4 +1,4 @@
-const APP_URL = "index.html";
+const APP_URL = "HttpParrot.html";
 const APP_TITLE = 'hrishix6 | HttpParrot';
 
 /**
@@ -6,6 +6,7 @@ const APP_TITLE = 'hrishix6 | HttpParrot';
  */
 async function bootStrapExtension() {
   const queryOptions = {
+    url: `chrome-extension://*/${APP_URL}`,
     title: APP_TITLE
   };
 
@@ -24,8 +25,11 @@ async function bootStrapExtension() {
     myApp = createdTab.id;
   }
 
+  console.log(`updating session rule for ${myApp}`);
+
   await UpdateExtensionRules(myApp);
 
+  console.log(`updated session rule for ${myApp}`);
 }
 
 /***
@@ -33,6 +37,7 @@ async function bootStrapExtension() {
  */
 async function HandleDuplication(tab) {
   const queryOptions = {
+    url: `chrome-extension://*/${APP_URL}`,
     title: APP_TITLE
   };
 
@@ -40,7 +45,9 @@ async function HandleDuplication(tab) {
 
   if (tab.title === queryOptions.title) {
     await chrome.tabs.remove(mytab.id);
+    console.log(`updating session rule for ${tab.id}`);
     await UpdateExtensionRules(tab.id);
+    console.log(`updating session rule for ${tab.id}`);
   }
 }
 
@@ -61,6 +68,7 @@ async function UpdateExtensionRules(tabId)
         { "header": "Sec-Ch-Ua", "operation": "remove" },
         { "header": "Sec-Ch-Ua-Mobile", "operation": "remove" },
         { "header": "Sec-Ch-Ua-Platform", "operation": "remove" },
+        { "header": "Accept", "operation": "set", "value":"*/*"},
         { "header": "User-Agent", "operation": "set", "value":"hrishix6/HttpParrot"},
         { "header": "Dnt", "operation": "set", "value":"0"}
     ]

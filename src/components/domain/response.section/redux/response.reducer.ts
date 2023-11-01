@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
-import { ContentType, ResponseModel, ResponseHeader } from "@/common/types";
+import { ResponseModel, ResponseHeader } from "@/common/types";
 
 
 export interface ResponseSectionState {
@@ -8,7 +8,7 @@ export interface ResponseSectionState {
     size: string,
     time: string,
     body: any,
-    bodyType: ContentType
+    bodyType: string
     loading: boolean;
     headers: ResponseHeader[],
     ok: boolean;

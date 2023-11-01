@@ -3,7 +3,7 @@ import { RootState } from "@/common/store";
 import { v4 as uuidv4 } from "uuid";
 import { RequestModel, ResponseHeader, SupportedSnippetLang } from "@/common/types";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
-import { determineBodytype, formatCode, readBody, splitTokens, substituteVariables } from "@/lib/utils";
+import { determineBodytypeAsync, formatCode, readBody, splitTokens, substituteVariables } from "@/lib/utils";
 import { getCodeSnippet } from "@/lib/snippets";
 import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
 import { getBody, getContentType } from "../utils/form.helpers";
@@ -54,10 +54,6 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         }
     }
 
-    //add immutable headers;
-    fetchHeaders["accept"] = "*/*";
-    fetchHeaders["user-agent"] = "hrishix6/HttpParrot";
-
     const start = new Date().getTime();
 
     const abortController = new AbortController();
@@ -87,16 +83,18 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         const contentTypeHeader = response.headers.get("content-type");
         if (contentTypeHeader) {
 
-            let [mimetype, bodytype] = determineBodytype(contentTypeHeader);
+            let mimeRecord = await determineBodytypeAsync(contentTypeHeader);
+            let extension = mimeRecord.extensions[0];
+
             const [size, chunks] = await readBody(response.body);
 
-            if (["js", "json", "text", "html", "xml",].includes(bodytype)) {
+            if (["js", "json", "html", "xml",].includes(extension)) {
                 const bodyAsText = new TextDecoder().decode(chunks);
-                const body = await formatCode(bodyAsText, bodytype);
+                const body = await formatCode(bodyAsText, extension);
                 dispatch(setResponseMetadata({
-                    mimeType: mimetype,
+                    mimeType: mimeRecord.id,
                     body,
-                    contentType: bodytype,
+                    contentType: extension,
                     status: response.status,
                     statusText: response.statusText,
                     size: size,
@@ -107,9 +105,9 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
             }
             else {
                 dispatch(setResponseMetadata({
-                    mimeType: mimetype,
+                    mimeType: mimeRecord.id,
                     body: chunks,
-                    contentType: bodytype,
+                    contentType: extension,
                     status: response.status,
                     statusText: response.statusText,
                     size: size,

@@ -39,7 +39,7 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
   const collections = useAppSelector(selectCollections);
   const dispatch = useAppDispatch();
   const [requestName, setRequestName] = useState('');
-  const [collection, setSelectedCollection] = useState('');
+  const [collection, setSelectedCollection] = useState('default');
 
   useEffect(() => {
     if (rName) {

@@ -27,7 +27,7 @@ export interface RequestSectionState {
 
 const initialState: RequestSectionState = {
     id: "",
-    collectionId: "default",
+    collectionId: "",
     collectionName: "",
     name: "",
     userEditingUrl: true,

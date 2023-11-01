@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { ContentType } from '@/common/types';
 import { useAppDispatch } from '@/common/hoooks';
 import { discardBody } from './redux/response.reducer';
 
 interface BinaryBodyProps {
-  bodyType: ContentType;
+  bodyType: string;
   mimeType: string;
   chunks: Uint8Array;
 }

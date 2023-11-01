@@ -1,12 +1,13 @@
-import { RequestCollectionModel, RequestModel } from '@/common/types';
+import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel } from '@/common/types';
 
 const DB_NAME = 'store';
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 
 enum ObjectStore {
   Collections = 'collections',
   Requests = 'requests',
-  History = 'history'
+  History = 'history',
+  Mimetypes = 'mimetypes'
 }
 
 export function initDatabase(): Promise<IDBDatabase> {
@@ -28,19 +29,25 @@ export function initDatabase(): Promise<IDBDatabase> {
       db = openReq.result;
 
       if (db.objectStoreNames.contains(ObjectStore.History)) {
-        db.deleteObjectStore('history');
+        db.deleteObjectStore(ObjectStore.History);
         console.log(`deleted previous history store`);
       }
 
       if (db.objectStoreNames.contains(ObjectStore.Collections)) {
-        db.deleteObjectStore('collections');
+        db.deleteObjectStore(ObjectStore.Collections);
         console.log(`deleted previous collections store`);
       }
 
       if (db.objectStoreNames.contains(ObjectStore.Requests)) {
-        db.deleteObjectStore('requests');
+        db.deleteObjectStore(ObjectStore.Requests);
         console.log(`deleted previous requests store`);
       }
+
+      if (db.objectStoreNames.contains(ObjectStore.Mimetypes)) {
+        db.deleteObjectStore(ObjectStore.Mimetypes);
+        console.log(`deleted previous mimetypes store`);
+      }
+
 
       db.createObjectStore(ObjectStore.History, { keyPath: 'id' });
       console.log('created history store');
@@ -50,6 +57,10 @@ export function initDatabase(): Promise<IDBDatabase> {
 
       db.createObjectStore(ObjectStore.Collections, { keyPath: 'id' });
       console.log('created collections store');
+
+      db.createObjectStore(ObjectStore.Mimetypes, { keyPath: "id" });
+      console.log('created mimetype store');
+
     });
 
     openReq.addEventListener('success', (_) => {
@@ -59,6 +70,21 @@ export function initDatabase(): Promise<IDBDatabase> {
     });
   });
 }
+
+export async function loadMimedbJson(): Promise<MimeDb> {
+  try {
+    const res = await fetch("mime-db.json");
+    if (res.ok) {
+      const json = await res.json();
+      return json as MimeDb;
+    }
+
+    return {};
+  } catch (error) {
+    return {};
+  }
+}
+
 
 interface IRepository {
   setDb: (db: IDBDatabase) => void;
@@ -356,3 +382,100 @@ class RequestsRepository implements IRepository {
 }
 
 export const requestRepo = new RequestsRepository();
+
+
+class MimetypesRepository {
+  private db: IDBDatabase;
+  isInitialized: boolean = false;
+
+  setDb(db: IDBDatabase) {
+    this.db = db;
+    this.isInitialized = true;
+  }
+
+  getStore(mode: IDBTransactionMode) {
+    const tx = this.db.transaction(ObjectStore.Mimetypes, mode);
+    return tx.objectStore(ObjectStore.Mimetypes);
+  }
+
+  async init(): Promise<boolean> {
+    try {
+      const count = await this.checkLoaded();
+      if (count) {
+        return true;
+      }
+      const mimeDb = await loadMimedbJson();
+      await this.seed(mimeDb);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  seed(jsonData: MimeDb): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const keys = Object.keys(jsonData);
+      if (!keys.length) {
+        resolve(true);
+        return;
+      }
+
+      const tx = this.db.transaction(ObjectStore.Mimetypes, "readwrite");
+      const store = tx.objectStore(ObjectStore.Mimetypes);
+      let record: Partial<MimeRecord> = {};
+      for (let key of keys) {
+        record.id = key;
+        record.compressible = jsonData[key].compressible;
+        record.extensions = jsonData[key].extensions || ["unknown"];
+        store.add(record);
+      }
+
+      tx.addEventListener("complete", () => {
+        console.log(`loaded records successfully`);
+        resolve(true);
+      });
+
+      tx.addEventListener("error", () => {
+        console.log(`failed to load records`);
+        reject();
+      });
+
+    });
+  }
+
+  getById(id: string): Promise<MimeRecord> {
+    return new Promise((resolve, reject) => {
+      const s = this.getStore('readonly');
+
+      const r = s.get(id);
+
+      r.addEventListener('success', () => {
+        resolve(r.result);
+      });
+
+      r.addEventListener('error', (_) => {
+        reject(r.error);
+      });
+    });
+  }
+
+  checkLoaded(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const store = this.getStore("readonly");
+
+      const req = store.count();
+
+      req.addEventListener("success", () => {
+        resolve(req.result as number);
+      });
+
+      req.addEventListener("error", () => {
+        reject(req.error);
+      });
+    });
+  }
+
+}
+
+export const mimeRepo = new MimetypesRepository();

@@ -5,7 +5,7 @@ interface FormItem {
   enabled: boolean;
 }
 
-export interface QueryItem extends FormItem {}
+export interface QueryItem extends FormItem { }
 
 export type RequestMethod =
   | 'get'
@@ -24,7 +24,7 @@ export type UpdateQueryItemValue = Pick<QueryItem, 'id' | 'value'>;
 
 export type UpdateQueryItemEnabled = Pick<QueryItem, 'id'>;
 
-export interface HeaderItem extends FormItem {}
+export interface HeaderItem extends FormItem { }
 export interface ResponseHeader {
   name: string;
   value: string;
@@ -38,7 +38,7 @@ export type UpdateHeaderValue = Pick<HeaderItem, 'id' | 'value'>;
 
 export type UpdateHeaderEnabled = Pick<HeaderItem, 'id'>;
 
-export interface FormDataItem extends FormItem {}
+export interface FormDataItem extends FormItem { }
 
 export type InsertFormDataItem = Pick<FormDataItem, 'name' | 'value'>;
 
@@ -71,27 +71,6 @@ export interface RequestModel {
   collectionId: string;
 }
 
-export type ContentType =
-  | 'ogg'
-  | 'mp4'
-  | 'wav'
-  | 'mpeg'
-  | 'svg'
-  | 'gif'
-  | 'png'
-  | 'jpeg'
-  | 'json'
-  | 'js'
-  | 'text'
-  | 'html'
-  | 'xml'
-  | 'img'
-  | 'unknown'
-  | 'audio'
-  | 'video'
-  | 'pdf'
-  | 'css'
-  | 'zip';
 
 export interface ResponseModel {
   mimeType: string;
@@ -100,12 +79,12 @@ export interface ResponseModel {
   size: number;
   time: number;
   body: any;
-  contentType: ContentType;
+  contentType: string;
   headers: ResponseHeader[];
   ok: boolean;
 }
 
-export interface CollectionVariable extends FormItem {}
+export interface CollectionVariable extends FormItem { }
 
 export type InsertCollectionVariable = Pick<FormDataItem, 'name' | 'value'>;
 
@@ -159,4 +138,17 @@ export interface BodyConfig {
   bodyText?: string;
   bodyTextEnabled?: boolean;
   formItems?: FormDataItem[];
+}
+
+export interface MimeMetadata {
+  extensions: string[]
+  compressible: boolean
+}
+
+export interface MimeDb {
+  [key: string]: MimeMetadata
+}
+
+export interface MimeRecord extends MimeMetadata {
+  id: string;
 }
