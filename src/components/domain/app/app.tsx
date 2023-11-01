@@ -38,7 +38,7 @@ export function App() {
           <Sidebar>
             <ActivitySection />
           </Sidebar>
-          <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          <div className="flex flex-col xl:flex-row flex-1 overflow-hidden">
             <RequestSection />
             <ResponseSection />
           </div>
