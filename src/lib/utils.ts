@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { MimeRecord, Token } from '@/common/types';
 import { mimeRepo } from './db';
+import Mustache from "mustache";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -147,29 +149,14 @@ export function readBody(
   });
 }
 
-export function splitTokens(input: string) {
-  const parts = input.split(/({{.*?}})/);
-  return parts.filter((part) => part.trim() !== '');
-}
-
-export function substituteVariables(
-  inp: string[],
-  variables: Record<string, string>
-): string {
-  const result = [];
-  for (const token of inp) {
-    if (token.startsWith('{{') && token.endsWith('}}')) {
-      const key = token.slice(2, -2)?.trim();
-      if (variables[key]) {
-        result.push(variables[key]);
-      } else {
-        result.push('');
-      }
-    } else {
-      result.push(token);
-    }
+export function substituteURL(input: string, variables: Record<string, string>) {
+  try {
+    const out = Mustache.render(input, variables);
+    return out;
+  } catch (error) {
+    console.log(error);
+    return input;
   }
-  return result.join('');
 }
 
 export function getTokens(arr: string[]): Token[] {

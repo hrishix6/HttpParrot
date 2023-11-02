@@ -1,17 +1,21 @@
-import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectQuery,
   addQueryItem,
-  removeQueryItem,
   updateQueryItemEnabled,
   updateQueryItemName,
-  updateQueryItemValue
+  updateQueryItemValue,
+  removeQueryItem
 } from './redux/request.section.reducer';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Plus, Minus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { RequestFormDataItem } from './request.data.item';
+import {
+  UpdateFormDataItemEnabled,
+  UpdateFormDataItemName,
+  UpdateFormDataItemValue
+} from '@/common/types';
 
 function EmptyQueryParamsMessage() {
   return (
@@ -34,6 +38,19 @@ export function RequestQuery() {
     }
   }, [query]);
 
+  const onEnabledChange = (arg: UpdateFormDataItemEnabled) => {
+    dispatch(updateQueryItemEnabled(arg));
+  };
+  const onNameChange = (arg: UpdateFormDataItemName) => {
+    dispatch(updateQueryItemName(arg));
+  };
+  const onValueChange = (arg: UpdateFormDataItemValue) => {
+    dispatch(updateQueryItemValue(arg));
+  };
+  const onRemoveItem = (id: string) => {
+    dispatch(removeQueryItem(id));
+  };
+
   return (
     <section className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center justify-between px-2">
@@ -51,48 +68,14 @@ export function RequestQuery() {
       <div className="flex-1 flex flex-col gap-2 overflow-y-auto p-2 relative">
         {query.length ? (
           query.map((x) => (
-            <div className="flex gap-2 items-center" key={x.id}>
-              <div>
-                <Checkbox
-                  className="block"
-                  checked={x.enabled}
-                  onCheckedChange={(_) => {
-                    dispatch(updateQueryItemEnabled({ id: x.id }));
-                  }}
-                />
-              </div>
-              <Input
-                type="text"
-                value={x.name}
-                placeholder="name"
-                onChange={(e) => {
-                  dispatch(
-                    updateQueryItemName({ id: x.id, name: e.target.value })
-                  );
-                }}
-              />
-              <Input
-                type="text"
-                value={x.value}
-                placeholder="value"
-                onChange={(e) => {
-                  dispatch(
-                    updateQueryItemValue({ id: x.id, value: e.target.value })
-                  );
-                }}
-              />
-              <div>
-                <Button
-                  variant={'link'}
-                  size={'icon'}
-                  onClick={(_) => {
-                    dispatch(removeQueryItem(x.id));
-                  }}
-                >
-                  <Minus className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
+            <RequestFormDataItem
+              onValueChange={onValueChange}
+              onRemoveItem={onRemoveItem}
+              onEnabledChange={onEnabledChange}
+              onNameChange={onNameChange}
+              model={x}
+              key={x.id}
+            />
           ))
         ) : (
           <EmptyQueryParamsMessage />

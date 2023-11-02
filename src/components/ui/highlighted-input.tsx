@@ -7,7 +7,7 @@ interface HighlightedInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: () => void;
-  size: 'md' | 'sm';
+  size?: 'md' | 'sm';
 }
 
 export function HighlightedInput({
@@ -15,7 +15,7 @@ export function HighlightedInput({
   value,
   onChange,
   onBlur,
-  size
+  size = 'md'
 }: HighlightedInputProps) {
   const [inFocus, setInFocus] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);

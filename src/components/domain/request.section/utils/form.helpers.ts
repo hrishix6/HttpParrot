@@ -1,6 +1,6 @@
-import { BodyConfig, FormDataItem, QueryItem, SupportedBodyType } from "@/common/types";
+import { BodyConfig, FormDataItem, HeaderItem, QueryItem, SupportedBodyType } from "@/common/types";
 import { v4 as uuidv4 } from "uuid";
-// import { splitTokens, substituteVariables } from "@/lib/utils";
+import { substituteURL } from "@/lib/utils";
 
 //URL===================================================================================
 
@@ -64,6 +64,20 @@ export const getBody = (bodyConfig: BodyConfig): any => {
     }
 }
 
+export const getBodyWithVariables = (bodyConfig: BodyConfig, varMap: Record<string, string>): any => {
+    const { bodyType, bodyTextEnabled, bodyText, formItems } = bodyConfig;
+    switch (bodyType) {
+        case "formdata":
+            return toSubstitutedFormDataBody(formItems || [], varMap);
+        case "url_encoded":
+            return toSubstitudedUrlEncodedBody(formItems || [], varMap);
+        case "json":
+        case "text":
+        case "xml":
+            return toTextBody(bodyText, bodyTextEnabled);
+    }
+}
+
 function toFormDataBody(formItems: FormDataItem[]): FormData {
     const formData = new FormData();
     for (let item of formItems) {
@@ -74,6 +88,36 @@ function toFormDataBody(formItems: FormDataItem[]): FormData {
         }
     }
     return formData;
+}
+
+function toSubstitutedFormDataBody(formItems: FormDataItem[], varMap: Record<string, string>): FormData {
+    const formData = new FormData();
+    for (let item of formItems) {
+        if (item.enabled) {
+            if (item.name) {
+                const k = substituteURL(item.name, varMap);
+                const v = substituteURL(item.value, varMap);
+                formData.append(k, v);
+            }
+        }
+    }
+    return formData;
+}
+
+function toSubstitudedUrlEncodedBody(formItems: FormDataItem[], varMap: Record<string, string>) {
+    const data: Record<string, any> = {};
+    for (let item of formItems) {
+        if (item.enabled) {
+            if (item.name) {
+                const k = substituteURL(item.name, varMap);
+                const v = substituteURL(item.value, varMap);
+                data[k] = v;
+            }
+
+        }
+    }
+
+    return new URLSearchParams(data).toString();
 }
 
 function toUrlEncodedBody(formItems: FormDataItem[]): string {
@@ -112,4 +156,32 @@ export const getContentType = (bodyType: SupportedBodyType): string => {
         default:
             return "text/plain";
     }
+}
+
+//======================================= headers ===============================================================
+
+export function getHeaders(headers: HeaderItem[]): Record<string, any> {
+    const fetchHeaders: Record<string, any> = {};
+    for (const h of headers) {
+        if (h.enabled) {
+            if (h.name && h.value) {
+                fetchHeaders[h.name.toLocaleLowerCase()] = h.value;
+            }
+        }
+    }
+    return fetchHeaders;
+}
+
+export function getHeadersWithVariables(headers: HeaderItem[], varMap: Record<string, string>): Record<string, any> {
+    const fetchHeaders: Record<string, any> = {};
+    for (const h of headers) {
+        if (h.enabled) {
+            if (h.name && h.value) {
+                const k = substituteURL(h.name, varMap);
+                const v = substituteURL(h.value, varMap);
+                fetchHeaders[k.toLocaleLowerCase()] = v;
+            }
+        }
+    }
+    return fetchHeaders;
 }

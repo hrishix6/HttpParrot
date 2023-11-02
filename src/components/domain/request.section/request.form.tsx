@@ -126,7 +126,7 @@ export function RequestForm() {
               className="flex-1 overflow-hidden flex flex-col"
               value="auth"
             >
-              Auth
+              Coming soon.
             </TabsContent>
           )}
         </Tabs>

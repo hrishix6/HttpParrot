@@ -33,8 +33,8 @@ function toFetchSnippetData(model: RequestSectionState): SnippetData {
       method: model.method.toUpperCase(),
       headers: model.headers
         ? model.headers
-            .filter((x) => x.enabled)
-            .map((x) => ({ name: x.name, value: x.value }))
+          .filter((x) => x.enabled)
+          .map((x) => ({ name: x.name, value: x.value }))
         : [],
       body: '',
       bodyisJson: false
@@ -61,8 +61,6 @@ export function getCodeSnippet(
   lang: SupportedSnippetLang
 ) {
   const data = toSnippetData(model, lang);
-
-  const tmpl = Handlebars.templates[lang];
-
-  return tmpl(data);
+  console.log(data);
+  return "";
 }

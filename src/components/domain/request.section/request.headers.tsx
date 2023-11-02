@@ -7,26 +7,50 @@ import {
   selectHeaders,
   removeHeader
 } from './redux/request.section.reducer';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Plus, Minus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ImmutableHeaders } from './immutable.headers';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import {
+  UpdateHeaderEnabled,
+  UpdateHeaderName,
+  UpdateHeaderValue
+} from '@/common/types';
+import { RequestFormDataItem } from './request.data.item';
 
 export function RequestHeaders() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const headers = useAppSelector(selectHeaders);
-  const [showDefaultHeaders, setShowDefaultHeaders] = useState<boolean>(true);
+  const [showDefaultHeaders, setShowDefaultHeaders] = useState<boolean>(() => {
+    const saved = localStorage.getItem(`show-default-headers`);
+    return saved === 'true';
+  });
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    localStorage.setItem(`show-default-headers`, `${showDefaultHeaders}`);
+  }, [showDefaultHeaders]);
 
   useEffect(() => {
     if (bottomRef && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [headers]);
+
+  const onEnabledChange = (arg: UpdateHeaderEnabled) => {
+    dispatch(updateHeaderEnabled(arg));
+  };
+  const onNameChange = (arg: UpdateHeaderName) => {
+    dispatch(updateHeaderName(arg));
+  };
+  const onValueChange = (arg: UpdateHeaderValue) => {
+    dispatch(updateHeaderValue(arg));
+  };
+  const onRemoveItem = (id: string) => {
+    dispatch(removeHeader(id));
+  };
 
   return (
     <section className="flex-1 flex flex-col overflow-hidden">
@@ -62,48 +86,14 @@ export function RequestHeaders() {
         <ImmutableHeaders show={showDefaultHeaders} />
         {headers.length ? (
           headers.map((x) => (
-            <div className="flex gap-2 items-center" key={x.id}>
-              <div>
-                <Checkbox
-                  className="block"
-                  checked={x.enabled}
-                  onCheckedChange={(_) => {
-                    dispatch(updateHeaderEnabled({ id: x.id }));
-                  }}
-                />
-              </div>
-              <Input
-                type="text"
-                value={x.name}
-                placeholder="name"
-                onChange={(e) => {
-                  dispatch(
-                    updateHeaderName({ id: x.id, name: e.target.value })
-                  );
-                }}
-              />
-              <Input
-                type="text"
-                value={x.value}
-                placeholder="value"
-                onChange={(e) => {
-                  dispatch(
-                    updateHeaderValue({ id: x.id, value: e.target.value })
-                  );
-                }}
-              />
-              <div>
-                <Button
-                  variant={'link'}
-                  size={'icon'}
-                  onClick={(_) => {
-                    dispatch(removeHeader(x.id));
-                  }}
-                >
-                  <Minus className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
+            <RequestFormDataItem
+              onValueChange={onValueChange}
+              onRemoveItem={onRemoveItem}
+              onEnabledChange={onEnabledChange}
+              onNameChange={onNameChange}
+              model={x}
+              key={x.id}
+            />
           ))
         ) : (
           <></>

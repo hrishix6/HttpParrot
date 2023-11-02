@@ -3,10 +3,10 @@ import { RootState } from "@/common/store";
 import { v4 as uuidv4 } from "uuid";
 import { RequestModel, ResponseHeader, SupportedSnippetLang } from "@/common/types";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
-import { determineBodytypeAsync, formatCode, readBody, splitTokens, substituteVariables } from "@/lib/utils";
+import { determineBodytypeAsync, formatCode, readBody, substituteURL } from "@/lib/utils";
 import { getCodeSnippet } from "@/lib/snippets";
 import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
-import { getBody, getContentType } from "../utils/form.helpers";
+import { getBody, getBodyWithVariables, getContentType, getHeaders, getHeadersWithVariables } from "../utils/form.helpers";
 
 export const makeRequestActionAsync = createAsyncThunk<void, void>('request-section/makeRequestActionAsync', async (_, thunkAPI) => {
 
@@ -16,38 +16,46 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const { url, method, query, headers, formItems, bodyType, enableTextBody, textBody, collectionId } = rootState.requestStore;
 
-    let fetchUrl = url;
-    if (collectionId) {
-        console.log('substituting variables of collection ', collectionId);
-        const variables = rootState.savedRequestsStore.collections.find(x => x.id === collectionId)?.variables;
+    dispatch(startLoading(null));
 
+    let varMap: Record<string, string> = {};
+    if (collectionId) {
+        const variables = rootState.savedRequestsStore.collections.find(x => x.id === collectionId)?.variables;
         if (variables) {
-            const varMap = variables.reduce((prev, curr) => {
+            varMap = variables.reduce((prev, curr) => {
                 prev[curr.name] = curr.value;
                 return prev;
             }, {} as Record<string, string>);
-
-            const urlSubstituted = substituteVariables(splitTokens(url), varMap);
-            console.log(urlSubstituted);
-            fetchUrl = urlSubstituted;
         }
     }
 
-    dispatch(startLoading(null));
+    let fetchUrl = url;
+    if (collectionId) {
+        console.log('substituting  url with variables of collection ', collectionId);
+        const urlSubstituted = substituteURL(url, varMap);
+        console.log(urlSubstituted);
+        fetchUrl = urlSubstituted;
+    }
 
-    const fetchHeaders: Record<string, any> = {};
-    for (const h of headers) {
-        if (h.enabled) {
-            if (h.name && h.value) {
-                fetchHeaders[h.name.toLocaleLowerCase()] = h.value;
-            }
-        }
+    let fetchHeaders: Record<string, any> = {};
+    if (collectionId) {
+        console.log('substituting headers with variables of collection ', collectionId);
+        fetchHeaders = getHeadersWithVariables(headers, varMap);
+    }
+    else {
+        fetchHeaders = getHeaders(headers);
     }
 
     let fetchBody;
     if (method !== "get") {
-
-        fetchBody = getBody({ bodyType, formItems, bodyTextEnabled: enableTextBody, bodyText: textBody });
+        const bodyCfg = { bodyType, formItems, bodyTextEnabled: enableTextBody, bodyText: textBody };
+        if (collectionId) {
+            console.log('substituting body with variables of collection ', collectionId);
+            fetchBody = getBodyWithVariables(bodyCfg, varMap);
+        }
+        else {
+            fetchBody = getBody(bodyCfg);
+        }
         //since fetch automatically adds correct header when body is formdata.
         if (bodyType !== "formdata") {
             fetchHeaders["content-type"] = getContentType(bodyType);
@@ -64,7 +72,6 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
     }, 30000);
 
     try {
-        console.log(fetchBody);
         const response = await fetch(fetchUrl, {
             method,
             headers: fetchHeaders,
@@ -81,12 +88,12 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         }
 
         const contentTypeHeader = response.headers.get("content-type");
+        const [size, chunks] = await readBody(response.body);
+
         if (contentTypeHeader) {
 
             let mimeRecord = await determineBodytypeAsync(contentTypeHeader);
             let extension = mimeRecord.extensions[0];
-
-            const [size, chunks] = await readBody(response.body);
 
             if (["js", "json", "html", "xml",].includes(extension)) {
                 const bodyAsText = new TextDecoder().decode(chunks);
@@ -120,11 +127,11 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
         else {
             dispatch(setResponseMetadata({
                 mimeType: "application/octet-stream",
-                body: null,
+                body: chunks,
                 contentType: "unknown",
                 headers: responseheaders,
                 ok: response.ok,
-                size: 0,
+                size: size,
                 time: ms,
                 status: response.status,
                 statusText: response.statusText

@@ -18,8 +18,8 @@ export function TextBody({ bodyType, text }: TextBodyProps) {
     : 'js';
 
   return (
-    <pre>
-      <code className={`language-${langType} m-0`}>{text}</code>
+    <pre className="max-w-full">
+      <code className={`language-${langType} whitespace-pre-wrap`}>{text}</code>
     </pre>
   );
 }
