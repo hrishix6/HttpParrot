@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "@/common/store";
-import { generateCodeSnippetAsync, makeRequestActionAsync } from "./request.async.actions";
+import { abortOngoingRequestAsync, generateCodeSnippetAsync, makeRequestActionAsync } from "./request.async.actions";
 import { UpdateHeaderName, UpdateHeaderValue, UpdateHeaderEnabled, QueryItem, HeaderItem, RequestMethod, UpdateQueryItemName, UpdateQueryItemValue, UpdateQueryItemEnabled, RequestModel, SupportedBodyType, FormDataItem, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateFormDataItemEnabled } from "@/common/types";
-import { getUpdatedUrl, getQueryString } from "../utils/form.helpers";
+import { getUpdatedUrl, getQueryString } from "@/lib/utils";
 
 export type RequestFormMode = "update" | "insert";
 
@@ -21,7 +21,10 @@ export interface RequestSectionState {
     bodyType: SupportedBodyType,
     formItems: FormDataItem[],
     enableTextBody: boolean,
-    textBody: string
+    textBody: string,
+    loading: boolean,
+    aborter?: AbortController
+    lock: boolean
 }
 
 
@@ -39,9 +42,10 @@ const initialState: RequestSectionState = {
     bodyType: "formdata",
     formItems: [],
     enableTextBody: true,
-    textBody: ""
+    textBody: "",
+    loading: false,
+    lock: false
 };
-
 
 /**
  * When mode = "insert" new uuid will be generated and item will be saved (if user is trying to save request).
@@ -108,7 +112,16 @@ const requestSectionSlice = createSlice({
         userDoneEditingUrl: (state) => {
             state.userEditingUrl = false;
         },
-
+        setLoading: (state, action: PayloadAction<AbortController>) => {
+            state.loading = true;
+            state.aborter = action.payload;
+            state.lock = true;
+        },
+        stopLoading: (state) => {
+            state.loading = false;
+            state.aborter = undefined;
+            state.lock = false;
+        },
         //query=================================================================================================
         initQueryItems: (state, action: PayloadAction<QueryItem[]>) => {
             state.query = action.payload;
@@ -198,7 +211,6 @@ const requestSectionSlice = createSlice({
                 state.headers.splice(itemIndex, 1);
             }
         },
-
         //body=================================================================================================
         setBodyType: (state, action: PayloadAction<SupportedBodyType>) => {
             state.textBody = "";
@@ -256,11 +268,15 @@ const requestSectionSlice = createSlice({
             .addCase(makeRequestActionAsync.pending, (_, __) => {
                 console.log(`req start`);
             })
-            .addCase(makeRequestActionAsync.fulfilled, (_, __) => {
-                console.log(`req success`);
+            .addCase(makeRequestActionAsync.fulfilled, (state, __) => {
+                state.loading = false;
+                state.aborter = undefined;
+                state.lock = false;
             })
-            .addCase(makeRequestActionAsync.rejected, (_, __) => {
-                console.log(`req failed`);
+            .addCase(makeRequestActionAsync.rejected, (state, __) => {
+                state.loading = false;
+                state.aborter = undefined;
+                state.lock = false;
             })
             .addCase(generateCodeSnippetAsync.fulfilled, (_, __) => {
                 console.log(`snippet generated`);
@@ -268,13 +284,21 @@ const requestSectionSlice = createSlice({
                 console.log(`snippet gen started`);
             }).addCase(generateCodeSnippetAsync.rejected, (_, __) => {
                 console.log(`snippet gen failed`);
-            });
+            }).addCase(abortOngoingRequestAsync.pending, (_, __) => {
+                console.log('initited aborting request');
+            }).addCase(abortOngoingRequestAsync.fulfilled, (_, __) => {
+                console.log('successfully aborting request');
+            }).addCase(abortOngoingRequestAsync.rejected, (_, __) => {
+                console.log('failed aborting request');
+            })
     }
 });
 
-export const { setTextBody, setEnableTextBody, updateFormDataItemName, updateFormDataItemValue, updateFormDataItemEnabled, addFormDataItem, removeFormDataItem, setBodyType, resetFormModeAfterDeletion, clearRequestSection, setName, userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
+export const { setLoading, stopLoading, setTextBody, setEnableTextBody, updateFormDataItemName, updateFormDataItemValue, updateFormDataItemEnabled, addFormDataItem, removeFormDataItem, setBodyType, resetFormModeAfterDeletion, clearRequestSection, setName, userWantsToEditUrl, userDoneEditingUrl, initQueryItems, updateHeaderName, updateHeaderValue, updateHeaderEnabled, addHeader, removeHeader, populateRequestSection, setMethod, setUrl, updateQueryItemEnabled, updateQueryItemName, updateQueryItemValue, addQueryItem, removeQueryItem } = requestSectionSlice.actions
 
 export const requestSectionReducer = requestSectionSlice.reducer;
+
+export const selectRequestLoading = (state: RootState) => state.requestStore.loading;
 
 export const selectUrl = (state: RootState) => state.requestStore.url;
 
@@ -301,3 +325,5 @@ export const selectFormDataItems = (state: RootState) => state.requestStore.form
 export const selectTextBodyEnabled = (state: RootState) => state.requestStore.enableTextBody;
 
 export const selectTextBody = (state: RootState) => state.requestStore.textBody;
+
+export const selectIsLocked = (state: RootState) => state.requestStore.lock;

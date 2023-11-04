@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
 import { v4 as uuidv4 } from "uuid";
-import { RequestModel, ResponseHeader, SupportedSnippetLang } from "@/common/types";
+import { RequestModel, SupportedSnippetLang } from "@/common/types";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
-import { determineBodytypeAsync, formatCode, readBody, substituteURL } from "@/lib/utils";
+import { toFetchConfig, getContentTypeHeader } from "@/lib/utils";
 import { getCodeSnippet } from "@/lib/snippets";
-import { setResponseMetadata, startLoading } from "../../response.section/redux/response.reducer";
-import { getBody, getBodyWithVariables, getContentType, getHeaders, getHeadersWithVariables } from "../utils/form.helpers";
+import { setResponseMetadata, clearResponse } from "../../response.section/redux/response.reducer";
+import { toResponseModel } from "@/lib/response.utils";
+import { setLoading, stopLoading } from "./request.section.reducer";
 
 export const makeRequestActionAsync = createAsyncThunk<void, void>('request-section/makeRequestActionAsync', async (_, thunkAPI) => {
 
@@ -14,141 +15,35 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
 
     const rootState = getState() as RootState;
 
-    const { url, method, query, headers, formItems, bodyType, enableTextBody, textBody, collectionId } = rootState.requestStore;
+    const { method, query, headers, formItems, bodyType, enableTextBody, textBody } = rootState.requestStore;
 
-    dispatch(startLoading(null));
+    const { url: fetchUrl, ...fetchConfig } = toFetchConfig(rootState);
 
-    let varMap: Record<string, string> = {};
-    if (collectionId) {
-        const variables = rootState.savedRequestsStore.collections.find(x => x.id === collectionId)?.variables;
-        if (variables) {
-            varMap = variables.reduce((prev, curr) => {
-                prev[curr.name] = curr.value;
-                return prev;
-            }, {} as Record<string, string>);
-        }
-    }
-
-    let fetchUrl = url;
-    if (collectionId) {
-        console.log('substituting  url with variables of collection ', collectionId);
-        const urlSubstituted = substituteURL(url, varMap);
-        console.log(urlSubstituted);
-        fetchUrl = urlSubstituted;
-    }
-
-    let fetchHeaders: Record<string, any> = {};
-    if (collectionId) {
-        console.log('substituting headers with variables of collection ', collectionId);
-        fetchHeaders = getHeadersWithVariables(headers, varMap);
-    }
-    else {
-        fetchHeaders = getHeaders(headers);
-    }
-
-    let fetchBody;
-    if (method !== "get") {
-        const bodyCfg = { bodyType, formItems, bodyTextEnabled: enableTextBody, bodyText: textBody };
-        if (collectionId) {
-            console.log('substituting body with variables of collection ', collectionId);
-            fetchBody = getBodyWithVariables(bodyCfg, varMap);
-        }
-        else {
-            fetchBody = getBody(bodyCfg);
-        }
-        //since fetch automatically adds correct header when body is formdata.
-        if (bodyType !== "formdata") {
-            fetchHeaders["content-type"] = getContentType(bodyType);
-        }
+    if (bodyType !== "formdata") {
+        fetchConfig.headers["content-type"] = getContentTypeHeader(bodyType);
     }
 
     const start = new Date().getTime();
-
     const abortController = new AbortController();
 
-    setTimeout(() => {
-        //kill request after 30 seconds.
-        abortController.abort();
-    }, 30000);
+    dispatch(setLoading(abortController));
+    dispatch(clearResponse(null));
 
     try {
         const response = await fetch(fetchUrl, {
-            method,
-            headers: fetchHeaders,
+            ...fetchConfig,
             signal: abortController.signal,
-            ...(method !== "get" ? { body: fetchBody } : { body: null })
         });
 
         const ms = new Date().getTime() - start;
 
-        const responseheaders: ResponseHeader[] = [];
+        const responseModel = await toResponseModel(response);
 
-        for (let [resKey, resVal] of response.headers.entries()) {
-            responseheaders.push({ name: resKey, value: resVal });
-        }
+        dispatch(setResponseMetadata({ ...responseModel, time: ms }));
 
-        const contentTypeHeader = response.headers.get("content-type");
-        const [size, chunks] = await readBody(response.body);
-
-        if (contentTypeHeader) {
-
-            let mimeRecord = await determineBodytypeAsync(contentTypeHeader);
-            let extension = mimeRecord.extensions[0];
-
-            if (["js", "json", "html", "xml",].includes(extension)) {
-                const bodyAsText = new TextDecoder().decode(chunks);
-                const body = await formatCode(bodyAsText, extension);
-                dispatch(setResponseMetadata({
-                    mimeType: mimeRecord.id,
-                    body,
-                    contentType: extension,
-                    status: response.status,
-                    statusText: response.statusText,
-                    size: size,
-                    time: ms,
-                    headers: responseheaders,
-                    ok: response.ok
-                }));
-            }
-            else {
-                dispatch(setResponseMetadata({
-                    mimeType: mimeRecord.id,
-                    body: chunks,
-                    contentType: extension,
-                    status: response.status,
-                    statusText: response.statusText,
-                    size: size,
-                    time: ms,
-                    headers: responseheaders,
-                    ok: response.ok
-                }));
-            }
-        }
-        else {
-            dispatch(setResponseMetadata({
-                mimeType: "application/octet-stream",
-                body: chunks,
-                contentType: "unknown",
-                headers: responseheaders,
-                ok: response.ok,
-                size: size,
-                time: ms,
-                status: response.status,
-                statusText: response.statusText
-            }));
-        }
     } catch (error) {
-        dispatch(setResponseMetadata({
-            mimeType: "application/octet-stream",
-            body: null,
-            contentType: "unknown",
-            headers: [],
-            ok: false,
-            size: 0,
-            time: 0,
-            status: 0,
-            statusText: ""
-        }));
+        dispatch(stopLoading());
+        console.log(error);
     }
 
     const newReqHistoryItem: RequestModel = {
@@ -169,6 +64,13 @@ export const makeRequestActionAsync = createAsyncThunk<void, void>('request-sect
     }
 
     dispatch(addtoHistoryAsync(newReqHistoryItem));
+});
+
+export const abortOngoingRequestAsync = createAsyncThunk<void, void>("request-section/abortOngoingRequestAsync", async (_, thunkAPI) => {
+    const { getState } = thunkAPI;
+    const rootState = getState() as RootState;
+    const aborter = rootState.requestStore.aborter;
+    aborter?.abort();
 });
 
 

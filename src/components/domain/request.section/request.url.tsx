@@ -8,7 +8,7 @@ import {
   setUrl,
   userDoneEditingUrl
 } from './redux/request.section.reducer';
-import { getQueryItems } from './utils/form.helpers';
+import { getQueryItems } from '@/lib/utils';
 
 export function RequestUrl() {
   const dispatch = useAppDispatch();

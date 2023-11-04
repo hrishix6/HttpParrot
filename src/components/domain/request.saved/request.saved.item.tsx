@@ -51,7 +51,7 @@ export function RequestSavedItem({
       handleViewInRequestSection={handleViewInRequestSection}
       request={request}
     >
-      <div className="flex flex-col gap-2 p-2 border-b border-t cursor-context-menu card-background">
+      <div className="flex flex-col gap-2 p-2 border-b border-t cursor-context-menu card-background transition-all duration-200">
         <div className="flex gap-1">
           <Badge>{`${method[0].toUpperCase()}${method.slice(1)}`}</Badge>
           <p className="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">

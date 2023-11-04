@@ -5,7 +5,7 @@ interface FormItem {
   enabled: boolean;
 }
 
-export interface QueryItem extends FormItem { }
+export type QueryItem = FormItem;
 
 export type RequestMethod =
   | 'get'
@@ -106,32 +106,6 @@ export interface Token {
 
 export type SupportedSnippetLang = 'js' | 'curl';
 
-export const immutableHeaders: HeaderItem[] = [
-  {
-    id: '-1',
-    enabled: true,
-    name: 'Content-Type',
-    value: 'included at runtime'
-  },
-  {
-    id: '-2',
-    enabled: true,
-    name: 'Content-Length',
-    value: 'included at runtime'
-  },
-  {
-    id: '-3',
-    enabled: true,
-    name: 'Accept',
-    value: '*/*'
-  },
-  {
-    id: '-4',
-    enabled: true,
-    name: 'User-Agent',
-    value: 'hrishix6/HttpParrot'
-  }
-];
 
 export interface BodyConfig {
   bodyType: SupportedBodyType;

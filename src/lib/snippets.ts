@@ -1,45 +1,36 @@
-import { SupportedSnippetLang } from '@/common/types';
+import { FormDataItem, HeaderItem, SupportedSnippetLang } from '@/common/types';
 import { RequestSectionState } from '../components/domain/request.section/redux/request.section.reducer';
 
 interface SnippetData {
-  request?: {
-    method: string;
-    url: string;
-    headers: { name: string; value: string }[];
-    body: any;
-    bodyisFormdata?: boolean;
-    isPost?: boolean;
-    bodyisJson?: boolean;
-  };
+  method?: string;
+  url?: string;
+  headers?: HeaderItem[];
+  formdata?: FormDataItem[];
+  urlEncoded?: string;
+  json?: string;
+  xml?: string;
+  text?: string;
 }
 
 function toCurlSnippetData(model: RequestSectionState): SnippetData {
   return {
-    request: {
-      url: model.url,
-      method: model.method.toUpperCase(),
-      body: "{'x':'y'}",
-      headers: model.headers
-        .filter((x) => x.enabled)
-        .map((x) => ({ name: x.name, value: x.value }))
-    }
+    url: model.url,
+    method: model.method.toUpperCase(),
+    json: "{'x':'y'}",
+    headers: model.headers.filter((x) => x.enabled)
   };
 }
 
 function toFetchSnippetData(model: RequestSectionState): SnippetData {
   return {
-    request: {
-      url: model.url,
-      method: model.method.toUpperCase(),
-      headers: model.headers
-        ? model.headers
-          .filter((x) => x.enabled)
-          .map((x) => ({ name: x.name, value: x.value }))
-        : [],
-      body: '',
-      bodyisJson: false
-    }
-  };
+    url: model.url,
+    method: model.method.toUpperCase(),
+    headers: model.headers
+      ? model.headers
+        .filter((x) => x.enabled)
+      : [],
+    text: '',
+  }
 }
 
 function toSnippetData(

@@ -1,5 +1,4 @@
 import { ChevronDown, SendIcon, Code } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SaveRequestDialogue } from './save.request.dialogue';
 import { useState } from 'react';
-import { useAppDispatch } from '../../../common/hoooks';
+import { useAppDispatch } from '@/common/hoooks';
 import { clearRequestSection } from './redux/request.section.reducer';
 import { generateCodeSnippetAsync } from './redux/request.async.actions';
 

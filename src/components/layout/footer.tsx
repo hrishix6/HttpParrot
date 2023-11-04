@@ -1,3 +1,4 @@
+import { PROFILE_LINK, PROFILE_NAME } from '@/lib/constants';
 export function Footer() {
   return (
     <footer className="flex p-2 items-center justify-center gap-2">
@@ -5,11 +6,11 @@ export function Footer() {
         Made by
         <a
           className="px-2 underline"
-          href="https://github.com/hrishix6"
+          href={PROFILE_LINK}
           target="_blank"
           aria-description="github profile"
         >
-          hrishix6
+          {PROFILE_NAME}
         </a>
       </p>
     </footer>

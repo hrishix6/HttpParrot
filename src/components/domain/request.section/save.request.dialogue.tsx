@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { saveRequestAsync } from '../request.saved/redux/request.saved.async.actions';
 import {
   selectName,

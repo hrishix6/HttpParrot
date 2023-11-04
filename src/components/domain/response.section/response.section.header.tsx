@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useAppDispatch, useAppSelector } from '../../../common/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   clearResponse,
   selectIfResponseOk,

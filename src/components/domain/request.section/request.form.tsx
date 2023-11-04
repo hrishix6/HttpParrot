@@ -14,7 +14,8 @@ import {
   setMethod,
   selectName,
   selectFormMode,
-  selectRequestCollectionName
+  selectRequestCollectionName,
+  selectIsLocked
 } from './redux/request.section.reducer';
 import { RequestMethod } from '@/common/types';
 import { RequestQuery } from './request.query';
@@ -25,12 +26,14 @@ import { RequestActionsDropDown } from './request.actions.dropdown';
 import { RequestMetaHeader } from './request.meta.header';
 import { BodyForm } from './request.body/body.form';
 import { RequestUrl } from './request.url';
+import { Loader2 } from 'lucide-react';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
   const name = useAppSelector(selectName);
   const collectionName = useAppSelector(selectRequestCollectionName);
   const method = useAppSelector(selectMethod);
+  const lock = useAppSelector(selectIsLocked);
   const dispatch = useAppDispatch();
 
   const [tab, setCurrentTab] = useState<string>('query');
@@ -61,15 +64,15 @@ export function RequestForm() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="get" defaultChecked>
+                <SelectItem value={'get'} defaultChecked>
                   Get
                 </SelectItem>
-                <SelectItem value="post">Post</SelectItem>
-                <SelectItem value="delete">Delete</SelectItem>
-                <SelectItem value="put">Put</SelectItem>
-                <SelectItem value="patch">Patch</SelectItem>
-                <SelectItem value="options">Options</SelectItem>
-                <SelectItem value="head">Head</SelectItem>
+                <SelectItem value={'post'}>Post</SelectItem>
+                <SelectItem value={'put'}>Put</SelectItem>
+                <SelectItem value={'patch'}>Patch</SelectItem>
+                <SelectItem value={'delete'}>Delete</SelectItem>
+                <SelectItem value={'options'}>Option</SelectItem>
+                <SelectItem value={'Head'}>Head</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -78,7 +81,10 @@ export function RequestForm() {
           <RequestUrl />
         </div>
         <div className="flex items-center">
-          <Button onClick={handleMakingRequest}>Send</Button>
+          <Button onClick={handleMakingRequest} disabled={lock}>
+            {lock && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Send
+          </Button>
           <RequestActionsDropDown />
         </div>
       </section>
@@ -90,7 +96,7 @@ export function RequestForm() {
           }}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid grid-cols-4 w-full">
             <TabsTrigger value="query">Query</TabsTrigger>
             <TabsTrigger value="headers">Headers</TabsTrigger>
             <TabsTrigger value="body">Body</TabsTrigger>

@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from "@/common/store";
+import { THEME_LOCAL_STORAGE_KEY } from "@/lib/constants";
 
 export type Theme = 'dark' | 'light' | 'system';
-
-const storageKey = 'app-theme';
 
 export interface ThemeState {
     theme: Theme
 }
 
 const initialState: ThemeState = {
-    theme: localStorage.getItem(storageKey) as Theme || 'system'
+    theme: localStorage.getItem(THEME_LOCAL_STORAGE_KEY) as Theme || 'system'
 }
 
 const themeSlice = createSlice({
@@ -18,7 +17,7 @@ const themeSlice = createSlice({
     initialState,
     reducers: {
         setTheme: (state, action: PayloadAction<Theme>) => {
-            localStorage.setItem(storageKey, action.payload);
+            localStorage.setItem(THEME_LOCAL_STORAGE_KEY, action.payload);
             state.theme = action.payload
         }
     }
