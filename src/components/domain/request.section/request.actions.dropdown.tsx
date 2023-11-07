@@ -12,8 +12,10 @@ import {
 import { SaveRequestDialogue } from './save.request.dialogue';
 import { useState } from 'react';
 import { useAppDispatch } from '@/common/hoooks';
-import { clearRequestSection } from './redux/request.section.reducer';
-import { generateCodeSnippetAsync } from './redux/request.async.actions';
+import {
+  clearRequestSectionAsync,
+  generateCodeSnippetAsync
+} from '../tabs/redux/tabs.async.actions';
 
 export function RequestActionsDropDown() {
   const dispatch = useAppDispatch();
@@ -49,7 +51,7 @@ export function RequestActionsDropDown() {
             <DropdownMenuItem
               onClick={() => {
                 console.log('clearing request form');
-                dispatch(clearRequestSection());
+                dispatch(clearRequestSectionAsync());
               }}
             >
               <span>Clear</span>

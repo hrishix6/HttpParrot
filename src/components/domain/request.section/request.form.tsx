@@ -11,15 +11,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectMethod,
-  setMethod,
   selectName,
   selectFormMode,
   selectRequestCollectionName,
-  selectIsLocked
-} from './redux/request.section.reducer';
+  selectIsLocked,
+  selectActiveTab
+} from '../tabs/redux/tabs.reducer';
 import { RequestMethod } from '@/common/types';
 import { RequestQuery } from './request.query';
-import { makeRequestActionAsync } from './redux/request.async.actions';
+import {
+  makeRequestActionAsync,
+  setMethodAsync
+} from '../tabs/redux/tabs.async.actions';
 import { RequestHeaders } from './request.headers';
 import { useState } from 'react';
 import { RequestActionsDropDown } from './request.actions.dropdown';
@@ -30,6 +33,7 @@ import { Loader2 } from 'lucide-react';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
+  const activeRequestTab = useAppSelector(selectActiveTab);
   const name = useAppSelector(selectName);
   const collectionName = useAppSelector(selectRequestCollectionName);
   const method = useAppSelector(selectMethod);
@@ -40,7 +44,7 @@ export function RequestForm() {
 
   const handleMakingRequest = (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    dispatch(makeRequestActionAsync());
+    dispatch(makeRequestActionAsync(activeRequestTab));
   };
 
   return (
@@ -56,7 +60,7 @@ export function RequestForm() {
             value={method}
             onValueChange={(e) => {
               console.log(e);
-              dispatch(setMethod(e as RequestMethod));
+              dispatch(setMethodAsync(e as RequestMethod));
             }}
           >
             <SelectTrigger>

@@ -8,7 +8,8 @@ import {
 } from '@/components/ui/select';
 import { SupportedBodyType } from '@/common/types';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import { selectBodyType, setBodyType } from '../redux/request.section.reducer';
+import { selectBodyType } from '../../tabs/redux/tabs.reducer';
+import { setBodyTypeAsync } from '../../tabs/redux/tabs.async.actions';
 
 export function BodyTypeDropdown() {
   const dispatch = useAppDispatch();
@@ -19,7 +20,7 @@ export function BodyTypeDropdown() {
       <Select
         value={bodyType}
         onValueChange={(newVal) => {
-          dispatch(setBodyType(newVal as SupportedBodyType));
+          dispatch(setBodyTypeAsync(newVal as SupportedBodyType));
         }}
       >
         <SelectTrigger>

@@ -23,9 +23,10 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { saveRequestAsync } from '../request.saved/redux/request.saved.async.actions';
 import {
+  selectActiveTab,
   selectName,
   selectRequestCollection
-} from './redux/request.section.reducer';
+} from '../tabs/redux/tabs.reducer';
 import { selectCollections } from '../request.saved/redux/request.saved.reducer';
 
 interface Props {
@@ -34,6 +35,7 @@ interface Props {
 }
 
 export function SaveRequestDialogue({ onOpenChange, open }: Props) {
+  const activeRequestTab = useAppSelector(selectActiveTab);
   const rName = useAppSelector(selectName);
   const rCollection = useAppSelector(selectRequestCollection);
   const collections = useAppSelector(selectCollections);
@@ -54,7 +56,13 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
   }, [rCollection]);
 
   const handleSaveRequest = () => {
-    dispatch(saveRequestAsync({ name: requestName, collectionId: collection }));
+    dispatch(
+      saveRequestAsync({
+        name: requestName,
+        collectionId: collection,
+        tabId: activeRequestTab
+      })
+    );
     setRequestName('');
     setSelectedCollection('default');
     onOpenChange(false);

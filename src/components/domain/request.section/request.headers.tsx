@@ -1,12 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import {
-  addHeader,
-  updateHeaderEnabled,
-  updateHeaderName,
-  updateHeaderValue,
-  selectHeaders,
-  removeHeader
-} from './redux/request.section.reducer';
+import { selectHeaders } from '../tabs/redux/tabs.reducer';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -19,6 +12,13 @@ import {
   UpdateHeaderValue
 } from '@/common/types';
 import { RequestFormDataItem } from './request.data.item';
+import {
+  addHeaderAsync,
+  removeHeaderAsync,
+  updateHeaderEnabledAsync,
+  updateHeaderNameAsync,
+  updateHeaderValueAsync
+} from '../tabs/redux/tabs.async.actions';
 
 export function RequestHeaders() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -40,16 +40,16 @@ export function RequestHeaders() {
   }, [headers]);
 
   const onEnabledChange = (arg: UpdateHeaderEnabled) => {
-    dispatch(updateHeaderEnabled(arg));
+    dispatch(updateHeaderEnabledAsync(arg));
   };
   const onNameChange = (arg: UpdateHeaderName) => {
-    dispatch(updateHeaderName(arg));
+    dispatch(updateHeaderNameAsync(arg));
   };
   const onValueChange = (arg: UpdateHeaderValue) => {
-    dispatch(updateHeaderValue(arg));
+    dispatch(updateHeaderValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {
-    dispatch(removeHeader(id));
+    dispatch(removeHeaderAsync(id));
   };
 
   return (
@@ -75,7 +75,7 @@ export function RequestHeaders() {
             variant={'link'}
             size={'icon'}
             onClick={(_) => {
-              dispatch(addHeader(null));
+              dispatch(addHeaderAsync());
             }}
           >
             <Plus className="h-5 w-5" />

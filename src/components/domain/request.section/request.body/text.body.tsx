@@ -1,10 +1,7 @@
 import { Textarea } from '@/components/ui/textarea';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import {
-  selectBodyType,
-  selectTextBody,
-  setTextBody
-} from '../redux/request.section.reducer';
+import { selectBodyType, selectTextBody } from '../../tabs/redux/tabs.reducer';
+import { setTextBodyAsync } from '../../tabs/redux/tabs.async.actions';
 
 export function TextBody() {
   const dispatch = useAppDispatch();
@@ -17,7 +14,7 @@ export function TextBody() {
         rows={100}
         value={text}
         onChange={(e) => {
-          dispatch(setTextBody(e.target.value));
+          dispatch(setTextBodyAsync(e.target.value));
         }}
         placeholder={`${bodyType} body`}
       />
