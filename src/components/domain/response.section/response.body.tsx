@@ -1,20 +1,22 @@
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
+  selectRequestLoading,
   selectMimeType,
   selectResponseBody,
-  selectResponseBodytype
-} from './redux/response.reducer';
+  selectResponseBodytype,
+  selectActiveTab
+} from '../tabs/redux/tabs.reducer';
 import { Spinner } from '@/components/ui/spinner';
 import { TextBody } from './text.body';
 import { BinaryBody } from './binary.body';
 import { EmptyBody } from './empty.body';
 import { SUPPORTED_TEXT_FORMATS } from '@/lib/constants';
-import { selectRequestLoading } from '../request.section/redux/request.section.reducer';
-import { abortOngoingRequestAsync } from '../request.section/redux/request.async.actions';
+import { abortOngoingRequestAsync } from '../tabs/redux/tabs.async.actions';
 import { Button } from '@/components/ui/button';
 
 export function ResponseBody() {
   const dispatch = useAppDispatch();
+  const activeTab = useAppSelector(selectActiveTab);
   const body = useAppSelector(selectResponseBody);
   const mimeType = useAppSelector(selectMimeType);
   const bodytype = useAppSelector(selectResponseBodytype);
@@ -23,7 +25,7 @@ export function ResponseBody() {
   let bodyCompoent;
 
   const handleAbortingRequest = () => {
-    dispatch(abortOngoingRequestAsync());
+    dispatch(abortOngoingRequestAsync(activeTab));
   };
 
   if (body) {

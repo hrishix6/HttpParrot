@@ -16,14 +16,7 @@ interface TextBodyProps {
 type CopyStatus = 'idle' | 'copied' | 'failed';
 
 export function TextBody({ bodyType, text }: TextBodyProps) {
-  const [copied, setCopied] = useState<CopyStatus>(() => {
-    const copied = localStorage.getItem('text-body-copystate') || 'idle';
-    return copied as CopyStatus;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('text-body-copystate', copied);
-  }, [copied]);
+  const [copied, setCopied] = useState<CopyStatus>('idle');
 
   useEffect(() => {
     if (SUPPORTED_TEXT_FORMATS.includes(bodyType)) {
@@ -63,7 +56,7 @@ export function TextBody({ bodyType, text }: TextBodyProps) {
       <pre>
         <code className={`language-${langType}`}>{text}</code>
       </pre>
-      <div className="absolute top-5 right-5 flex items-center">
+      <div className="absolute top-5 right-2 flex items-center">
         <Button
           variant={btnVariant}
           className="transition-all duration-200"

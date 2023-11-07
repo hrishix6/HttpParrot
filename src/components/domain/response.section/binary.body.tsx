@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useAppDispatch } from '@/common/hoooks';
-import { discardBody } from './redux/response.reducer';
+import { discardBody } from '../tabs/redux/tabs.reducer';
 import { DEFAULT_FILE_NAME } from '@/lib/constants';
 
 interface BinaryBodyProps {

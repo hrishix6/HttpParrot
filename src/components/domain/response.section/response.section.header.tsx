@@ -6,7 +6,7 @@ import {
   selectResponseSize,
   selectResponseStatus,
   selectResponseTime
-} from './redux/response.reducer';
+} from '../tabs/redux/tabs.reducer';
 
 export function ResponseSectionHeader() {
   const size = useAppSelector(selectResponseSize);
