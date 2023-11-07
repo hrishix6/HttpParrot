@@ -4,8 +4,8 @@ import { substituteText } from "./text.utils";
 import { mimeRepo } from "./db";
 import { DEFAULT_FILE_EXTENSION, DEFAULT_MIMETYPE } from "./constants";
 
-export function toSimpleFetchBody(state: RootState): any {
-    const { bodyType, formItems, textBody, enableTextBody } = state.requestStore
+export function toSimpleFetchBody(state: RootState, tabId: string): any {
+    const { bodyType, formItems, textBody, enableTextBody } = state.tabsStore.tabData[tabId];
     switch (bodyType) {
         case "formdata":
             return toFormDataBody(formItems);
@@ -18,8 +18,8 @@ export function toSimpleFetchBody(state: RootState): any {
     }
 }
 
-export function totSubstitutedFetchBody(state: RootState, variableMap: Record<string, string>): any {
-    const { bodyType, formItems, textBody, enableTextBody } = state.requestStore
+export function totSubstitutedFetchBody(state: RootState, variableMap: Record<string, string>, tabId: string): any {
+    const { bodyType, formItems, textBody, enableTextBody } = state.tabsStore.tabData[tabId];
     switch (bodyType) {
         case "formdata":
             return toSubstitutedFormDataBody(formItems, variableMap);

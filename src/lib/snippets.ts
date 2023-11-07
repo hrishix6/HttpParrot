@@ -1,6 +1,4 @@
-import { FormDataItem, HeaderItem, SupportedSnippetLang } from '@/common/types';
-import { RequestSectionState } from '../components/domain/request.section/redux/request.section.reducer';
-
+import { FormDataItem, HeaderItem, SupportedSnippetLang, TabData } from '@/common/types';
 interface SnippetData {
   method?: string;
   url?: string;
@@ -12,7 +10,7 @@ interface SnippetData {
   text?: string;
 }
 
-function toCurlSnippetData(model: RequestSectionState): SnippetData {
+function toCurlSnippetData(model: TabData): SnippetData {
   return {
     url: model.url,
     method: model.method.toUpperCase(),
@@ -21,7 +19,7 @@ function toCurlSnippetData(model: RequestSectionState): SnippetData {
   };
 }
 
-function toFetchSnippetData(model: RequestSectionState): SnippetData {
+function toFetchSnippetData(model: TabData): SnippetData {
   return {
     url: model.url,
     method: model.method.toUpperCase(),
@@ -34,7 +32,7 @@ function toFetchSnippetData(model: RequestSectionState): SnippetData {
 }
 
 function toSnippetData(
-  model: RequestSectionState,
+  model: TabData,
   lang: SupportedSnippetLang
 ): SnippetData {
   switch (lang) {
@@ -48,7 +46,7 @@ function toSnippetData(
 }
 
 export function getCodeSnippet(
-  model: RequestSectionState,
+  model: TabData,
   lang: SupportedSnippetLang
 ) {
   const data = toSnippetData(model, lang);
