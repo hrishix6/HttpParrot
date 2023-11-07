@@ -1,14 +1,15 @@
-import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel } from '@/common/types';
+import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel, TabData } from '@/common/types';
 
 const DB_NAME = 'store';
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 
 enum ObjectStore {
   Collections = 'collections',
   Requests = 'requests',
   History = 'history',
-  Mimetypes = 'mimetypes'
-}
+  Mimetypes = 'mimetypes',
+  Tabs = 'tabs'
+};
 
 export function initDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -28,39 +29,30 @@ export function initDatabase(): Promise<IDBDatabase> {
       console.log("db doesn't exist or version needs update, initializing...");
       db = openReq.result;
 
-      if (db.objectStoreNames.contains(ObjectStore.History)) {
-        db.deleteObjectStore(ObjectStore.History);
-        console.log(`deleted previous history store`);
+      if (!db.objectStoreNames.contains(ObjectStore.History)) {
+        db.createObjectStore(ObjectStore.History, { keyPath: 'id' });
+        console.log('created history store');
       }
 
-      if (db.objectStoreNames.contains(ObjectStore.Collections)) {
-        db.deleteObjectStore(ObjectStore.Collections);
-        console.log(`deleted previous collections store`);
+      if (!db.objectStoreNames.contains(ObjectStore.Collections)) {
+        db.createObjectStore(ObjectStore.Collections, { keyPath: 'id' });
+        console.log('created collections store');
       }
 
-      if (db.objectStoreNames.contains(ObjectStore.Requests)) {
-        db.deleteObjectStore(ObjectStore.Requests);
-        console.log(`deleted previous requests store`);
+      if (!db.objectStoreNames.contains(ObjectStore.Requests)) {
+        db.createObjectStore(ObjectStore.Requests, { keyPath: 'id' });
+        console.log('created requests store');
       }
 
-      if (db.objectStoreNames.contains(ObjectStore.Mimetypes)) {
-        db.deleteObjectStore(ObjectStore.Mimetypes);
-        console.log(`deleted previous mimetypes store`);
+      if (!db.objectStoreNames.contains(ObjectStore.Mimetypes)) {
+        db.createObjectStore(ObjectStore.Mimetypes, { keyPath: "id" });
+        console.log('created mimetype store');
       }
 
-
-      db.createObjectStore(ObjectStore.History, { keyPath: 'id' });
-      console.log('created history store');
-
-      db.createObjectStore(ObjectStore.Requests, { keyPath: 'id' });
-      console.log('created requests store');
-
-      db.createObjectStore(ObjectStore.Collections, { keyPath: 'id' });
-      console.log('created collections store');
-
-      db.createObjectStore(ObjectStore.Mimetypes, { keyPath: "id" });
-      console.log('created mimetype store');
-
+      if (!db.objectStoreNames.contains(ObjectStore.Tabs)) {
+        db.createObjectStore(ObjectStore.Tabs, { keyPath: "id" });
+        console.log('created tabs store');
+      }
     });
 
     openReq.addEventListener('success', (_) => {
@@ -479,3 +471,85 @@ class MimetypesRepository {
 }
 
 export const mimeRepo = new MimetypesRepository();
+
+export interface TabModel {
+  id: string;
+  name: string;
+  data: TabData
+}
+
+export interface UpdateTabModel {
+  id: string;
+  name?: string;
+  data: Partial<TabData>
+}
+
+class TabsRepository {
+  private db: IDBDatabase;
+  isInitialized: boolean = false;
+
+  setDb(db: IDBDatabase) {
+    this.db = db;
+    this.isInitialized = true;
+  }
+
+  checkIfExists(id: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const store = this.getStore("readonly");
+      const req = store.getKey(id);
+
+      req.addEventListener("success", (_) => {
+        resolve(!!req.result);
+      });
+      req.addEventListener("error", (_) => reject(false));
+    })
+  }
+
+  getStore(mode: IDBTransactionMode) {
+    const tx = this.db.transaction(ObjectStore.Tabs, mode);
+    return tx.objectStore(ObjectStore.Tabs);
+  }
+
+  getAll(): Promise<TabModel[]> {
+    return new Promise((resolve, reject) => {
+
+      const store = this.getStore("readonly");
+      const req = store.getAll();
+
+      req.addEventListener("success", (_) => resolve(req.result));
+      req.addEventListener("error", (_) => reject(req.error));
+    });
+  }
+
+  insert(dto: TabModel): Promise<string> {
+    return new Promise((resolve, reject) => {
+      console.log(`trying to insert new tab..`);
+      const store = this.getStore("readwrite");
+      const req = store.add(dto);
+      req.addEventListener("success", (_) => resolve(req.result as string));
+      req.addEventListener("error", (_) => reject(req.error));
+    });
+  }
+
+  update(dto: UpdateTabModel): Promise<string> {
+    return new Promise((resolve, reject) => {
+      console.log(`trying to upsert new tab..`);
+      const store = this.getStore("readwrite");
+      const req = store.put(dto);
+      req.addEventListener("success", (_) => resolve(req.result as string));
+      req.addEventListener("error", (_) => reject(req.error));
+    });
+  }
+
+  delete(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const store = this.getStore("readwrite");
+      const req = store.delete(id);
+      req.addEventListener("success", (_) => resolve(""));
+      req.addEventListener("error", (_) => reject(req.error));
+    });
+  }
+
+}
+
+export const tabRepo = new TabsRepository();

@@ -126,3 +126,44 @@ export interface MimeDb {
 export interface MimeRecord extends MimeMetadata {
   id: string;
 }
+
+export type RequestFormMode = "update" | "insert";
+
+export interface TabData {
+  id: string;
+  name: string;
+  collectionId: string;
+  collectionName?: string;
+  method: RequestMethod,
+  url: string,
+  query: QueryItem[],
+  headers: HeaderItem[],
+  userEditingUrl: boolean,
+  mode: RequestFormMode,
+  bodyType: SupportedBodyType,
+  formItems: FormDataItem[],
+  enableTextBody: boolean,
+  textBody: string,
+  loading: boolean,
+  aborter?: AbortController
+  lock: boolean;
+  responseStatus: string,
+  responseSize: string,
+  responseTime: string,
+  responseBody: any,
+  responseBodyType: string
+  responseHeaders: ResponseHeader[],
+  responseOk: boolean;
+  responseMimetype: string;
+}
+
+export type TabDataKey = keyof TabData;
+
+export interface TabDataHolder {
+  [key: string]: TabData
+}
+
+export interface RequestTab {
+  id: string;
+  name: string;
+}
