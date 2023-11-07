@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { QueryItem, RequestFormMode, RequestMethod, RequestModel, ResponseModel, SupportedBodyType, SupportedSnippetLang, TabData, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
+import { RequestFailedError, RequestFormMode, RequestMethod, RequestModel, ResponseModel, SupportedBodyType, SupportedSnippetLang, TabData, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
 import { v4 as uuiv4 } from "uuid";
 import {
     newTab,
@@ -9,7 +9,6 @@ import {
     setName,
     setMethod,
     setUrl,
-    initQueryItems,
     setLoading,
     clearResponseForTab,
     updateQueryItemValue,
@@ -32,7 +31,7 @@ import {
     updateFormDataItemEnabled,
     populatedTabData,
 } from "./tabs.reducer";
-import { TabModel, UpdateTabModel, tabRepo } from "@/lib/db";
+import { TabModel, UpdateTabModel, defaultTabData, tabRepo, updateTabDataInDB } from "@/lib/db";
 import { RootState } from "@/common/store";
 import { toFetchConfig } from "@/lib/request.utils";
 import { getContentTypeHeader } from "@/lib/header.utils";
@@ -40,62 +39,9 @@ import { toResponseModel } from "@/lib/response.utils";
 import { v4 as uuidv4 } from "uuid";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
 import { getCodeSnippet } from "@/lib/snippets";
-import { getQueryString, getUpdatedUrl } from "@/lib/utils";
+import { deepCpObj, getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/utils";
 
-export class RequestFailedError extends Error {
-    public tabId: string;
-    public innerError: Error;
-    constructor(msg: string, tabId: string, cause: any) {
-        super(msg);
-        this.tabId = tabId;
-        this.innerError = cause;
-    }
-};
-
-const defaultTabData = (): TabData => ({
-    id: "",
-    collectionId: "",
-    collectionName: "",
-    name: "",
-    userEditingUrl: true,
-    method: "get",
-    url: '',
-    query: [],
-    headers: [],
-    mode: "insert",
-    bodyType: "formdata",
-    formItems: [],
-    enableTextBody: true,
-    textBody: "",
-    loading: false,
-    lock: false,
-    responseStatus: "",
-    responseSize: "",
-    responseTime: "",
-    responseBody: "",
-    responseBodyType: "unknown",
-    responseHeaders: [],
-    responseOk: false,
-    responseMimetype: ""
-});
-
-async function updateTabDataInDB(model: UpdateTabModel, __: string) {
-    try {
-        const et = await tabRepo.checkIfExists(model.id);
-        if (et) {
-            await tabRepo.update(model);
-        }
-    } catch (error) {
-        console.log(`couldn't update tab to db ${error}`);
-    }
-}
-
-function deepCpObj<T>(obj: any): T {
-    if (structuredClone && typeof structuredClone === "function") {
-        return structuredClone(obj) as T;
-    }
-    return JSON.parse(JSON.stringify(obj)) as T;
-}
+// #region form-actions
 
 export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, tabId: string }, string>('tabs/makeRequestActionAsync', async (tabId, thunkAPI) => {
 
@@ -182,18 +128,20 @@ export const generateCodeSnippetAsync = createAsyncThunk<void, SupportedSnippetL
     console.log(codeSnippet);
 });
 
+// #endregion form-actions
+
 // #region tab-actions
 export const newTabAsync = createAsyncThunk<void, void>("tabs/newTabAsync", async (_, thunkAPI) => {
     const { dispatch } = thunkAPI;
-    const tab: TabModel = {
+
+    const tabModel: TabModel = {
         id: uuiv4(),
         name: "New Request",
         data: defaultTabData()
     };
-    dispatch(newTab(tab));
-
+    dispatch(newTab(tabModel));
     try {
-        const result = await tabRepo.insert(tab);
+        const result = await tabRepo.insert(tabModel);
         if (result) {
             console.log(`tab added to indexed db`);
         }
@@ -238,39 +186,33 @@ export const populateRequestSectionAsync = createAsyncThunk<void, { model: Reque
 
 export const clearRequestSectionAsync = createAsyncThunk<void, void>("tabs/clearRequestSectionAsync", async (_, thunkAPI) => {
     const { getState, dispatch } = thunkAPI;
+    const rootState = getState() as RootState;
+
     dispatch(clearRequestSection());
 
-    const rootState = getState() as RootState;
     const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
 
-    const updateModel: UpdateTabModel = {
-        id: activeTab,
-        data: {
-            id: "",
-            collectionId: "default",
-            mode: "insert",
-            name: "",
-            userEditingUrl: true,
-            method: "get",
-            url: '',
-            query: [],
-            headers: [],
-            formItems: [],
-            bodyType: "formdata",
-            enableTextBody: true,
-            textBody: "",
-        }
-    };
-
-    try {
-        const result = await tabRepo.update(updateModel);
-        if (result) {
-            console.log(`tab updated to indexed db`);
-        }
-    } catch (error) {
-        console.log(`couldn't update tab to db ${error}`);
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.id = "";
+        tbData.collectionId = "default";
+        tbData.mode = "insert";
+        tbData.name = "";
+        tbData.method = "get";
+        tbData.url = '';
+        tbData.query = [];
+        tbData.headers = [];
+        tbData.formItems = [];
+        tbData.bodyType = "formdata";
+        tbData.enableTextBody = true;
+        tbData.textBody = "";
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+        await updateTabDataInDB(updateModel, "clearRequestSectionAsync");
     }
-
 });
 
 // #endregion tab-actions
@@ -284,16 +226,14 @@ export const setNameAsync = createAsyncThunk<void, string>("tabs/setNameAsync", 
     const activeTab = rootState.tabsStore.activeTab;
     const currentTabData = rootState.tabsStore.tabData[activeTab];
     if (currentTabData) {
-        currentTabData.name = newName;
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.name = newName;
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+        await updateTabDataInDB(updateModel, "setNameAsync");
     }
-
-    const updateModel: UpdateTabModel = {
-        id: activeTab,
-        data: currentTabData
-    };
-
-    await updateTabDataInDB(updateModel, "setNameAsync");
-
 });
 
 export const setMethodAsync = createAsyncThunk<void, RequestMethod>("tabs/setMethodAsync", async (method, thunkAPI) => {
@@ -318,7 +258,6 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
-
     dispatch(setUrl(url));
 
     const activeTab = rootState.tabsStore.activeTab;
@@ -326,10 +265,13 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
 
     if (currentTabData) {
         const tbData = deepCpObj<TabData>(currentTabData);
-
-        tbData.userEditingUrl = true;
         tbData.url = url
-
+        if (url) {
+            const queryString = url.split("?")[1];
+            if (queryString) {
+                tbData.query = getQueryItems(queryString);
+            }
+        }
         const updateModel: UpdateTabModel = {
             id: activeTab,
             data: tbData
@@ -342,25 +284,6 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
 // #endregion url-actions
 
 // #region query-actions
-export const initQueryItemsAsync = createAsyncThunk<void, QueryItem[]>("tabs/setUrlAsync", async (args, thunkAPI) => {
-    const { dispatch, getState } = thunkAPI;
-    const rootState = getState() as RootState;
-
-    dispatch(initQueryItems(args));
-
-    const activeTab = rootState.tabsStore.activeTab;
-    const currentTabData = rootState.tabsStore.tabData[activeTab];
-
-    if (currentTabData) {
-        const tbData = deepCpObj<TabData>(currentTabData);
-        tbData.query = args;
-        const updateModel: UpdateTabModel = {
-            id: activeTab,
-            data: tbData
-        };
-        await updateTabDataInDB(updateModel, "initQueryItemsAsync");
-    }
-});
 
 export const updateQueryItemValueAsync = createAsyncThunk<void, UpdateQueryItemValue>("tabs/updateQueryItemValueAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;

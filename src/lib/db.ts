@@ -77,6 +77,31 @@ export async function loadMimedbJson(): Promise<MimeDb> {
   }
 }
 
+export const defaultTabData = (): TabData => ({
+  id: "",
+  collectionId: "",
+  collectionName: "",
+  name: "",
+  method: "get",
+  url: '',
+  query: [],
+  headers: [],
+  mode: "insert",
+  bodyType: "formdata",
+  formItems: [],
+  enableTextBody: true,
+  textBody: "",
+  loading: false,
+  lock: false,
+  responseStatus: "",
+  responseSize: "",
+  responseTime: "",
+  responseBody: "",
+  responseBodyType: "unknown",
+  responseHeaders: [],
+  responseOk: false,
+  responseMimetype: ""
+});
 
 interface IRepository {
   setDb: (db: IDBDatabase) => void;
@@ -553,3 +578,15 @@ class TabsRepository {
 }
 
 export const tabRepo = new TabsRepository();
+
+
+export async function updateTabDataInDB(model: UpdateTabModel, __: string) {
+  try {
+    const et = await tabRepo.checkIfExists(model.id);
+    if (et) {
+      await tabRepo.update(model);
+    }
+  } catch (error) {
+    console.log(`couldn't update tab to db ${error}`);
+  }
+}

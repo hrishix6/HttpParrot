@@ -64,3 +64,10 @@ export function copyToClipboard(text: string): Promise<boolean> {
     }
   });
 }
+
+export function deepCpObj<T>(obj: any): T {
+  if (structuredClone && typeof structuredClone === "function") {
+    return structuredClone(obj) as T;
+  }
+  return JSON.parse(JSON.stringify(obj)) as T;
+}

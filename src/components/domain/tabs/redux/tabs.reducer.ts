@@ -1,9 +1,9 @@
-import { FormDataItem, HeaderItem, QueryItem, RequestFormMode, RequestMethod, RequestModel, RequestTab, ResponseHeader, SupportedBodyType, TabData, TabDataHolder, TabDataKey, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
+import { FormDataItem, HeaderItem, QueryItem, RequestFailedError, RequestFormMode, RequestMethod, RequestModel, RequestTab, ResponseHeader, SupportedBodyType, TabData, TabDataHolder, TabDataKey, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
 import { RootState } from "@/common/store";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";;
+import { getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/utils";
+import { abortOngoingRequestAsync, generateCodeSnippetAsync, makeRequestActionAsync } from "./tabs.async.actions";
 import { TabModel } from "@/lib/db";
-import { getQueryString, getUpdatedUrl } from "@/lib/utils";
-import { RequestFailedError, abortOngoingRequestAsync, generateCodeSnippetAsync, makeRequestActionAsync } from "./tabs.async.actions";
 
 function tabDataSelector<T>(state: RootState, key: TabDataKey): T {
     const currentActive = state.tabsStore.activeTab;
@@ -14,7 +14,6 @@ function tabDataSelector<T>(state: RootState, key: TabDataKey): T {
 export const populatedTabData = (model: RequestModel, mode: RequestFormMode, collectionName?: string): TabData => ({
     id: model.id,
     collectionId: model.collectionId || "",
-    userEditingUrl: true,
     collectionName: collectionName || "",
     name: model.name,
     mode,
@@ -71,7 +70,7 @@ const tabSlice = createSlice({
             const { id, name, data } = action.payload;
             state.activeTab = id;
             state.tabs.push({ id, name });
-            state.tabData[id] = data;
+            state.tabData[id] = data
         },
         deleteTab: (state, action: PayloadAction<string>) => {
             const tab2deleteIndex = state.tabs.findIndex(x => x.id === action.payload);
@@ -153,7 +152,6 @@ const tabSlice = createSlice({
                 currentTabData.collectionId = "default";
                 currentTabData.mode = "insert";
                 currentTabData.name = "";
-                currentTabData.userEditingUrl = true;
                 currentTabData.method = "get";
                 currentTabData.url = '';
                 currentTabData.query = [];
@@ -183,22 +181,13 @@ const tabSlice = createSlice({
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
             if (currentTabData) {
-                currentTabData.userEditingUrl = true;
                 currentTabData.url = action.payload;
-            }
-        },
-        userWantsToEditUrl: (state) => {
-            const activeTab = state.activeTab;
-            const currentTabData = state.tabData[activeTab];
-            if (currentTabData) {
-                currentTabData.userEditingUrl = true;
-            }
-        },
-        userDoneEditingUrl: (state) => {
-            const activeTab = state.activeTab;
-            const currentTabData = state.tabData[activeTab];
-            if (currentTabData) {
-                currentTabData.userEditingUrl = false;
+                if (action.payload) {
+                    const queryString = action.payload.split("?")[1];
+                    if (queryString) {
+                        currentTabData.query = getQueryItems(queryString);
+                    }
+                }
             }
         },
         setLoading: (state, action: PayloadAction<AbortController>) => {
@@ -503,8 +492,6 @@ export const {
     setBodyType,
     clearRequestSection,
     setName,
-    userWantsToEditUrl,
-    userDoneEditingUrl,
     initQueryItems,
     updateHeaderName,
     updateHeaderValue,
@@ -532,8 +519,6 @@ export const selectMethod = (state: RootState) => tabDataSelector<RequestMethod>
 export const selectQuery = (state: RootState) => tabDataSelector<QueryItem[]>(state, "query");
 
 export const selectHeaders = (state: RootState) => tabDataSelector<HeaderItem[]>(state, "headers");
-
-export const selectUserEditingUrl = (state: RootState) => tabDataSelector<boolean>(state, "userEditingUrl");
 
 export const selectName = (state: RootState) => tabDataSelector<string>(state, "name");
 

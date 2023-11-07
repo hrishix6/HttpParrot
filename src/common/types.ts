@@ -138,7 +138,6 @@ export interface TabData {
   url: string,
   query: QueryItem[],
   headers: HeaderItem[],
-  userEditingUrl: boolean,
   mode: RequestFormMode,
   bodyType: SupportedBodyType,
   formItems: FormDataItem[],
@@ -167,3 +166,13 @@ export interface RequestTab {
   id: string;
   name: string;
 }
+
+export class RequestFailedError extends Error {
+  public tabId: string;
+  public innerError: Error;
+  constructor(msg: string, tabId: string, cause: any) {
+    super(msg);
+    this.tabId = tabId;
+    this.innerError = cause;
+  }
+};
