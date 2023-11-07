@@ -1,5 +1,5 @@
 <h1 style="display:flex; align-items:center; gap:5px; justify-content:center;">
-    <img src="./public/icons/icon48.png" alt="logo">
+    <img src="./public/icons/icon32.png" alt="logo">
     <span style="display:block">HttpParrot</span>
 </h1>
 
@@ -7,8 +7,13 @@
 
 ## Motivation
 
-In light of the outrage surrounding my (ex) favourite API testing tool - Postman and many others e.g Kong's Insomnia, making controversial decisions about their product, I've decided to embark on the journey of rolling my own API client tool. I thought it would be a fun and challenging exercise. I will try
-to replicate most essential features that such a tool should posses.
+Didn't like Postman's decision to move everything online with no offline option. Didn't
+like Insomnia, decided to roll my own tool. Besides I thought it would be fun little side
+project,so here it is.
+
+## Spec
+
+You can read the full specification [here](/spec.md)
 
 ## Built using
 
@@ -18,19 +23,21 @@ to replicate most essential features that such a tool should posses.
 - [shadcn ui](https://ui.shadcn.com/)
 - [prismjs](https://prismjs.com/)
 - [beautifier.io](https://beautifier.io/)
-- [handlebars](https://handlebarsjs.com/)
+- [Mustache.js](https://mustache.github.io/)
+- [mime-db](https://www.npmjs.com/package/mime-db)
 
 ## Features
 
 - intuitive UI.
-- Completely offline storage for saved requests/collections.
 - sending request with any method, url.
 - editable json/text/xml/formdata/urlencoded body
 - formatted & highlighted text responses. (json, xml, html, js, css etc).
 - show response metadata (response status, time, size).
 - handle binary response (zip, audio, video, pdf, images).
-- save request history to persist between sessions.
-- save requests and group using collections.
+- request history
+- saved requests in collections that persist between sessions
+- Completely offline storage for saved requests/collections.
+- Use environment variables to interpolate request configurations.
 
 ## Todo
 
@@ -38,11 +45,13 @@ to replicate most essential features that such a tool should posses.
 - import/export collections.
 - generate code snippets for various languages for making request(eg, curl, node, C# etc).
 - generate OpenAPI spec for collection.
-- add variables support to collection so user can set some defaults and then use them in requests.
+- Logs that show what happened to request.
+- pre-run/ post run scripts (run something before or after running specific requests).
+- run collections
 
 ## Screeshots
 
-<img style="display:block" src="./public/screenshots/collections.PNG" alt="ui">
+<img style="display:block" src="./public/screenshots/tabs.PNG" alt="ui">
 
 ## How to use
 
@@ -72,7 +81,7 @@ to replicate most essential features that such a tool should posses.
 ## Contributions
 
 I'm working on this as a personal project purely for the joy of learning, with no intentions of publishing it.
-If you're still enthusiastic about contributing, feel free to select an issue and submit a pull request."
+If you're still enthusiastic about contributing, feel free to select an issue and submit a pull request.
 
 ## License
 
