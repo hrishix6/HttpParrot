@@ -182,11 +182,12 @@ const tabSlice = createSlice({
             const currentTabData = state.tabData[activeTab];
             if (currentTabData) {
                 currentTabData.url = action.payload;
-                if (action.payload) {
-                    const queryString = action.payload.split("?")[1];
-                    if (queryString) {
-                        currentTabData.query = getQueryItems(queryString);
-                    }
+                const queryString = action.payload.split("?")[1];
+                if (queryString) {
+                    currentTabData.query = getQueryItems(queryString);
+                }
+                else {
+                    currentTabData.query = [];
                 }
             }
         },

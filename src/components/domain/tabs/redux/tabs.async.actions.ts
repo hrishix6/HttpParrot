@@ -271,6 +271,12 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
             if (queryString) {
                 tbData.query = getQueryItems(queryString);
             }
+            else {
+                tbData.query = [];
+            }
+        }
+        else {
+            tbData.query = [];
         }
         const updateModel: UpdateTabModel = {
             id: activeTab,
