@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { selectTheme } from './redux/theme.reducer';
-import { useAppSelector } from '../../../common/hoooks';
+import { useAppSelector } from '@/common/hoooks';
 
 type ThemeWrapperProps = {
   children?: React.ReactNode;

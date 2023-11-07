@@ -1,5 +1,4 @@
 import { Moon, Sun } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,7 +7,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { setTheme } from './redux/theme.reducer';
-import { useAppDispatch } from '../../../common/hoooks';
+import { useAppDispatch } from '@/common/hoooks';
 
 export function ThemeToggle() {
   const dispatch = useAppDispatch();

@@ -1,12 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import {
-  selectQuery,
-  addQueryItem,
-  updateQueryItemEnabled,
-  updateQueryItemName,
-  updateQueryItemValue,
-  removeQueryItem
-} from './redux/request.section.reducer';
+import { selectQuery } from '../tabs/redux/tabs.reducer';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useEffect, useRef } from 'react';
@@ -16,6 +9,13 @@ import {
   UpdateFormDataItemName,
   UpdateFormDataItemValue
 } from '@/common/types';
+import {
+  addQueryItemAsync,
+  removeQueryItemAsync,
+  updateQueryItemEnabledAsync,
+  updateQueryItemNameAsync,
+  updateQueryItemValueAsync
+} from '../tabs/redux/tabs.async.actions';
 
 function EmptyQueryParamsMessage() {
   return (
@@ -39,16 +39,16 @@ export function RequestQuery() {
   }, [query]);
 
   const onEnabledChange = (arg: UpdateFormDataItemEnabled) => {
-    dispatch(updateQueryItemEnabled(arg));
+    dispatch(updateQueryItemEnabledAsync(arg));
   };
   const onNameChange = (arg: UpdateFormDataItemName) => {
-    dispatch(updateQueryItemName(arg));
+    dispatch(updateQueryItemNameAsync(arg));
   };
   const onValueChange = (arg: UpdateFormDataItemValue) => {
-    dispatch(updateQueryItemValue(arg));
+    dispatch(updateQueryItemValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {
-    dispatch(removeQueryItem(id));
+    dispatch(removeQueryItemAsync(id));
   };
 
   return (
@@ -59,7 +59,7 @@ export function RequestQuery() {
           variant={'link'}
           size={'icon'}
           onClick={(_) => {
-            dispatch(addQueryItem(null));
+            dispatch(addQueryItemAsync());
           }}
         >
           <Plus className="h-5 w-5" />

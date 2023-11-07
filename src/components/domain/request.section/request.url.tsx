@@ -2,13 +2,15 @@ import React, { useEffect } from 'react';
 import { HighlightedInput } from '@/components/ui/highlighted-input';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
-  initQueryItems,
   selectUrl,
   selectUserEditingUrl,
-  setUrl,
   userDoneEditingUrl
-} from './redux/request.section.reducer';
-import { getQueryItems } from './utils/form.helpers';
+} from '../tabs/redux/tabs.reducer';
+import { getQueryItems } from '@/lib/utils';
+import {
+  initQueryItemsAsync,
+  setUrlAsync
+} from '../tabs/redux/tabs.async.actions';
 
 export function RequestUrl() {
   const dispatch = useAppDispatch();
@@ -16,7 +18,7 @@ export function RequestUrl() {
   const url = useAppSelector(selectUrl);
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setUrl(e.target.value));
+    dispatch(setUrlAsync(e.target.value));
   };
 
   const handleBlur = () => {
@@ -30,10 +32,10 @@ export function RequestUrl() {
       const queryStr = url && url.split('?')[1];
       if (queryStr) {
         bouncerId = setTimeout(() => {
-          dispatch(initQueryItems(getQueryItems(queryStr)));
+          dispatch(initQueryItemsAsync(getQueryItems(queryStr)));
         }, 500);
       } else {
-        dispatch(initQueryItems([]));
+        dispatch(initQueryItemsAsync([]));
       }
     }
     return () => {

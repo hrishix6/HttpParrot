@@ -1,4 +1,4 @@
-import { immutableHeaders } from '@/common/types';
+import { DEFAULT_HEADERS } from '@/lib/constants';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ export function ImmutableHeaders({ show }: ImmutableHeadersProps) {
 
   return (
     <>
-      {immutableHeaders.map((x) => (
+      {DEFAULT_HEADERS.map((x) => (
         <div className="flex gap-2 items-center" key={x.id}>
           <div>
             <Checkbox disabled className="block" defaultChecked />

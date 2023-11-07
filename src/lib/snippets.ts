@@ -1,49 +1,38 @@
-import { SupportedSnippetLang } from '@/common/types';
-import { RequestSectionState } from '../components/domain/request.section/redux/request.section.reducer';
-
+import { FormDataItem, HeaderItem, SupportedSnippetLang, TabData } from '@/common/types';
 interface SnippetData {
-  request?: {
-    method: string;
-    url: string;
-    headers: { name: string; value: string }[];
-    body: any;
-    bodyisFormdata?: boolean;
-    isPost?: boolean;
-    bodyisJson?: boolean;
+  method?: string;
+  url?: string;
+  headers?: HeaderItem[];
+  formdata?: FormDataItem[];
+  urlEncoded?: string;
+  json?: string;
+  xml?: string;
+  text?: string;
+}
+
+function toCurlSnippetData(model: TabData): SnippetData {
+  return {
+    url: model.url,
+    method: model.method.toUpperCase(),
+    json: "{'x':'y'}",
+    headers: model.headers.filter((x) => x.enabled)
   };
 }
 
-function toCurlSnippetData(model: RequestSectionState): SnippetData {
+function toFetchSnippetData(model: TabData): SnippetData {
   return {
-    request: {
-      url: model.url,
-      method: model.method.toUpperCase(),
-      body: "{'x':'y'}",
-      headers: model.headers
+    url: model.url,
+    method: model.method.toUpperCase(),
+    headers: model.headers
+      ? model.headers
         .filter((x) => x.enabled)
-        .map((x) => ({ name: x.name, value: x.value }))
-    }
-  };
-}
-
-function toFetchSnippetData(model: RequestSectionState): SnippetData {
-  return {
-    request: {
-      url: model.url,
-      method: model.method.toUpperCase(),
-      headers: model.headers
-        ? model.headers
-          .filter((x) => x.enabled)
-          .map((x) => ({ name: x.name, value: x.value }))
-        : [],
-      body: '',
-      bodyisJson: false
-    }
-  };
+      : [],
+    text: '',
+  }
 }
 
 function toSnippetData(
-  model: RequestSectionState,
+  model: TabData,
   lang: SupportedSnippetLang
 ): SnippetData {
   switch (lang) {
@@ -57,7 +46,7 @@ function toSnippetData(
 }
 
 export function getCodeSnippet(
-  model: RequestSectionState,
+  model: TabData,
   lang: SupportedSnippetLang
 ) {
   const data = toSnippetData(model, lang);

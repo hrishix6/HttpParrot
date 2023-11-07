@@ -1,4 +1,4 @@
-import { RequestFormMode } from './redux/request.section.reducer';
+import { RequestFormMode } from '@/common/types';
 
 interface Props {
   mode?: RequestFormMode;

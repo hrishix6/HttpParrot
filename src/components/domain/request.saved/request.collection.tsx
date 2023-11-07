@@ -59,9 +59,9 @@ export function RequestCollection({ model, requests }: RequestCollectionProps) {
         <div className="flex items-center gap-1">
           <Button variant="link" size="icon" onClick={() => setOpen(!open)}>
             {open ? (
-              <ChevronUp className="h-5 w-5" />
+              <ChevronUp className="h-5 w-5 transition-all duration-200" />
             ) : (
-              <ChevronDown className="h-5 w-5" />
+              <ChevronDown className="h-5 w-5 transition-all duration-200" />
             )}
             <span className="sr-only">expand or minimize collection</span>
           </Button>
@@ -69,7 +69,7 @@ export function RequestCollection({ model, requests }: RequestCollectionProps) {
         </div>
       </div>
       {open && (
-        <div className="transition-all ease-out duration-300 mt-1">
+        <div className="mt-1">
           {filteredSaved.map((item) => (
             <RequestSavedItem
               key={item.id}

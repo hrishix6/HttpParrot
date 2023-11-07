@@ -1,21 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RequestCollectionModel, RequestModel } from "@/common/types";
+import { RequestCollectionModel, RequestModel, RequestFormMode } from "@/common/types";
 import { v4 as uuidv4 } from "uuid";
 import { collectionRepo, requestRepo } from "@/lib/db";
 import { RootState } from "@/common/store";
-import { RequestFormMode, clearRequestSection, resetFormModeAfterDeletion } from "../../request.section/redux/request.section.reducer";
 
 
-export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, { name: string, collectionId: string }>('saved-requests/saveRequestAsync', async (arg, thunkAPI) => {
+export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: RequestFormMode }, { name: string, collectionId: string, tabId: string }>('saved-requests/saveRequestAsync', async (arg, thunkAPI) => {
     //try to store request history item in indexedb
 
-    const { getState, dispatch } = thunkAPI;
+    const { getState } = thunkAPI;
 
-    const { name: newName, collectionId } = arg;
+    const { name: newName, collectionId, tabId } = arg;
 
     const rootState = getState() as RootState;
 
-    const { url, query, headers, method, id, mode, bodyType, textBody, enableTextBody, formItems } = rootState.requestStore;
+    const tabData = rootState.tabsStore.tabData[tabId];
+
+    const { url, query, headers, method, id, mode, bodyType, textBody, enableTextBody, formItems } = tabData;
 
     if (mode == "insert") {
         const requestModel: RequestModel = {
@@ -43,7 +44,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             console.log(`couldn't store in indexedDB ${error}`);
         }
         finally {
-            dispatch(clearRequestSection());
+            // dispatch(clearRequestSection());
         }
 
         return { mode: "insert", model: requestModel };
@@ -74,7 +75,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             console.log(`couldn't store in indexedDB ${error}`);
         }
         finally {
-            dispatch(clearRequestSection());
+            // dispatch(clearRequestSection());
         }
 
         return { mode: "update", model: requestModel };
@@ -82,20 +83,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
     }
 });
 
-export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, thunkAPI) => {
-
-    const { getState, dispatch } = thunkAPI;
-
-    const rootState = getState() as RootState;
-
-    const requestFormstate = rootState.requestStore;
-
-    //some saved request is opened in form or not
-    if (requestFormstate.mode == "update") {
-        //it is open, we need to change mode to insert and remove the id.
-        dispatch(resetFormModeAfterDeletion());
-    }
-
+export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requests/deleteSavedRequestsAsync", async (_, __) => {
     try {
         if (requestRepo.isInitialized) {
             await requestRepo?.deleteAll();
@@ -105,20 +93,7 @@ export const deleteSavedRequestsAsync = createAsyncThunk<void, void>("saved-requ
     }
 });
 
-export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("saved-requests/deleteSavedRequestByIdAsync", async (id, thunkAPI) => {
-
-    const { getState, dispatch } = thunkAPI;
-
-    const rootState = getState() as RootState;
-
-    const requestFormstate = rootState.requestStore;
-
-    //if request being deleted is open in form or not
-    if (requestFormstate.mode == "update" && requestFormstate.id === id) {
-        //it is open, we need to change mode to insert and remove the id.
-        dispatch(resetFormModeAfterDeletion());
-    }
-
+export const deleteSavedRequestByIdAsync = createAsyncThunk<string, string>("saved-requests/deleteSavedRequestByIdAsync", async (id, _) => {
     try {
         if (requestRepo.isInitialized) {
             await requestRepo?.deleteById(id);

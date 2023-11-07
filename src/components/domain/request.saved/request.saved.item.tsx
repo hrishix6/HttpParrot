@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { RequestModel } from '@/common/types';
 import { useAppDispatch } from '@/common/hoooks';
 import { deleteSavedRequestByIdAsync } from './redux/request.saved.async.actions';
-import { populateRequestSection } from '../request.section/redux/request.section.reducer';
+import { populateRequestSectionAsync } from '../tabs/redux/tabs.async.actions';
 
 interface RequestSavedItemProps {
   children?: React.ReactNode;
@@ -30,8 +30,11 @@ export function RequestSavedItem({
   };
 
   const handleViewInRequestSection = (r: RequestModel) => {
+    console.log(
+      `populating tab with request model ${JSON.stringify(r, null, 2)}`
+    );
     dispatch(
-      populateRequestSection({ model: r, mode: 'update', collectionName })
+      populateRequestSectionAsync({ model: r, mode: 'update', collectionName })
     );
   };
 
@@ -51,7 +54,7 @@ export function RequestSavedItem({
       handleViewInRequestSection={handleViewInRequestSection}
       request={request}
     >
-      <div className="flex flex-col gap-2 p-2 border-b border-t cursor-context-menu card-background">
+      <div className="flex flex-col gap-2 p-2 border-b border-t cursor-context-menu card-background transition-all duration-200">
         <div className="flex gap-1">
           <Badge>{`${method[0].toUpperCase()}${method.slice(1)}`}</Badge>
           <p className="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">

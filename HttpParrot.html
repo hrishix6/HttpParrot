@@ -8,6 +8,22 @@
   </head>
   <body>
     <div id="root"></div>
+    <script id="template" type="x-tmpl-mustache">
+      curl -X {{method}} \
+        {{#headers}}
+      -H "{{name}} : {{value}}" \
+        {{/headers}}
+        {{#formdata}}
+      -F "{{name}}={{value}}" \
+        {{/formdata}}
+        {{#json}}
+      -d '{{{json}}}'
+        {{/json}}
+        {{#urlEncoded}}
+      -d "{{urlEncoded}}" \
+        {{/urlEncoded}}
+      "{{url}}"
+    </script>
     <script src="/js/beautify.min.js"></script>
     <script src="/js/beautify-css.min.js"></script>
     <script src="/js/beautify-html.min.js"></script>

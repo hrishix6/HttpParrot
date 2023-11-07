@@ -1,25 +1,35 @@
-import { useAppSelector } from '../../../common/hoooks';
+import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
+  selectRequestLoading,
   selectMimeType,
   selectResponseBody,
-  selectResponseBodyLoading,
-  selectResponseBodytype
-} from './redux/response.reducer';
+  selectResponseBodytype,
+  selectActiveTab
+} from '../tabs/redux/tabs.reducer';
 import { Spinner } from '@/components/ui/spinner';
 import { TextBody } from './text.body';
 import { BinaryBody } from './binary.body';
 import { EmptyBody } from './empty.body';
+import { SUPPORTED_TEXT_FORMATS } from '@/lib/constants';
+import { abortOngoingRequestAsync } from '../tabs/redux/tabs.async.actions';
+import { Button } from '@/components/ui/button';
 
 export function ResponseBody() {
+  const dispatch = useAppDispatch();
+  const activeTab = useAppSelector(selectActiveTab);
   const body = useAppSelector(selectResponseBody);
   const mimeType = useAppSelector(selectMimeType);
   const bodytype = useAppSelector(selectResponseBodytype);
-  const loading = useAppSelector(selectResponseBodyLoading);
+  const loading = useAppSelector(selectRequestLoading);
 
   let bodyCompoent;
 
+  const handleAbortingRequest = () => {
+    dispatch(abortOngoingRequestAsync(activeTab));
+  };
+
   if (body) {
-    if (['js', 'css', 'html', 'xml', 'json'].includes(bodytype)) {
+    if (SUPPORTED_TEXT_FORMATS.includes(bodytype)) {
       bodyCompoent = <TextBody bodyType={bodytype} text={body} />;
     } else {
       bodyCompoent = (
@@ -33,8 +43,11 @@ export function ResponseBody() {
   return (
     <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
       {loading ? (
-        <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center text-primary">
+        <div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center gap-2">
           <Spinner />
+          <Button variant={'outline'} onClick={handleAbortingRequest}>
+            Cancel
+          </Button>
         </div>
       ) : (
         bodyCompoent

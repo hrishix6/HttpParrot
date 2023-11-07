@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/common/hoooks';
-import { selectBodyType } from '../redux/request.section.reducer';
+import { selectBodyType } from '../../tabs/redux/tabs.reducer';
 import { FormdataBody } from './formdata.body';
 import { TextBody } from './text.body';
 import { BodySectionHeader } from './body.section.header';

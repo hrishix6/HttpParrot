@@ -1,15 +1,15 @@
 import { SupportedBodyType } from '@/common/types';
 import { BodyTypeDropdown } from './body.type.dropdown';
 import { Button } from '@/components/ui/button';
-import {
-  addFormDataItem,
-  selectTextBodyEnabled,
-  setEnableTextBody
-} from '../redux/request.section.reducer';
+import { selectTextBodyEnabled } from '../../tabs/redux/tabs.reducer';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  addFormDataItemAsync,
+  setEnableTextBodyAsync
+} from '../../tabs/redux/tabs.async.actions';
 
 interface BodySectionHeaderProps {
   bodyType: SupportedBodyType;
@@ -27,7 +27,7 @@ export function BodySectionHeader({ bodyType }: BodySectionHeaderProps) {
           variant={'link'}
           size={'icon'}
           onClick={(_) => {
-            dispatch(addFormDataItem());
+            dispatch(addFormDataItemAsync());
           }}
         >
           <Plus className="h-5 w-5" />
@@ -42,7 +42,7 @@ export function BodySectionHeader({ bodyType }: BodySectionHeaderProps) {
           <Switch
             checked={enableTextBody}
             onCheckedChange={(checked) => {
-              dispatch(setEnableTextBody(checked));
+              dispatch(setEnableTextBodyAsync(checked));
             }}
             id="default_headers_switch"
           />

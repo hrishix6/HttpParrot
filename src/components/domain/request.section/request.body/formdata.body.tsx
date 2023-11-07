@@ -1,19 +1,19 @@
 import { EmptyBody } from './empty.body.form';
 import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import {
-  removeFormDataItem,
-  selectFormDataItems,
-  updateFormDataItemEnabled,
-  updateFormDataItemName,
-  updateFormDataItemValue
-} from '../redux/request.section.reducer';
+import { selectFormDataItems } from '../../tabs/redux/tabs.reducer';
 import { RequestFormDataItem } from '../request.data.item';
 import {
   UpdateFormDataItemEnabled,
   UpdateFormDataItemName,
   UpdateFormDataItemValue
 } from '@/common/types';
+import {
+  removeFormDataItemAsync,
+  updateFormDataItemEnabledAsync,
+  updateFormDataItemNameAsync,
+  updateFormDataItemValueAsync
+} from '../../tabs/redux/tabs.async.actions';
 
 export function FormdataBody() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -21,16 +21,16 @@ export function FormdataBody() {
   const formItems = useAppSelector(selectFormDataItems);
 
   const onEnabledChange = (arg: UpdateFormDataItemEnabled) => {
-    dispatch(updateFormDataItemEnabled(arg));
+    dispatch(updateFormDataItemEnabledAsync(arg));
   };
   const onNameChange = (arg: UpdateFormDataItemName) => {
-    dispatch(updateFormDataItemName(arg));
+    dispatch(updateFormDataItemNameAsync(arg));
   };
   const onValueChange = (arg: UpdateFormDataItemValue) => {
-    dispatch(updateFormDataItemValue(arg));
+    dispatch(updateFormDataItemValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {
-    dispatch(removeFormDataItem(id));
+    dispatch(removeFormDataItemAsync(id));
   };
 
   return (

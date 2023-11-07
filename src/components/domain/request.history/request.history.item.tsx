@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { RequestModel } from '@/common/types';
 import { useAppDispatch } from '@/common/hoooks';
 import { deleteHistoryItemAsync } from './redux/history.async.actions';
-import { populateRequestSection } from '../request.section/redux/request.section.reducer';
+import { populateRequestSectionAsync } from '../tabs/redux/tabs.async.actions';
 
 interface RequestHistoryItemProps {
   children?: React.ReactNode;
@@ -26,7 +26,7 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
   };
 
   const handleViewInRequestSection = (r: RequestModel) => {
-    dispatch(populateRequestSection({ model: r, mode: 'insert' }));
+    dispatch(populateRequestSectionAsync({ model: r, mode: 'insert' }));
   };
 
   useEffect(() => {

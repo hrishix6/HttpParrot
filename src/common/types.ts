@@ -5,7 +5,7 @@ interface FormItem {
   enabled: boolean;
 }
 
-export interface QueryItem extends FormItem { }
+export type QueryItem = FormItem;
 
 export type RequestMethod =
   | 'get'
@@ -106,32 +106,6 @@ export interface Token {
 
 export type SupportedSnippetLang = 'js' | 'curl';
 
-export const immutableHeaders: HeaderItem[] = [
-  {
-    id: '-1',
-    enabled: true,
-    name: 'Content-Type',
-    value: 'included at runtime'
-  },
-  {
-    id: '-2',
-    enabled: true,
-    name: 'Content-Length',
-    value: 'included at runtime'
-  },
-  {
-    id: '-3',
-    enabled: true,
-    name: 'Accept',
-    value: '*/*'
-  },
-  {
-    id: '-4',
-    enabled: true,
-    name: 'User-Agent',
-    value: 'hrishix6/HttpParrot'
-  }
-];
 
 export interface BodyConfig {
   bodyType: SupportedBodyType;
@@ -151,4 +125,45 @@ export interface MimeDb {
 
 export interface MimeRecord extends MimeMetadata {
   id: string;
+}
+
+export type RequestFormMode = "update" | "insert";
+
+export interface TabData {
+  id: string;
+  name: string;
+  collectionId: string;
+  collectionName?: string;
+  method: RequestMethod,
+  url: string,
+  query: QueryItem[],
+  headers: HeaderItem[],
+  userEditingUrl: boolean,
+  mode: RequestFormMode,
+  bodyType: SupportedBodyType,
+  formItems: FormDataItem[],
+  enableTextBody: boolean,
+  textBody: string,
+  loading: boolean,
+  aborter?: AbortController
+  lock: boolean;
+  responseStatus: string,
+  responseSize: string,
+  responseTime: string,
+  responseBody: any,
+  responseBodyType: string
+  responseHeaders: ResponseHeader[],
+  responseOk: boolean;
+  responseMimetype: string;
+}
+
+export type TabDataKey = keyof TabData;
+
+export interface TabDataHolder {
+  [key: string]: TabData
+}
+
+export interface RequestTab {
+  id: string;
+  name: string;
 }
