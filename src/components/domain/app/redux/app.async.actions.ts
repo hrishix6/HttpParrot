@@ -1,9 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { initDatabase, historyRepo, collectionRepo, requestRepo, mimeRepo } from "@/lib/db";
+import { initDatabase, historyRepo, collectionRepo, requestRepo, mimeRepo, tabRepo } from "@/lib/db";
 import { populateHistory } from "../../request.history/redux/history.reducer";
 import { populateSavedCollections, populateSavedRequests } from "../../request.saved/redux/request.saved.reducer";
 import { delay } from "@/lib/utils";
-
+import { RootState } from "@/common/store";
+import { populateTabsData } from "../../tabs/redux/tabs.reducer";
+import { TabDataHolder } from "@/common/types";
 
 export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppDataAsync", async (_, thunkAPI) => {
     const { dispatch } = thunkAPI;
@@ -17,12 +19,29 @@ export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppData
         collectionRepo.setDb(db);
         requestRepo.setDb(db);
         mimeRepo.setDb(db);
+        tabRepo.setDb(db);
 
         const mimeinitSuccess = await mimeRepo.init();
 
         if (!mimeinitSuccess) {
             throw new Error("app data loading failed");
         }
+
+        //load tabs data===============================================================
+        const savedTabs = await tabRepo.getAll();
+        const tabs = savedTabs.map(x => ({ id: x.id, name: x.name || "New Request" }))
+        const tabDataDictionary = savedTabs.reduce((prev, curr) => {
+            prev[curr.id] = curr.data;
+            return prev;
+        }, {} as TabDataHolder);
+        const activeTab = tabs[tabs.length - 1]?.id || "";
+
+        dispatch(populateTabsData({
+            tabs,
+            tabData: tabDataDictionary,
+            activeTab
+        }));
+        //==============================================================================
 
         //seed operations..
         await collectionRepo.seed();
@@ -55,3 +74,5 @@ export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppData
         throw new Error("app data loading failed");
     }
 });
+
+export const tabDataSelector = (state: RootState) => state.tabsStore.tabData;

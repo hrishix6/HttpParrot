@@ -6,12 +6,14 @@ import { Header } from '../../layout/header';
 import { Main } from '../../layout/main';
 import { Sidebar } from '../../layout/sidebar';
 import { ActivitySection } from '../../layout/activity.section';
-import { RequestSection } from '../../layout/request.section';
-import { ResponseSection } from '../../layout/response.section';
 import { Footer } from '../../layout/footer';
 import { useEffect } from 'react';
 import { initAppDataAsync } from './redux/app.async.actions';
 import { AppError } from './app.error';
+import { Button } from '../../ui/button';
+import { Plus } from 'lucide-react';
+import { TabsCotaniner } from '../tabs/tabs.cotaniner';
+import { newTabAsync } from '../tabs/redux/tabs.async.actions';
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -36,12 +38,20 @@ export function App() {
         <Header />
         <Main>
           <Sidebar>
+            <div className="px-2">
+              <Button
+                className="w-full"
+                onClick={(_) => {
+                  dispatch(newTabAsync());
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                <span>New Request</span>
+              </Button>
+            </div>
             <ActivitySection />
           </Sidebar>
-          <div className="flex flex-col xl:flex-row flex-1 overflow-hidden">
-            <RequestSection />
-            <ResponseSection />
-          </div>
+          <TabsCotaniner />
         </Main>
         <Footer />
       </div>
