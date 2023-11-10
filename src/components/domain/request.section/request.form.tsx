@@ -30,6 +30,7 @@ import { RequestMetaHeader } from './request.meta.header';
 import { BodyForm } from './request.body/body.form';
 import { RequestUrl } from './request.url';
 import { Loader2 } from 'lucide-react';
+import { RequestAuth } from './request.auth';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
@@ -54,7 +55,7 @@ export function RequestForm() {
         request_name={name}
         collection={collectionName}
       />
-      <section className="flex gap-2 px-1 pt-2">
+      <section className="flex gap-1 px-1 pt-2">
         <div>
           <Select
             value={method}
@@ -136,7 +137,7 @@ export function RequestForm() {
               className="flex-1 overflow-hidden flex flex-col"
               value="auth"
             >
-              Coming soon.
+              <RequestAuth />
             </TabsContent>
           )}
         </Tabs>

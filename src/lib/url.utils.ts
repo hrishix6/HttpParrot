@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 
 export function getQueryString(items: QueryItem[]) {
-    const enabledItems = items.filter(x => x.enabled);
+    const enabledItems = items.filter(x => x.enabled && x.name && x.value);
     if (enabledItems.length) {
         const queryString = enabledItems.map(item => {
             const { name: key, value } = item;

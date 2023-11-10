@@ -233,13 +233,6 @@ const tabSlice = createSlice({
             }
         },
         //query==================================================================
-        initQueryItems: (state, action: PayloadAction<QueryItem[]>) => {
-            const activeTab = state.activeTab;
-            const currentTabData = state.tabData[activeTab];
-            if (currentTabData) {
-                currentTabData.query = action.payload;
-            }
-        },
         updateQueryItemName: (state, action: PayloadAction<UpdateEditableItemName>) => {
             const { id, name } = action.payload;
             const activeTab = state.activeTab;
@@ -516,7 +509,6 @@ export const {
     setBodyType,
     clearRequestSection,
     setName,
-    initQueryItems,
     updateHeaderName,
     updateHeaderValue,
     updateHeaderEnabled,

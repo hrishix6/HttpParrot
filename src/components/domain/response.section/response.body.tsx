@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import {
   selectRequestLoading,
-  selectMimeType,
   selectResponseBody,
   selectResponseBodytype,
   selectActiveTab
@@ -18,7 +17,6 @@ export function ResponseBody() {
   const dispatch = useAppDispatch();
   const activeTab = useAppSelector(selectActiveTab);
   const body = useAppSelector(selectResponseBody);
-  const mimeType = useAppSelector(selectMimeType);
   const bodytype = useAppSelector(selectResponseBodytype);
   const loading = useAppSelector(selectRequestLoading);
 
@@ -32,9 +30,7 @@ export function ResponseBody() {
     if (SUPPORTED_TEXT_FORMATS.includes(bodytype)) {
       bodyCompoent = <TextBody bodyType={bodytype} text={body} />;
     } else {
-      bodyCompoent = (
-        <BinaryBody bodyType={bodytype} mimeType={mimeType} chunks={body} />
-      );
+      bodyCompoent = <BinaryBody />;
     }
   } else {
     bodyCompoent = <EmptyBody />;

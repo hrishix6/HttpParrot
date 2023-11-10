@@ -43,7 +43,9 @@ export function RequestHistory() {
     return true;
   };
 
-  const filteredHistory = history.filter((x) => requestFilter(x, filter));
+  const filteredHistory = filter
+    ? history.filter((x) => requestFilter(x, filter))
+    : history;
 
   useEffect(() => {
     const bouncerId = setTimeout(() => {
