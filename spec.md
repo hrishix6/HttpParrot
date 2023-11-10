@@ -54,8 +54,6 @@ Only platform requirement is that user should have chrome version 88 or later.
 
 ## 3. Functional Requirements
 
----
-
 ### 3.1. Requests Configuration
 
 - Users should be able select type of HTTP request they want to make out of GET, POST, PATCH , DELETE, PUT , OPTIONS, HEAD and custom.
@@ -109,8 +107,6 @@ Only platform requirement is that user should have chrome version 88 or later.
 
 ## 4. Non-functional Requirements
 
----
-
 ### 4.1. Performance
 
 - The application should load fairly fast since most of the data is offline.
@@ -126,14 +122,10 @@ Only platform requirement is that user should have chrome version 88 or later.
 
 ## 5. Limitations
 
----
-
 - Synching state across multiple sessions of tab isn't supported at the moment.
 - Large response bodies ( > 20 Mb) will not be downloaded.
 
 ## 6. User Interface (UI)
-
----
 
 ### Main Page
 
@@ -152,8 +144,6 @@ Only platform requirement is that user should have chrome version 88 or later.
 ![Response View](/public/screenshots/response_view.png)
 
 ## 7. Data Model
-
----
 
 Following are the core entities, data is stored offline in user's browser specifically in Indexed db.
 
