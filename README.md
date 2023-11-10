@@ -7,9 +7,7 @@
 
 ## Motivation
 
-Didn't like Postman's decision to move everything online with no offline option. Didn't
-like Insomnia, decided to roll my own tool. Besides I thought it would be fun little side
-project,so here it is.
+Didn't like Postman's decision to move everything online with no offline option, not very fond of other tools, decided to roll my own lightweight tool. It has become a fun little side project.
 
 ## Spec
 
@@ -28,26 +26,26 @@ You can read the full specification [here](/spec.md)
 
 ## Features
 
-- intuitive UI.
-- sending request with any method, url.
-- editable json/text/xml/formdata/urlencoded body
-- formatted & highlighted text responses. (json, xml, html, js, css etc).
-- show response metadata (response status, time, size).
-- handle binary response (zip, audio, video, pdf, images).
-- request history
-- saved requests in collections that persist between sessions
-- Completely offline storage for saved requests/collections.
-- Use environment variables to interpolate request configurations.
+- **Intuitive UI**.
+- **Configure all aspects of request**.
+- **Editable & configurable body (text, json, xml, formdata, x-url-encoded-formdata)**.
+- **Formatted & highlighted preview of text responses. (json, xml, html, js, css)**.
+- **Response metadata (status, time, size)**.
+- **Downloadable binary response (zip, audio, video, pdf, images and so on)**.
+- **Reusable request history**.
+- **Request collections - group and save requests**.
+- **Completely offline storage, all your data is offline in the browser**.
+- **Environment variables for collections**.
+- **Import & export collections**.
 
-## Todo
+## Some feature Ideas (TODO)
 
+- ~~Cookie handling~~ (not possible as browsers don't allow reading cookies in content scripts).
 - Basic / Bearer authentication.
-- import/export collections.
 - generate code snippets for various languages for making request(eg, curl, node, C# etc).
 - generate OpenAPI spec for collection.
-- Logs that show what happened to request.
 - pre-run/ post run scripts (run something before or after running specific requests).
-- run collections
+- collection runner.
 
 ## Screeshots
 
