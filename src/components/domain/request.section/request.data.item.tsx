@@ -1,8 +1,8 @@
 import {
   FormDataItem,
-  UpdateFormDataItemEnabled,
-  UpdateFormDataItemName,
-  UpdateFormDataItemValue
+  UpdateEditableItemEnabled,
+  UpdateEditableItemName,
+  UpdateEditableItemValue
 } from '@/common/types';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -12,9 +12,9 @@ import { HighlightedInput } from '@/components/ui/highlighted-input';
 
 interface RequestQueryItemProps {
   model: FormDataItem;
-  onEnabledChange: (arg: UpdateFormDataItemEnabled) => void;
-  onNameChange: (arg: UpdateFormDataItemName) => void;
-  onValueChange: (arg: UpdateFormDataItemValue) => void;
+  onEnabledChange: (arg: UpdateEditableItemEnabled) => void;
+  onNameChange: (arg: UpdateEditableItemName) => void;
+  onValueChange: (arg: UpdateEditableItemValue) => void;
   onRemoveItem: (id: string) => void;
 }
 

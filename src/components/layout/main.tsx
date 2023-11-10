@@ -6,7 +6,7 @@ interface MainProps {
 
 export function Main({ children }: MainProps) {
   return (
-    <main className="flex flex-1 border-solid border-b border-t overflow-hidden">
+    <main className="flex flex-1 border-solid border-b border-t overflow-hidden relative">
       {children}
     </main>
   );

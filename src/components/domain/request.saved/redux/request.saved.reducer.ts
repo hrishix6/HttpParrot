@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
 import { RequestCollectionModel, RequestModel } from "@/common/types";
-import { addNewCollectionAsync, saveRequestAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync } from "./request.saved.async.actions";
+import { addNewCollectionAsync, saveRequestAsync, deleteSavedRequestByIdAsync, deleteSavedRequestsAsync, deleteCollectionAsync, saveRequestCopyAsync } from "./request.saved.async.actions";
 
 export interface RequestSavedState {
     collections: RequestCollectionModel[]
@@ -20,6 +20,12 @@ export const savedRequestsSlice = createSlice({
     name: "saved-requests",
     initialState,
     reducers: {
+        importCollection: (state, action: PayloadAction<RequestCollectionModel>) => {
+            state.collections.push(action.payload);
+        },
+        importRequests: (state, action: PayloadAction<RequestModel[]>) => {
+            state.saved.push(...action.payload);
+        },
         populateSavedRequests: (state, action: PayloadAction<RequestModel[]>) => {
             state.saved = action.payload;
         },
@@ -53,7 +59,13 @@ export const savedRequestsSlice = createSlice({
                     if (itemIndex > -1) {
                         state.saved[itemIndex] = model;
                     }
+                    else {
+                        state.saved.push(model);
+                    }
                 }
+            })
+            .addCase(saveRequestCopyAsync.fulfilled, (state, action) => {
+                state.saved.push(action.payload);
             })
             .addCase(deleteSavedRequestsAsync.fulfilled, (state, _) => {
                 state.saved = [];
@@ -70,12 +82,27 @@ export const savedRequestsSlice = createSlice({
                 console.log('adding item to collection');
             }).addCase(addNewCollectionAsync.rejected, (_, __) => {
                 console.log("failed to add collection");
-            });
+            })
+            .addCase(deleteCollectionAsync.fulfilled, (state, action) => {
+                const { collectionId, reqIds } = action.payload;
+
+                const collectIndex = state.collections.findIndex(x => x.id === collectionId);
+                if (collectIndex > -1) {
+                    state.collections.splice(collectIndex, 1);
+                }
+                const newSavedRequests = state.saved.filter(x => !reqIds.includes(x.id));
+                console.log(`new saved requests - ${JSON.stringify(newSavedRequests, null, 2)}`);
+                state.saved = newSavedRequests;
+            }).addCase(deleteCollectionAsync.pending, (_, __) => {
+                console.log('deleting collection');
+            }).addCase(deleteCollectionAsync.rejected, (_, __) => {
+                console.log("failed to delete collection");
+            })
     }
 });
 
 
-export const { setFilter, updateCollection, populateSavedCollections, populateSavedRequests } = savedRequestsSlice.actions;
+export const { importRequests, importCollection, setFilter, updateCollection, populateSavedCollections, populateSavedRequests } = savedRequestsSlice.actions;
 
 export const savedRequestsReducer = savedRequestsSlice.reducer;
 

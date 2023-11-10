@@ -15,15 +15,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import {} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/common/hoooks';
-import { saveRequestAsync } from '../request.saved/redux/request.saved.async.actions';
+import { useAppSelector } from '@/common/hoooks';
 import {
-  selectActiveTab,
   selectName,
   selectRequestCollection
 } from '../tabs/redux/tabs.reducer';
@@ -32,14 +29,13 @@ import { selectCollections } from '../request.saved/redux/request.saved.reducer'
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSave: (name: string, collectionId: string) => void;
 }
 
-export function SaveRequestDialogue({ onOpenChange, open }: Props) {
-  const activeRequestTab = useAppSelector(selectActiveTab);
+export function SaveRequestDialogue({ onOpenChange, open, onSave }: Props) {
   const rName = useAppSelector(selectName);
   const rCollection = useAppSelector(selectRequestCollection);
   const collections = useAppSelector(selectCollections);
-  const dispatch = useAppDispatch();
   const [requestName, setRequestName] = useState('');
   const [collection, setSelectedCollection] = useState('default');
 
@@ -56,13 +52,7 @@ export function SaveRequestDialogue({ onOpenChange, open }: Props) {
   }, [rCollection]);
 
   const handleSaveRequest = () => {
-    dispatch(
-      saveRequestAsync({
-        name: requestName,
-        collectionId: collection,
-        tabId: activeRequestTab
-      })
-    );
+    onSave(requestName, collection);
     setRequestName('');
     setSelectedCollection('default');
     onOpenChange(false);

@@ -22,31 +22,29 @@ export function ResponseSectionHeader() {
     : '';
 
   return (
-    <div className="flex items-stretch justify-between gap-2 text-sm">
-      <section className="flex-1 flex gap-2">
-        <div className="flex bg-secondary flex-1 border-solid border gap-2 p-1">
-          <p className="p-1 font-semibold bg-background flex items-center">
-            Status
-          </p>
-          <p
-            className={`flex items-center font-semibold ${responseStatusClass}`}
-          >
-            {status || '_ _'}
-          </p>
+    <div className="flex items-stretch text-sm mt-2 px-1">
+      <section className="flex-1 flex bg-muted px-1 py-1 gap-1">
+        <div className="flex bg-background flex-1 border-solid border-secondary-foreground gap-2 px-2">
+          <div className="flex">
+            <p className="p-1 font-semibold flex items-center">Status</p>
+            <p
+              className={`flex items-center font-semibold ${responseStatusClass}`}
+            >
+              {status}
+            </p>
+          </div>
         </div>
-        <div className="flex bg-secondary flex-1 border-solid border gap-2 p-1">
-          <p className="p-1 font-semibold bg-background flex items-center">
-            Size
-          </p>
-          <p className="flex items-center font-semibold">
-            {size || '_ _  bytes'}
-          </p>
+        <div className="flex bg-background flex-1 border-solid border-secondary-foreground gap-2 px-2">
+          <div className="flex">
+            <p className="p-1 font-semibold flex items-center">Size</p>
+            <p className="flex items-center font-semibold">{size}</p>
+          </div>
         </div>
-        <div className="flex bg-secondary  flex-1 border-solid border gap-2 p-1">
-          <p className="p-1 font-semibold bg-background flex items-center">
-            Time
-          </p>
-          <p className="flex items-center font-semibold">{time || '_ _  ms'}</p>
+        <div className="flex bg-background flex-1 border-solid border-secondary-foreground gap-2 px-2">
+          <div className="flex">
+            <p className="p-1 font-semibold flex items-center">Time</p>
+            <p className="flex items-center font-semibold">{time}</p>
+          </div>
         </div>
       </section>
       <Button onClick={() => dispatch(clearResponse(null))}>Clear</Button>

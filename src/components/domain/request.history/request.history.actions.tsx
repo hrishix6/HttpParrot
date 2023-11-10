@@ -13,18 +13,19 @@ export function RequestHistoryActions() {
   const dispatch = useAppDispatch();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="link" size="icon">
-          <Settings2 className="h-5 w-5" />
-          <span className="sr-only">History Options</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => dispatch(clearHistoryAsync())}>
-          Clear
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant={'ghost'} size={'icon'}>
+            <Settings2 className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => dispatch(clearHistoryAsync())}>
+            Clear
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

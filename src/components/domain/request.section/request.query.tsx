@@ -5,9 +5,9 @@ import { Plus } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { RequestFormDataItem } from './request.data.item';
 import {
-  UpdateFormDataItemEnabled,
-  UpdateFormDataItemName,
-  UpdateFormDataItemValue
+  UpdateEditableItemEnabled,
+  UpdateEditableItemName,
+  UpdateEditableItemValue
 } from '@/common/types';
 import {
   addQueryItemAsync,
@@ -38,13 +38,13 @@ export function RequestQuery() {
     }
   }, [query]);
 
-  const onEnabledChange = (arg: UpdateFormDataItemEnabled) => {
+  const onEnabledChange = (arg: UpdateEditableItemEnabled) => {
     dispatch(updateQueryItemEnabledAsync(arg));
   };
-  const onNameChange = (arg: UpdateFormDataItemName) => {
+  const onNameChange = (arg: UpdateEditableItemName) => {
     dispatch(updateQueryItemNameAsync(arg));
   };
-  const onValueChange = (arg: UpdateFormDataItemValue) => {
+  const onValueChange = (arg: UpdateEditableItemValue) => {
     dispatch(updateQueryItemValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {

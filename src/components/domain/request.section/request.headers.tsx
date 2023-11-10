@@ -6,11 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ImmutableHeaders } from './immutable.headers';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import {
-  UpdateHeaderEnabled,
-  UpdateHeaderName,
-  UpdateHeaderValue
-} from '@/common/types';
 import { RequestFormDataItem } from './request.data.item';
 import {
   addHeaderAsync,
@@ -19,6 +14,11 @@ import {
   updateHeaderNameAsync,
   updateHeaderValueAsync
 } from '../tabs/redux/tabs.async.actions';
+import {
+  UpdateEditableItemEnabled,
+  UpdateEditableItemName,
+  UpdateEditableItemValue
+} from '@/common/types';
 
 export function RequestHeaders() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -39,13 +39,13 @@ export function RequestHeaders() {
     }
   }, [headers]);
 
-  const onEnabledChange = (arg: UpdateHeaderEnabled) => {
+  const onEnabledChange = (arg: UpdateEditableItemEnabled) => {
     dispatch(updateHeaderEnabledAsync(arg));
   };
-  const onNameChange = (arg: UpdateHeaderName) => {
+  const onNameChange = (arg: UpdateEditableItemName) => {
     dispatch(updateHeaderNameAsync(arg));
   };
-  const onValueChange = (arg: UpdateHeaderValue) => {
+  const onValueChange = (arg: UpdateEditableItemValue) => {
     dispatch(updateHeaderValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {

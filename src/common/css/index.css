@@ -165,3 +165,8 @@
 .rich-input-container .rich-input-renderer::-webkit-scrollbar {
   display: none;
 }
+
+#import_collection_file::file-selector-button {
+  color: hsl(var(--secondary-foreground));
+  background-color: hsl(var(--secondary));
+}

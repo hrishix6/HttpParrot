@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { RequestMethodBadge } from '@/components/ui/request.method.badge';
 import { RequestHistoryItemActions } from './request.history.item.actions';
 import { timeSince } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -47,7 +47,7 @@ export function RequestHistoryItem({ request }: RequestHistoryItemProps) {
     >
       <div className="flex flex-col gap-2 p-2 border-b border-t cursor-context-menu card-background">
         <div className="flex gap-1">
-          <Badge>{`${method[0].toUpperCase()}${method.slice(1)}`}</Badge>
+          <RequestMethodBadge method={method} />
           <p className="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">
             {name || url}
           </p>

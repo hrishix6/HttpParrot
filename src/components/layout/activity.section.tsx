@@ -13,7 +13,7 @@ export function ActivitySection() {
         onValueChange={(e) => {
           setCurrentTab(e);
         }}
-        className="flex-1 flex flex-col overflow-hidden px-2 pt-2"
+        className="flex-1 flex flex-col overflow-hidden px-1 mt-2"
       >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="history">History</TabsTrigger>

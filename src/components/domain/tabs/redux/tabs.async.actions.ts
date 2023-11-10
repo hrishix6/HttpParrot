@@ -1,5 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RequestFailedError, RequestFormMode, RequestMethod, RequestModel, ResponseModel, SupportedBodyType, SupportedSnippetLang, TabData, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
+import {
+    RequestFailedError,
+    RequestFormMode,
+    RequestMethod,
+    RequestModel,
+    ResponseModel,
+    SupportedBodyType,
+    SupportedSnippetLang,
+    TabData,
+    UpdateEditableItemEnabled,
+    UpdateEditableItemName,
+    UpdateEditableItemValue
+} from "@/common/types";
 import { v4 as uuiv4 } from "uuid";
 import {
     newTab,
@@ -209,6 +221,7 @@ export const clearRequestSectionAsync = createAsyncThunk<void, void>("tabs/clear
         tbData.textBody = "";
         const updateModel: UpdateTabModel = {
             id: activeTab,
+            name: "New request",
             data: tbData
         };
         await updateTabDataInDB(updateModel, "clearRequestSectionAsync");
@@ -291,7 +304,7 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
 
 // #region query-actions
 
-export const updateQueryItemValueAsync = createAsyncThunk<void, UpdateQueryItemValue>("tabs/updateQueryItemValueAsync", async (arg, thunkAPI) => {
+export const updateQueryItemValueAsync = createAsyncThunk<void, UpdateEditableItemValue>("tabs/updateQueryItemValueAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -318,7 +331,7 @@ export const updateQueryItemValueAsync = createAsyncThunk<void, UpdateQueryItemV
     }
 });
 
-export const updateQueryItemEnabledAsync = createAsyncThunk<void, UpdateQueryItemEnabled>("tabs/updateQueryItemEnabledAsync", async (arg, thunkAPI) => {
+export const updateQueryItemEnabledAsync = createAsyncThunk<void, UpdateEditableItemEnabled>("tabs/updateQueryItemEnabledAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -346,7 +359,7 @@ export const updateQueryItemEnabledAsync = createAsyncThunk<void, UpdateQueryIte
     }
 })
 
-export const updateQueryItemNameAsync = createAsyncThunk<void, UpdateQueryItemName>("tabs/updateQueryItemNameAsync", async (arg, thunkAPI) => {
+export const updateQueryItemNameAsync = createAsyncThunk<void, UpdateEditableItemName>("tabs/updateQueryItemNameAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -435,7 +448,7 @@ export const removeQueryItemAsync = createAsyncThunk<void, string>("tabs/removeQ
 // #endregion query-actions
 
 // #region header-actions
-export const updateHeaderNameAsync = createAsyncThunk<void, UpdateHeaderName>("tabs/updateHeaderNameAsync", async (arg, thunkAPI) => {
+export const updateHeaderNameAsync = createAsyncThunk<void, UpdateEditableItemName>("tabs/updateHeaderNameAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -461,7 +474,7 @@ export const updateHeaderNameAsync = createAsyncThunk<void, UpdateHeaderName>("t
     }
 });
 
-export const updateHeaderValueAsync = createAsyncThunk<void, UpdateHeaderValue>("tabs/updateHeaderValueAsync", async (arg, thunkAPI) => {
+export const updateHeaderValueAsync = createAsyncThunk<void, UpdateEditableItemValue>("tabs/updateHeaderValueAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -486,7 +499,7 @@ export const updateHeaderValueAsync = createAsyncThunk<void, UpdateHeaderValue>(
     }
 });
 
-export const updateHeaderEnabledAsync = createAsyncThunk<void, UpdateHeaderEnabled>("tabs/updateHeaderEnabledAsync", async (arg, thunkAPI) => {
+export const updateHeaderEnabledAsync = createAsyncThunk<void, UpdateEditableItemEnabled>("tabs/updateHeaderEnabledAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -529,7 +542,7 @@ export const addHeaderAsync = createAsyncThunk<void, void>("tabs/addHeaderAsync"
             id: newHeaderId,
             name: "",
             value: "",
-            enabled: false
+            enabled: true
         });
 
         const updateModel: UpdateTabModel = {
@@ -689,7 +702,7 @@ export const removeFormDataItemAsync = createAsyncThunk<void, string>("tabs/remo
 
 });
 
-export const updateFormDataItemNameAsync = createAsyncThunk<void, UpdateFormDataItemName>("tabs/updateFormDataItemNameAsync", async (arg, thunkAPI) => {
+export const updateFormDataItemNameAsync = createAsyncThunk<void, UpdateEditableItemName>("tabs/updateFormDataItemNameAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -715,7 +728,7 @@ export const updateFormDataItemNameAsync = createAsyncThunk<void, UpdateFormData
     }
 });
 
-export const updateFormDataItemValueAsync = createAsyncThunk<void, UpdateFormDataItemValue>("tabs/updateFormDataItemValueAsync", async (arg, thunkAPI) => {
+export const updateFormDataItemValueAsync = createAsyncThunk<void, UpdateEditableItemValue>("tabs/updateFormDataItemValueAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 
@@ -741,7 +754,7 @@ export const updateFormDataItemValueAsync = createAsyncThunk<void, UpdateFormDat
     }
 });
 
-export const updateFormDataItemEnabledAsync = createAsyncThunk<void, UpdateFormDataItemEnabled>("tabs/updateFormDataItemEnabledAsync", async (arg, thunkAPI) => {
+export const updateFormDataItemEnabledAsync = createAsyncThunk<void, UpdateEditableItemEnabled>("tabs/updateFormDataItemEnabledAsync", async (arg, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
     const rootState = getState() as RootState;
 

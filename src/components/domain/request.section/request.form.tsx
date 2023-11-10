@@ -54,7 +54,7 @@ export function RequestForm() {
         request_name={name}
         collection={collectionName}
       />
-      <section className="flex gap-2 px-2 pt-2">
+      <section className="flex gap-2 px-1 pt-2">
         <div>
           <Select
             value={method}
@@ -92,7 +92,7 @@ export function RequestForm() {
           <RequestActionsDropDown />
         </div>
       </section>
-      <section className="flex-1 flex flex-col overflow-hidden px-2 pt-2">
+      <section className="flex-1 flex flex-col overflow-hidden px-1 pt-2">
         <Tabs
           value={tab}
           onValueChange={(e) => {

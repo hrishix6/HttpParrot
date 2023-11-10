@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
-import { CollectionVariable, RequestCollectionModel, UpdateCollectionVariableName, UpdateCollectionVariableValue } from "@/common/types";
+import { CollectionVariable, RequestCollectionModel, UpdateEditableItemName, UpdateEditableItemValue } from "@/common/types";
 import { v4 as uuidv4 } from 'uuid';
 import { saveCollectionAsync } from "./collection.form.async.actions";
 
@@ -41,14 +41,14 @@ export const collectionFormSlice = createSlice({
             state.loading = false;
             state.variables = [];
         },
-        updateVariableName: (state, action: PayloadAction<UpdateCollectionVariableName>) => {
+        updateVariableName: (state, action: PayloadAction<UpdateEditableItemName>) => {
             const { id, name } = action.payload;
             const itemIndex = state.variables.findIndex(x => x.id === id);
             if (itemIndex > -1) {
                 state.variables[itemIndex].name = name;
             }
         },
-        updateVariableValue: (state, action: PayloadAction<UpdateCollectionVariableValue>) => {
+        updateVariableValue: (state, action: PayloadAction<UpdateEditableItemValue>) => {
             const { id, value } = action.payload;
             const itemIndex = state.variables.findIndex(x => x.id === id);
             if (itemIndex > -1) {

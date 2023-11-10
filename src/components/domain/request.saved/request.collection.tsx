@@ -57,11 +57,11 @@ export function RequestCollection({ model, requests }: RequestCollectionProps) {
           {model.name}
         </p>
         <div className="flex items-center gap-1">
-          <Button variant="link" size="icon" onClick={() => setOpen(!open)}>
+          <Button variant="ghost" size="icon" onClick={() => setOpen(!open)}>
             {open ? (
-              <ChevronUp className="h-5 w-5 transition-all duration-200" />
+              <ChevronUp className="h-5 w-5" />
             ) : (
-              <ChevronDown className="h-5 w-5 transition-all duration-200" />
+              <ChevronDown className="h-5 w-5" />
             )}
             <span className="sr-only">expand or minimize collection</span>
           </Button>

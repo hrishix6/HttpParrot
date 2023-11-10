@@ -341,6 +341,25 @@ class RequestsRepository implements IRepository {
       });
     });
   }
+  insertMany(dto: RequestModel[]) {
+    return new Promise((resolve, reject) => {
+      const t = this.db.transaction(ObjectStore.Requests, "readwrite");
+
+      const stroe = t.objectStore(ObjectStore.Requests);
+
+      for (let item of dto) {
+        stroe.add(item);
+      }
+
+      t.addEventListener("complete", () => {
+        resolve(true);
+      });
+
+      t.addEventListener("error", () => {
+        reject(false);
+      })
+    });
+  }
 
   getAll(): Promise<RequestModel[]> {
     return new Promise((resolve, reject) => {
@@ -390,10 +409,15 @@ class RequestsRepository implements IRepository {
 
   deleteMultiple(ids: string[]) {
     return new Promise((resolve, reject) => {
-      const s = this.getStore('readwrite');
-      const r = s.delete(ids);
-      r.addEventListener('error', () => reject(r.error));
-      r.addEventListener('success', () => resolve(r.result));
+      const t = this.db.transaction(ObjectStore.Requests, "readwrite");
+      const store = t.objectStore(ObjectStore.Requests);
+      console.log(`deleting ids -> ${ids.join('\n')}`);
+      for (let id of ids) {
+        store.delete(id);
+      }
+
+      t.addEventListener("complete", () => resolve(true));
+      t.addEventListener("error", () => reject(false));
     });
   }
 }

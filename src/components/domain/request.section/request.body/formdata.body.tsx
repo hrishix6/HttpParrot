@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { selectFormDataItems } from '../../tabs/redux/tabs.reducer';
 import { RequestFormDataItem } from '../request.data.item';
 import {
-  UpdateFormDataItemEnabled,
-  UpdateFormDataItemName,
-  UpdateFormDataItemValue
+  UpdateEditableItemEnabled,
+  UpdateEditableItemName,
+  UpdateEditableItemValue
 } from '@/common/types';
 import {
   removeFormDataItemAsync,
@@ -20,13 +20,13 @@ export function FormdataBody() {
   const dispatch = useAppDispatch();
   const formItems = useAppSelector(selectFormDataItems);
 
-  const onEnabledChange = (arg: UpdateFormDataItemEnabled) => {
+  const onEnabledChange = (arg: UpdateEditableItemEnabled) => {
     dispatch(updateFormDataItemEnabledAsync(arg));
   };
-  const onNameChange = (arg: UpdateFormDataItemName) => {
+  const onNameChange = (arg: UpdateEditableItemName) => {
     dispatch(updateFormDataItemNameAsync(arg));
   };
-  const onValueChange = (arg: UpdateFormDataItemValue) => {
+  const onValueChange = (arg: UpdateEditableItemValue) => {
     dispatch(updateFormDataItemValueAsync(arg));
   };
   const onRemoveItem = (id: string) => {

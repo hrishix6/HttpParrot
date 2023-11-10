@@ -11,13 +11,15 @@ export function RequestSavedFilter({
   handleChange
 }: RequestSavedFilterProps) {
   return (
-    <div className="pl-1 pt-1 flex gap-2">
+    <div className="pt-1 px-1 flex items-center gap-1">
       <Input
         placeholder="search collection"
         value={filter}
         onChange={handleChange}
       />
-      <RequestSavedActions />
+      <div>
+        <RequestSavedActions />
+      </div>
     </div>
   );
 }

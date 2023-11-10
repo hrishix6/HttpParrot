@@ -1,11 +1,21 @@
-interface FormItem {
+interface EditableItem {
   id: string;
   name: string;
   value: string;
   enabled: boolean;
 }
 
-export type QueryItem = FormItem;
+export type InsertEditableItem = Pick<EditableItem, 'name' | 'value'>;
+
+export type UpdateEditableItemName = Pick<EditableItem, 'id' | 'name'>;
+
+export type UpdateEditableItemValue = Pick<EditableItem, 'id' | 'value'>;
+
+export type UpdateEditableItemEnabled = Pick<EditableItem, 'id'>;
+
+export type ExportedItem = Pick<EditableItem, "name" | "value">;
+
+export type QueryItem = EditableItem;
 
 export type RequestMethod =
   | 'get'
@@ -16,37 +26,13 @@ export type RequestMethod =
   | 'options'
   | 'head';
 
-export type InsertQueryItem = Pick<QueryItem, 'name' | 'value'>;
-
-export type UpdateQueryItemName = Pick<QueryItem, 'id' | 'name'>;
-
-export type UpdateQueryItemValue = Pick<QueryItem, 'id' | 'value'>;
-
-export type UpdateQueryItemEnabled = Pick<QueryItem, 'id'>;
-
-export interface HeaderItem extends FormItem { }
+export type HeaderItem = EditableItem;
 export interface ResponseHeader {
   name: string;
   value: string;
 }
 
-export type InsertHeader = Pick<HeaderItem, 'name' | 'value'>;
-
-export type UpdateHeaderName = Pick<HeaderItem, 'id' | 'name'>;
-
-export type UpdateHeaderValue = Pick<HeaderItem, 'id' | 'value'>;
-
-export type UpdateHeaderEnabled = Pick<HeaderItem, 'id'>;
-
-export interface FormDataItem extends FormItem { }
-
-export type InsertFormDataItem = Pick<FormDataItem, 'name' | 'value'>;
-
-export type UpdateFormDataItemName = Pick<FormDataItem, 'id' | 'name'>;
-
-export type UpdateFormDataItemValue = Pick<FormDataItem, 'id' | 'value'>;
-
-export type UpdateFormDataItemEnabled = Pick<FormDataItem, 'id'>;
+export type FormDataItem = EditableItem;
 
 export type SupportedBodyType =
   | 'formdata'
@@ -71,6 +57,18 @@ export interface RequestModel {
   collectionId: string;
 }
 
+export interface ExportedRequestModel {
+  method: RequestMethod;
+  name: string;
+  url: string;
+  query?: ExportedItem[];
+  headers?: ExportedItem[];
+  bodytype?: SupportedBodyType;
+  formItems?: ExportedItem[];
+  enableTextBody?: boolean;
+  textBody?: string;
+}
+
 
 export interface ResponseModel {
   mimeType: string;
@@ -84,19 +82,19 @@ export interface ResponseModel {
   ok: boolean;
 }
 
-export interface CollectionVariable extends FormItem { }
-
-export type InsertCollectionVariable = Pick<FormDataItem, 'name' | 'value'>;
-
-export type UpdateCollectionVariableName = Pick<FormDataItem, 'id' | 'name'>;
-
-export type UpdateCollectionVariableValue = Pick<FormDataItem, 'id' | 'value'>;
+export type CollectionVariable = EditableItem;
 
 export interface RequestCollectionModel {
   id: string;
   name: string;
   created: number;
   variables: CollectionVariable[];
+}
+
+export interface ExportedCollectionModel {
+  name: string;
+  variables?: ExportedItem[];
+  requests?: ExportedRequestModel[]
 }
 
 export interface Token {

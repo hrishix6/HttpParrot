@@ -1,5 +1,5 @@
 <h1 style="display:flex; align-items:center; gap:5px; justify-content:center;">
-    <img src="./public/icons/icon32.png" alt="logo">
+    <img src="./public/logo.svg" alt="logo">
     <span style="display:block">HttpParrot</span>
 </h1>
 

@@ -1,4 +1,21 @@
-import { FormDataItem, HeaderItem, QueryItem, RequestFailedError, RequestFormMode, RequestMethod, RequestModel, RequestTab, ResponseHeader, SupportedBodyType, TabData, TabDataHolder, TabDataKey, UpdateFormDataItemEnabled, UpdateFormDataItemName, UpdateFormDataItemValue, UpdateHeaderEnabled, UpdateHeaderName, UpdateHeaderValue, UpdateQueryItemEnabled, UpdateQueryItemName, UpdateQueryItemValue } from "@/common/types";
+import {
+    FormDataItem,
+    HeaderItem,
+    QueryItem,
+    RequestFailedError,
+    RequestFormMode,
+    RequestMethod,
+    RequestModel,
+    RequestTab,
+    ResponseHeader,
+    SupportedBodyType,
+    TabData,
+    TabDataHolder,
+    TabDataKey,
+    UpdateEditableItemEnabled,
+    UpdateEditableItemName,
+    UpdateEditableItemValue,
+} from "@/common/types";
 import { RootState } from "@/common/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";;
 import { getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/utils";
@@ -147,6 +164,12 @@ const tabSlice = createSlice({
         clearRequestSection: (state) => {
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
+            const tabIndex = state.tabs.findIndex(x => x.id === activeTab);
+
+            if (tabIndex > -1) {
+                state.tabs[tabIndex].name = "New request";
+            }
+
             if (currentTabData) {
                 currentTabData.id = "";
                 currentTabData.collectionId = "default";
@@ -217,7 +240,7 @@ const tabSlice = createSlice({
                 currentTabData.query = action.payload;
             }
         },
-        updateQueryItemName: (state, action: PayloadAction<UpdateQueryItemName>) => {
+        updateQueryItemName: (state, action: PayloadAction<UpdateEditableItemName>) => {
             const { id, name } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -231,7 +254,7 @@ const tabSlice = createSlice({
             }
 
         },
-        updateQueryItemValue: (state, action: PayloadAction<UpdateQueryItemValue>) => {
+        updateQueryItemValue: (state, action: PayloadAction<UpdateEditableItemValue>) => {
             const { id, value } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -244,7 +267,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateQueryItemEnabled: (state, action: PayloadAction<UpdateQueryItemEnabled>) => {
+        updateQueryItemEnabled: (state, action: PayloadAction<UpdateEditableItemEnabled>) => {
             const { id } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -285,7 +308,7 @@ const tabSlice = createSlice({
 
         },
         //headers===========================================================
-        updateHeaderName: (state, action: PayloadAction<UpdateHeaderName>) => {
+        updateHeaderName: (state, action: PayloadAction<UpdateEditableItemName>) => {
             const { id, name } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -296,7 +319,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateHeaderValue: (state, action: PayloadAction<UpdateHeaderValue>) => {
+        updateHeaderValue: (state, action: PayloadAction<UpdateEditableItemValue>) => {
             const { id, value } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -307,7 +330,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateHeaderEnabled: (state, action: PayloadAction<UpdateHeaderEnabled>) => {
+        updateHeaderEnabled: (state, action: PayloadAction<UpdateEditableItemEnabled>) => {
             const { id } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -326,7 +349,7 @@ const tabSlice = createSlice({
                     id: action.payload,
                     name: "",
                     value: "",
-                    enabled: false
+                    enabled: true
                 });
             }
         },
@@ -388,7 +411,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateFormDataItemName: (state, action: PayloadAction<UpdateFormDataItemName>) => {
+        updateFormDataItemName: (state, action: PayloadAction<UpdateEditableItemName>) => {
             const { id, name } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -399,7 +422,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateFormDataItemValue: (state, action: PayloadAction<UpdateFormDataItemValue>) => {
+        updateFormDataItemValue: (state, action: PayloadAction<UpdateEditableItemValue>) => {
             const { id, value } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];
@@ -410,7 +433,7 @@ const tabSlice = createSlice({
                 }
             }
         },
-        updateFormDataItemEnabled: (state, action: PayloadAction<UpdateFormDataItemEnabled>) => {
+        updateFormDataItemEnabled: (state, action: PayloadAction<UpdateEditableItemEnabled>) => {
             const { id } = action.payload;
             const activeTab = state.activeTab;
             const currentTabData = state.tabData[activeTab];

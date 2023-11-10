@@ -11,13 +11,15 @@ export function RequestHistoryFilter({
   handleChange
 }: RequestHistoryFilterProps) {
   return (
-    <div className="pl-1 pt-1 flex gap-2">
+    <div className="pt-1 px-1 flex items-center gap-1">
       <Input
         placeholder="search history"
         value={filter}
         onChange={handleChange}
       />
-      <RequestHistoryActions />
+      <div>
+        <RequestHistoryActions />
+      </div>
     </div>
   );
 }
