@@ -42,10 +42,10 @@ You can read the full specification [here](/spec.md)
 
 - ~~Cookie handling~~ (not possible as browsers don't allow reading cookies in content scripts).
 - Basic / Bearer authentication.
-- generate code snippets for various languages for making request(eg, curl, node, C# etc).
-- generate OpenAPI spec for collection.
-- pre-run/ post run scripts (run something before or after running specific requests).
-- collection runner.
+- Generate code snippets for various languages for making request(eg, curl, node, C# etc).
+- Import open api document and transform into usable collection.
+- Pre-run/ post run scripts (run something before or after running specific requests).
+- Collection runner.
 
 ## Screeshots
 
