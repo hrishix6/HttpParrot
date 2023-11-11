@@ -100,7 +100,9 @@ export const defaultTabData = (): TabData => ({
   responseBodyType: "unknown",
   responseHeaders: [],
   responseOk: false,
-  responseMimetype: ""
+  responseMimetype: "",
+  error: false,
+  errorMessage: ""
 });
 
 interface IRepository {

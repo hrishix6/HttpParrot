@@ -2,7 +2,7 @@ import { RootState } from "@/common/store";
 import { FormDataItem, MimeRecord } from "@/common/types";
 import { substituteText } from "./text.utils";
 import { mimeRepo } from "./db";
-import { DEFAULT_FILE_EXTENSION, DEFAULT_MIMETYPE } from "./constants";
+import { DEFAULT_FILE_EXTENSION, DEFAULT_MIMETYPE, MAX_BODY_READ_LIMIT } from "./constants";
 
 export function toSimpleFetchBody(state: RootState, tabId: string): any {
     const { bodyType, formItems, textBody, enableTextBody } = state.tabsStore.tabData[tabId];
@@ -133,6 +133,12 @@ export function readBody(
                 if (value) {
                     responseSize += value.length;
                     responseBody.push(value);
+                }
+
+                //check if body exceeds limit
+                if (responseSize >= MAX_BODY_READ_LIMIT) {
+                    reject(new Error("SIZE_EXCEEDED"));
+                    return;
                 }
 
                 return reader.read().then(processText);

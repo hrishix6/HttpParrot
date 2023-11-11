@@ -91,28 +91,6 @@
   background-color: hsl(var(--primary));
 }
 
-.spinner {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  border: 3px solid hsl(var(--secondary));
-  border-radius: 50%;
-  border-top-color: hsl(var(--primary));
-  animation: spin 1s ease-in-out infinite;
-  -webkit-animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
 .rich-input-container {
   position: relative;
 }

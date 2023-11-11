@@ -51,7 +51,9 @@ export const populatedTabData = (model: RequestModel, mode: RequestFormMode, col
     responseBodyType: "unknown",
     responseHeaders: [],
     responseOk: false,
-    responseMimetype: ""
+    responseMimetype: "",
+    error: false,
+    errorMessage: ""
 });
 
 
@@ -125,6 +127,8 @@ const tabSlice = createSlice({
                 clearResponseOfTab.responseHeaders = [];
                 clearResponseOfTab.responseOk = false;
                 clearResponseOfTab.responseMimetype = "";
+                clearResponseOfTab.error = false;
+                clearResponseOfTab.errorMessage = "";
             }
         },
         clearResponse: (state, _) => {
@@ -139,6 +143,8 @@ const tabSlice = createSlice({
                 currentTabData.responseHeaders = [];
                 currentTabData.responseOk = false;
                 currentTabData.responseMimetype = "";
+                currentTabData.error = false;
+                currentTabData.errorMessage = "";
             }
         },
         discardBody: (state, _) => {
@@ -445,12 +451,12 @@ const tabSlice = createSlice({
                 console.log(`req start - clared response data.`);
             })
             .addCase(makeRequestActionAsync.fulfilled, (state, action) => {
-                const { result, tabId } = action.payload;
+                const { result, tabId, error } = action.payload;
                 const currentTabData = state.tabData[tabId];
                 const { size, status, time, contentType, statusText, body, headers, ok, mimeType } = result;
                 if (currentTabData) {
                     currentTabData.responseStatus = status ? `${status} ${statusText}` : "";
-                    currentTabData.responseSize = size ? `${size} bytes` : "";
+                    currentTabData.responseSize = size ? `${size} bytes` : "Unknown";
                     currentTabData.responseTime = time ? `${time} ms` : "";
                     currentTabData.responseBodyType = contentType;
                     currentTabData.responseBody = body;
@@ -460,6 +466,16 @@ const tabSlice = createSlice({
                     currentTabData.loading = false;
                     currentTabData.aborter = undefined;
                     currentTabData.lock = false;
+
+                    if (error) {
+                        currentTabData.error = true;
+                        if (error.message == "SIZE_EXCEEDED") {
+                            currentTabData.errorMessage = "Response Body exceeds maximum app limit.";
+                        }
+                        else {
+                            currentTabData.errorMessage = "Something went wrong, check console for details."
+                        }
+                    }
                 }
             })
             .addCase(makeRequestActionAsync.rejected, (state, action) => {
@@ -471,6 +487,8 @@ const tabSlice = createSlice({
                     failedTabData.loading = false;
                     failedTabData.aborter = undefined;
                     failedTabData.lock = false;
+                    failedTabData.error = true;
+                    failedTabData.errorMessage = "Something went wrong, check console for details."
                 }
             })
             .addCase(generateCodeSnippetAsync.fulfilled, (_, __) => {
@@ -553,6 +571,10 @@ export const selectTextBodyEnabled = (state: RootState) => tabDataSelector<boole
 export const selectTextBody = (state: RootState) => tabDataSelector<string>(state, "textBody");
 
 export const selectIsLocked = (state: RootState) => tabDataSelector<boolean>(state, "lock");
+
+export const selectRequestFailed = (state: RootState) => tabDataSelector<boolean>(state, "error");
+
+export const selectRequestErrorMessage = (state: RootState) => tabDataSelector<string>(state, "errorMessage");
 
 //response============================================================================================
 export const selectResponseStatus = (state: RootState) => tabDataSelector<string>(state, "responseStatus");

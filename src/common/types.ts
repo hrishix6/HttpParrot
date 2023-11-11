@@ -152,6 +152,8 @@ export interface TabData {
   responseHeaders: ResponseHeader[],
   responseOk: boolean;
   responseMimetype: string;
+  error: boolean;
+  errorMessage: string;
 }
 
 export type TabDataKey = keyof TabData;

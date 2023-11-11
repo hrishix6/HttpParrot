@@ -55,7 +55,7 @@ import { deepCpObj, getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/u
 
 // #region form-actions
 
-export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, tabId: string }, string>('tabs/makeRequestActionAsync', async (tabId, thunkAPI) => {
+export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, error: any, tabId: string }, string>('tabs/makeRequestActionAsync', async (tabId, thunkAPI) => {
 
     const { getState, dispatch, rejectWithValue } = thunkAPI;
 
@@ -87,9 +87,11 @@ export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, 
 
         const ms = new Date().getTime() - start;
 
-        const responseModel = await toResponseModel(response);
+        const [result, error] = await toResponseModel(response, ms);
 
-        return { result: { ...responseModel, time: ms }, tabId };
+        return {
+            result, tabId, error
+        };
 
     } catch (error) {
         let msg = "something went wrong";

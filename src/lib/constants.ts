@@ -72,3 +72,4 @@ export const PROFILE_NAME = "hrishix6";
 
 export const THEME_LOCAL_STORAGE_KEY = 'app-theme';
 
+export const MAX_BODY_READ_LIMIT = 20000 * 20000;
