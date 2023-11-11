@@ -1,6 +1,6 @@
 <h1 style="display:flex; align-items:center; gap:5px; justify-content:center;">
     <img src="./public/logo.svg" alt="logo">
-    <span style="display:block">HttpParrot</span>
+    <span style="display:block;color:#20B256">HttpParrot</span>
 </h1>
 
 <p style="text-align:center">API testing tool baked right into chrome</p>
@@ -51,35 +51,38 @@ You can read the full specification [here](/spec.md)
 
 <img style="display:block" src="./public/screenshots/tabs.PNG" alt="ui">
 
+## Prerequisites
+
+You have Chrome `version 88` or later.
+
 ## How to use
 
-- clone this repository
+1. clone this repository
 
-- install `node >= 16.x.x`
+2. install `node >= 16.x.x`
 
-- install dependencies
+3. install dependencies
 
-  ```bash
-  $ npm install
-  ```
+```bash
+$ npm install
+```
 
-- build
-  ```bash
-  $ npm run build
-  ```
-- open `dist` folder in chrome extensions using `Load unpacked` button (make sure you have developer mode on).
+4. build
 
-- <p style="display:flex; align-items:center; gap:3px;">
-   <span style="display:block"> you should see an extension icon in toolbar, click the extension icon -> </span>
-   <img style="display:block" src="./public/icons/icon16.png">
-  </p>
+```bash
+$ npm run build
+```
 
-- exntension relies on `indexed db` to store data , please use reasonably update browser.
+5. open `dist` folder in chrome extensions using `Load unpacked` button (make sure you have developer mode on).
+
+6. <p style="display:flex; align-items:center; gap:3px;">
+    <span style="display:block"> you should see an extension icon in toolbar, click the extension icon -> </span>
+    <img style="display:block" src="./public/icons/icon16.png">
+   </p>
 
 ## Contributions
 
-I'm working on this as a personal project purely for the joy of learning, with no intentions of publishing it.
-If you're still enthusiastic about contributing, feel free to select an issue and submit a pull request.
+I'm working on this as a side project for learning, with no plans for public release. If you're still eager to contribute, please feel free to select an issue and submit a pull request.
 
 ## License
 
