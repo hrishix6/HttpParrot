@@ -2,8 +2,6 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/common/store";
 import { CollectionVariable, RequestCollectionModel, UpdateEditableItemName, UpdateEditableItemValue } from "@/common/types";
 import { v4 as uuidv4 } from 'uuid';
-import { saveCollectionAsync } from "./collection.form.async.actions";
-
 export type CollectionFormMode = "update" | "delete" | "idle";
 
 export interface CollectionFormState {
@@ -71,18 +69,6 @@ export const collectionFormSlice = createSlice({
                 state.variables.splice(itemIndex, 1);
             }
         },
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(saveCollectionAsync.pending, (_, __) => {
-                console.log('collection-save started');
-            })
-            .addCase(saveCollectionAsync.fulfilled, (_, __) => {
-                console.log('collection-save success');
-            })
-            .addCase(saveCollectionAsync.rejected, (_, __) => {
-                console.log('collection-save failed');
-            });
     }
 });
 

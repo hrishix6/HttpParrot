@@ -21,15 +21,11 @@ export function ImportCollectionDialogue({ open, onOpenChange }: Props) {
     e.preventDefault();
     const file = e.target.files ? e.target.files[0] : null;
     if (!file) {
-      console.log('no file selected');
       onOpenChange(false);
       return;
     }
 
     if (file.type !== 'application/json') {
-      console.log(
-        `file isn't supported, need "application/json", received: ${file.type}`
-      );
       onOpenChange(false);
       return;
     }

@@ -98,12 +98,9 @@ export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, 
         };
 
     } catch (error) {
-        let msg = "something went wrong";
-        if (error instanceof Error) {
-            msg = error.message;
-        }
-        console.log(error);
-        const failedError = new RequestFailedError(msg, tabId, error);
+        const e = error as Error;
+        console.log(e);
+        const failedError = new RequestFailedError(e.name, e.message, tabId, error);
         return rejectWithValue(failedError);
 
     } finally {
@@ -160,14 +157,9 @@ export const newTabAsync = createAsyncThunk<void, void>("tabs/newTabAsync", asyn
         data: tabData
     };
 
-    console.log(`populated tab form with ${JSON.stringify(tabData, null, 2)}`);
-
     dispatch(newTab(tabModel));
     try {
-        const result = await tabRepo.insert(toTabDbModel(tabModel));
-        if (result) {
-            console.log(`tab added to indexed db`);
-        }
+        await tabRepo.insert(toTabDbModel(tabModel));
     } catch (error) {
         console.log(`couldn't add tab to db ${error}`);
     }
@@ -190,10 +182,7 @@ export const newCollectionRequestTabAsync = createAsyncThunk<void, { collectionI
         dispatch(newTab(tabModel));
 
         try {
-            const result = await tabRepo.insert(toTabDbModel(tabModel));
-            if (result) {
-                console.log(`tab added to indexed db`);
-            }
+            await tabRepo.insert(toTabDbModel(tabModel));
         } catch (error) {
             console.log(`couldn't add tab to db ${error}`);
         }
@@ -205,7 +194,6 @@ export const deleteTabAsync = createAsyncThunk<void, string>("tabs/deleteTabAsyn
     dispatch((deleteTab(tabId)));
     try {
         await tabRepo.delete(tabId);
-        console.log(`tab deleted fro indexed db`);
     } catch (error) {
         console.log(`couldn't delete tab from db ${error}`);
     }
@@ -223,10 +211,7 @@ export const populateRequestSectionAsync = createAsyncThunk<void, { model: Reque
     };
 
     try {
-        const result = await tabRepo.insert(toTabDbModel(tab));
-        if (result) {
-            console.log(`tab added to indexed db`);
-        }
+        await tabRepo.insert(toTabDbModel(tab));
     } catch (error) {
         console.log(`couldn't add tab to db ${error}`);
     } finally {

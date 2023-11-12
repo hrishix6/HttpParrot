@@ -21,7 +21,7 @@ import {
 import { RootState } from "@/common/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";;
 import { getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/utils";
-import { abortOngoingRequestAsync, generateCodeSnippetAsync, makeRequestActionAsync } from "./tabs.async.actions";
+import { makeRequestActionAsync } from "./tabs.async.actions";
 import { TabModel } from "@/lib/db";
 
 function tabDataSelector<T>(state: RootState, key: TabDataKey): T {
@@ -506,12 +506,15 @@ const tabSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(makeRequestActionAsync.pending, (_, __) => {
-                console.log(`req start - clared response data.`);
+            .addCase(makeRequestActionAsync.pending, (state, __) => {
+                const data = state.tabData[state.activeTab];
+                const { id, method, url } = data;
+                console.log(`[Request Log] : (${id}) - ${method}@${url} started.`)
             })
             .addCase(makeRequestActionAsync.fulfilled, (state, action) => {
                 const { result, tabId, error } = action.payload;
                 const currentTabData = state.tabData[tabId];
+                const { id, method, url } = currentTabData;
                 const { size, status, time, contentType, statusText, body, headers, ok, mimeType } = result;
                 if (currentTabData) {
                     currentTabData.responseStatus = status ? `${status} ${statusText}` : "";
@@ -528,41 +531,44 @@ const tabSlice = createSlice({
 
                     if (error) {
                         currentTabData.error = true;
-                        if (error.message == "SIZE_EXCEEDED") {
+                        if (error.name === "ReadError") {
                             currentTabData.errorMessage = "Response Body exceeds maximum app limit.";
+                        }
+                        else if (error.name === "AbortError") {
+                            currentTabData.errorMessage = "You aborted the request.";
                         }
                         else {
                             currentTabData.errorMessage = "Something went wrong, check console for details."
                         }
                     }
                 }
+                console.log(`[Request Log] : (${id}) - ${method}@${url} finished in ${time}ms`);
+
             })
             .addCase(makeRequestActionAsync.rejected, (state, action) => {
-                console.log(`rejected makeRequestActionAsync, error data: `, action.payload);
                 const failedError = action.payload as RequestFailedError
                 const failedTab = failedError.tabId;
                 const failedTabData = state.tabData[failedTab];
+                const { id, method, url } = failedTabData;
                 if (failedTabData) {
+
                     failedTabData.loading = false;
                     failedTabData.aborter = undefined;
                     failedTabData.lock = false;
                     failedTabData.error = true;
-                    failedTabData.errorMessage = "Something went wrong, check console for details."
+                    if (failedError.name === "ReadError") {
+                        failedTabData.errorMessage = "Response Body exceeds maximum app limit.";
+                    }
+                    else if (failedError.name === "AbortError") {
+                        failedTabData.errorMessage = "You aborted the request.";
+                    }
+                    else {
+                        failedTabData.errorMessage = "Something went wrong, check console for details."
+                    }
+
+                    console.log(`[Request Log] : (${id}) - ${method}@${url} failed with error - ${failedError.message}`);
                 }
-            })
-            .addCase(generateCodeSnippetAsync.fulfilled, (_, __) => {
-                console.log(`snippet generated`);
-            }).addCase(generateCodeSnippetAsync.pending, (_, __) => {
-                console.log(`snippet gen started`);
-            }).addCase(generateCodeSnippetAsync.rejected, (_, __) => {
-                console.log(`snippet gen failed`);
-            }).addCase(abortOngoingRequestAsync.pending, (_, __) => {
-                console.log('initited aborting request');
-            }).addCase(abortOngoingRequestAsync.fulfilled, (_, __) => {
-                console.log('successfully aborting request');
-            }).addCase(abortOngoingRequestAsync.rejected, (_, __) => {
-                console.log('failed aborting request');
-            })
+            });
     }
 });
 

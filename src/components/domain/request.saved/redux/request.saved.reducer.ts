@@ -49,7 +49,6 @@ export const savedRequestsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(saveRequestAsync.fulfilled, (state, action) => {
-                console.log('populated new item in saved requests');
                 const { mode, model } = action.payload;
                 if (mode == "insert") {
                     state.saved.unshift(model);
@@ -78,10 +77,6 @@ export const savedRequestsSlice = createSlice({
                 }
             }).addCase(addNewCollectionAsync.fulfilled, (state, action) => {
                 state.collections.push(action.payload);
-            }).addCase(addNewCollectionAsync.pending, (_, __) => {
-                console.log('adding item to collection');
-            }).addCase(addNewCollectionAsync.rejected, (_, __) => {
-                console.log("failed to add collection");
             })
             .addCase(deleteCollectionAsync.fulfilled, (state, action) => {
                 const { collectionId, reqIds } = action.payload;
@@ -91,13 +86,8 @@ export const savedRequestsSlice = createSlice({
                     state.collections.splice(collectIndex, 1);
                 }
                 const newSavedRequests = state.saved.filter(x => !reqIds.includes(x.id));
-                console.log(`new saved requests - ${JSON.stringify(newSavedRequests, null, 2)}`);
                 state.saved = newSavedRequests;
-            }).addCase(deleteCollectionAsync.pending, (_, __) => {
-                console.log('deleting collection');
-            }).addCase(deleteCollectionAsync.rejected, (_, __) => {
-                console.log("failed to delete collection");
-            })
+            });
     }
 });
 

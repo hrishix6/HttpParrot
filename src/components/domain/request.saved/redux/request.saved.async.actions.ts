@@ -119,8 +119,7 @@ export const addNewCollectionAsync = createAsyncThunk<RequestCollectionModel, st
     }
 
     try {
-        const id = await collectionRepo?.insert(newCollection);
-        console.log(`stored item in db with id ${id}`);
+        await collectionRepo?.insert(newCollection);
     } catch (error) {
         console.log(`couldn't store in indexedDB ${error}`);
     }

@@ -24,8 +24,7 @@ export const saveCollectionAsync = createAsyncThunk<void, string>(
         };
 
         try {
-            const id = await collectionRepo?.updateById(model2Save);
-            console.log(`updated item in collection with id ${id}`);
+            await collectionRepo?.updateById(model2Save);
         } catch (error) {
             console.log(`couldn't update in indexedDB ${error}`);
         } finally {

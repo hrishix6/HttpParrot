@@ -40,7 +40,6 @@ export function CollectionActions({ model }: CollectionActionsProps) {
   };
 
   const handleExport = () => {
-    console.log('wtffff');
     const rootState = store.getState() as RootState;
     const collection = rootState.savedRequestsStore.collections.find(
       (x) => x.id === model.id
@@ -49,7 +48,6 @@ export function CollectionActions({ model }: CollectionActionsProps) {
       const requests = rootState.savedRequestsStore.saved.filter(
         (x) => x.collectionId == collection.id
       );
-      console.log(`exporting collection ${collection.name}...`);
       const modelToExport = toExportedCollectionModel(collection, requests);
       exportToFile(
         JSON.stringify(modelToExport),
@@ -59,7 +57,6 @@ export function CollectionActions({ model }: CollectionActionsProps) {
       );
     } else {
       //TODO show user error.
-      console.log('collection not found');
     }
   };
 

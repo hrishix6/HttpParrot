@@ -30,9 +30,6 @@ export function RequestSavedItem({
   };
 
   const handleViewInRequestSection = (r: RequestModel) => {
-    console.log(
-      `populating tab with request model ${JSON.stringify(r, null, 2)}`
-    );
     dispatch(
       populateRequestSectionAsync({ model: r, mode: 'update', collectionName })
     );

@@ -202,10 +202,12 @@ export interface RequestTab {
 }
 
 export class RequestFailedError extends Error {
+  public name: string;
   public tabId: string;
   public innerError: Error;
-  constructor(msg: string, tabId: string, cause: any) {
+  constructor(name: string, msg: string, tabId: string, cause: any) {
     super(msg);
+    this.name = name;
     this.tabId = tabId;
     this.innerError = cause;
   }

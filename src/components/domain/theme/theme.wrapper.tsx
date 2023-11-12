@@ -10,7 +10,6 @@ export function ThemeWrapper({ children }: ThemeWrapperProps) {
   const theme = useAppSelector(selectTheme);
 
   useEffect(() => {
-    console.log('theme change detected ->', theme);
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     if (theme === 'system') {

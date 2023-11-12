@@ -84,7 +84,6 @@ export function SaveRequestDialogue({ onOpenChange, open, onSave }: Props) {
             <Select
               value={collection}
               onValueChange={(e) => {
-                console.log(e);
                 setSelectedCollection(e);
               }}
             >

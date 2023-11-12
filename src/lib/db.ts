@@ -177,7 +177,6 @@ class CollectionRepository implements IRepository {
 
     try {
       await this.insert(defaultCollection);
-      console.log(`successfully added default collection`);
     } catch (error) {
       console.log(`couldn't add default collection`);
     }
@@ -216,7 +215,6 @@ class CollectionRepository implements IRepository {
       const r = store.add(dto);
 
       r.addEventListener('success', () => {
-        console.log(`item added to collection ${r.result}`);
         resolve(r.result);
       });
 
@@ -306,7 +304,6 @@ class HistoryRepository implements IRepository {
       const r = store.add(dto);
 
       r.addEventListener('success', () => {
-        console.log(`item added to request history ${r.result}`);
         resolve(r.result);
       });
 
@@ -376,7 +373,6 @@ class RequestsRepository implements IRepository {
       const r = store.add(dto);
 
       r.addEventListener('success', () => {
-        console.log(`item added to requests ${r.result}`);
         resolve(r.result);
       });
 
@@ -517,7 +513,6 @@ class MimetypesRepository {
       }
 
       tx.addEventListener("complete", () => {
-        console.log(`loaded records successfully`);
         resolve(true);
       });
 

@@ -137,7 +137,9 @@ export function readBody(
 
                 //check if body exceeds limit
                 if (responseSize >= MAX_BODY_READ_LIMIT) {
-                    reject(new Error("SIZE_EXCEEDED"));
+                    const err = new Error("SIZE_EXCEEDED");
+                    err.name = "ReadError"
+                    reject(err);
                     return;
                 }
 

@@ -22,9 +22,7 @@ export function ResponseActionsDropDown({
 }: ResponseActionsProps) {
   const handleCopy = () => {
     copyToClipboard(body).then((result) => {
-      if (result) {
-        console.log(`copied`);
-      } else {
+      if (!result) {
         console.log(`couldn't copy`);
       }
     });
