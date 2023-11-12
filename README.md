@@ -36,12 +36,12 @@ You can read the full specification [here](/spec.md)
 - **Request collections - group and save requests**.
 - **Completely offline storage, all your data is offline in the browser**.
 - **Environment variables for collections**.
+- **Basic, token authentication**.
 - **Import & export collections**.
 
 ## Some feature Ideas (TODO)
 
 - ~~Cookie handling~~ (not possible as browsers don't allow reading cookies in content scripts).
-- Basic / Bearer authentication.
 - Generate code snippets for various languages for making request(eg, curl, node, C# etc).
 - Import open api document and transform into usable collection.
 - Pre-run/ post run scripts (run something before or after running specific requests).
@@ -76,8 +76,8 @@ $ npm run build
 5. open `dist` folder in chrome extensions using `Load unpacked` button (make sure you have developer mode on).
 
 6. <p style="display:flex; align-items:center; gap:3px;">
-    <span style="display:block"> you should see an extension icon in toolbar, click the extension icon -> </span>
-    <img style="display:block" src="./public/icons/icon16.png">
+    <span style="display:block"> you should see an extension icon in toolbar, click the extension icon</span>
+    (<img style="display:block" src="./public/icons/icon16.png">)
    </p>
 
 ## Contributions
