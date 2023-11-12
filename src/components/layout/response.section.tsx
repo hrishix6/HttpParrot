@@ -16,7 +16,7 @@ export function ResponseSection() {
           onValueChange={(e) => {
             setCurrentTab(e);
           }}
-          className="flex-1 flex flex-col overflow-hidden pt-2"
+          className="flex-1 flex flex-col overflow-hidden"
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="response">Response</TabsTrigger>

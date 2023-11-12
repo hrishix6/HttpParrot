@@ -32,6 +32,14 @@ export interface ResponseHeader {
   value: string;
 }
 
+export interface RequestAuthConfig {
+  authType: SupportedAuthType;
+  basicUsername?: string;
+  basicPassword?: string;
+  tokenPrefix?: string;
+  tokenVal?: string;
+}
+
 export type FormDataItem = EditableItem;
 
 export type SupportedBodyType =
@@ -40,6 +48,8 @@ export type SupportedBodyType =
   | 'xml'
   | 'url_encoded'
   | 'text';
+
+export type SupportedAuthType = "none" | "basic" | "token";
 
 export interface RequestModel {
   id: string;
@@ -55,6 +65,7 @@ export interface RequestModel {
   enableTextBody?: boolean;
   textBody?: string;
   collectionId: string;
+  auth: RequestAuthConfig
 }
 
 export interface ExportedRequestModel {
@@ -67,6 +78,7 @@ export interface ExportedRequestModel {
   formItems?: ExportedItem[];
   enableTextBody?: boolean;
   textBody?: string;
+  auth?: RequestAuthConfig
 }
 
 
@@ -127,6 +139,10 @@ export interface MimeRecord extends MimeMetadata {
 
 export type RequestFormMode = "update" | "insert";
 
+
+
+export type TabAuthConfigKey = keyof RequestAuthConfig;
+
 export interface TabData {
   id: string;
   name: string;
@@ -154,6 +170,7 @@ export interface TabData {
   responseMimetype: string;
   error: boolean;
   errorMessage: string;
+  authConfig: RequestAuthConfig
 }
 
 export type TabDataKey = keyof TabData;

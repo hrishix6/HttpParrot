@@ -1,5 +1,5 @@
 import { RootState } from "../common/store";
-import { toFetchHeaders, toSubstitutedFetchHeaders } from "./header.utils";
+import { toAuthHeader, toFetchHeaders, toSubstitutedAuthHeader, toSubstitutedFetchHeaders } from "./header.utils";
 import { toSimpleFetchBody, totSubstitutedFetchBody } from "./body.utils";
 import { substituteText } from "./text.utils";
 
@@ -11,17 +11,25 @@ interface FetchConfig {
 }
 
 function getSimpleConfig(state: RootState, tabId: string): FetchConfig {
-    const { url, method, headers } = state.tabsStore.tabData[tabId];
+    const { url, method, headers, authConfig } = state.tabsStore.tabData[tabId];
+
+    const fetchHeaders = toFetchHeaders(headers);
+    const authHeader = toAuthHeader(authConfig);
+
+    if (authHeader) {
+        fetchHeaders[authHeader.name] = authHeader.value;
+    }
+
     return {
         url,
         method,
-        headers: toFetchHeaders(headers),
+        headers: fetchHeaders,
         ...(method !== "get" ? { body: toSimpleFetchBody(state, tabId) } : {})
     };
 }
 
 function getSubstitutedConfig(state: RootState, tabId: string): FetchConfig {
-    const { collectionId, url, method, headers } = state.tabsStore.tabData[tabId];
+    const { collectionId, url, method, headers, authConfig } = state.tabsStore.tabData[tabId];
     const { collections } = state.savedRequestsStore;
     const collectionVariables = collections.find(x => x.id === collectionId)?.variables || [];
 
@@ -31,18 +39,25 @@ function getSubstitutedConfig(state: RootState, tabId: string): FetchConfig {
             variableMap[variable.name] = variable.value;
         }
     }
+    const fetchHeaders = toSubstitutedFetchHeaders(headers, variableMap);
+    const authHeader = toSubstitutedAuthHeader(authConfig, variableMap);
+
+    if (authHeader) {
+        fetchHeaders[authHeader.name] = authHeader.value;
+    }
+
     return {
         url: substituteText(url, variableMap),
         method,
-        headers: toSubstitutedFetchHeaders(headers, variableMap),
+        headers: fetchHeaders,
         ...(method !== "get" ? { body: totSubstitutedFetchBody(state, variableMap, tabId) } : {})
     };
 }
 
 export function toFetchConfig(state: RootState, tabId: string) {
 
-    const { collectionId, collectionName } = state.tabsStore.tabData[tabId];
-    const shouldSubstitute = !!(collectionId && collectionName);
+    const { collectionId } = state.tabsStore.tabData[tabId];
+    const shouldSubstitute = !!(collectionId);
 
     if (shouldSubstitute) {
         return getSubstitutedConfig(state, tabId);

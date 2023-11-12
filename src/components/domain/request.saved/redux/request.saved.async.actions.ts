@@ -15,7 +15,7 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
 
     const tabData = rootState.tabsStore.tabData[tabId];
 
-    const { url, query, headers, method, id, bodyType, textBody, enableTextBody, formItems, mode } = tabData;
+    const { url, query, headers, method, id, bodyType, textBody, enableTextBody, formItems, mode, authConfig } = tabData;
 
     const modelId = mode == "insert" ? uuidv4() : id;
 
@@ -34,7 +34,8 @@ export const saveRequestAsync = createAsyncThunk<{ model: RequestModel, mode: Re
             textBody: textBody,
             enableTextBody: enableTextBody,
             formItems
-        } : {})
+        } : {}),
+        auth: { ...authConfig }
     };
 
     try {
@@ -56,7 +57,7 @@ export const saveRequestCopyAsync = createAsyncThunk<RequestModel, { name: strin
 
     const tabData = rootState.tabsStore.tabData[tabId];
 
-    const { url, query, headers, method, bodyType, textBody, enableTextBody, formItems } = tabData;
+    const { url, query, headers, method, bodyType, textBody, enableTextBody, formItems, authConfig } = tabData;
 
     const model: RequestModel = {
         id: uuidv4(),
@@ -73,7 +74,8 @@ export const saveRequestCopyAsync = createAsyncThunk<RequestModel, { name: strin
             textBody: textBody,
             enableTextBody: enableTextBody,
             formItems
-        } : {})
+        } : {}),
+        auth: { ...authConfig }
     };
 
     try {

@@ -31,18 +31,10 @@ export function BodyTypeDropdown() {
             <SelectItem value={'formdata'} defaultChecked>
               Form-data
             </SelectItem>
-            <SelectItem value={'url_encoded'} defaultChecked>
-              Url-Encoded-Form-data
-            </SelectItem>
-            <SelectItem value={'json'} defaultChecked>
-              Json
-            </SelectItem>
-            <SelectItem value={'xml'} defaultChecked>
-              Xml
-            </SelectItem>
-            <SelectItem value={'text'} defaultChecked>
-              Text
-            </SelectItem>
+            <SelectItem value={'url_encoded'}>Url-Encoded-Form-data</SelectItem>
+            <SelectItem value={'json'}>Json</SelectItem>
+            <SelectItem value={'xml'}>Xml</SelectItem>
+            <SelectItem value={'text'}>Text</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

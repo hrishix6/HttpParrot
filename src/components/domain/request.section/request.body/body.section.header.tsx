@@ -21,34 +21,40 @@ export function BodySectionHeader({ bodyType }: BodySectionHeaderProps) {
 
   if (['formdata', 'url_encoded'].includes(bodyType)) {
     return (
-      <div className="flex items-center justify-between py-2 px-1">
-        <BodyTypeDropdown />
-        <Button
-          variant={'link'}
-          size={'icon'}
-          onClick={(_) => {
-            dispatch(addFormDataItemAsync());
-          }}
-        >
-          <Plus className="h-5 w-5" />
-        </Button>
+      <div className="flex items-center justify-between py-1 px-2">
+        <p className="text-lg self-start">Request Body</p>
+        <div className="flex items-center gap-2">
+          <BodyTypeDropdown />
+          <Button
+            variant={'link'}
+            size={'icon'}
+            onClick={(_) => {
+              dispatch(addFormDataItemAsync());
+            }}
+          >
+            <Plus className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
     );
   } else {
     return (
-      <div className="flex items-center justify-between py-2 px-1">
-        <BodyTypeDropdown />
+      <div className="flex items-center justify-between py-1 px-2">
+        <p className="text-lg self-start">Request Body</p>
         <div className="flex items-center gap-2">
-          <Switch
-            checked={enableTextBody}
-            onCheckedChange={(checked) => {
-              dispatch(setEnableTextBodyAsync(checked));
-            }}
-            id="default_headers_switch"
-          />
-          <Label htmlFor="default_headers_switch">
-            {enableTextBody ? 'disable' : 'enable'}
-          </Label>
+          <BodyTypeDropdown />
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={enableTextBody}
+              onCheckedChange={(checked) => {
+                dispatch(setEnableTextBodyAsync(checked));
+              }}
+              id="default_headers_switch"
+            />
+            <Label htmlFor="default_headers_switch">
+              {enableTextBody ? 'disable' : 'enable'}
+            </Label>
+          </div>
         </div>
       </div>
     );

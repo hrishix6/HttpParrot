@@ -30,7 +30,7 @@ import { RequestMetaHeader } from './request.meta.header';
 import { BodyForm } from './request.body/body.form';
 import { RequestUrl } from './request.url';
 import { Loader2 } from 'lucide-react';
-import { RequestAuth } from './request.auth';
+import { RequestAuth } from './request.auth/request.auth';
 
 export function RequestForm() {
   const mode = useAppSelector(selectFormMode);
@@ -55,7 +55,7 @@ export function RequestForm() {
         request_name={name}
         collection={collectionName}
       />
-      <section className="flex gap-1 px-1 pt-2">
+      <section className="flex gap-1 px-1 pt-1">
         <div>
           <Select
             value={method}
@@ -93,7 +93,7 @@ export function RequestForm() {
           <RequestActionsDropDown />
         </div>
       </section>
-      <section className="flex-1 flex flex-col overflow-hidden px-1 pt-2">
+      <section className="flex-1 flex flex-col overflow-hidden px-1">
         <Tabs
           value={tab}
           onValueChange={(e) => {

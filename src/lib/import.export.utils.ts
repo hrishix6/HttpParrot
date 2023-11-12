@@ -20,7 +20,14 @@ const RequestValidationSchema = z.object({
     bodytype: z.enum(["formdata", "json", "xml", "url_encoded", "text"]).optional(),
     formItems: z.array(FormItemValidationSchema).optional(),
     enableTextBody: z.boolean().optional(),
-    textBody: z.string().optional()
+    textBody: z.string().optional(),
+    auth: z.object({
+        authType: z.enum(["none", "basic", "token"]),
+        basicUsername: z.string().optional(),
+        basicPassword: z.string().optional(),
+        tokenPrefix: z.string().optional(),
+        tokenVal: z.string().optional(),
+    }).optional()
 });
 
 type RequestValidationType = z.infer<typeof RequestValidationSchema>;
@@ -92,7 +99,8 @@ export function toExportedRequests(requests: RequestModel[]): ExportedRequestMod
                 bodytype: x.bodytype,
                 enableTextBody: x.enableTextBody,
                 textBody: x.textBody,
-                ...(formdata ? { formItems: formdata } : {})
+                ...(formdata ? { formItems: formdata } : {}),
+                auth: x.auth
             }
         });
     }
@@ -145,7 +153,14 @@ function toImportedRequests(collectionId: string, items?: RequestValidationType[
             enableTextBody: x.enableTextBody ? x.enableTextBody : false,
             bodytype: x.bodytype ? x.bodytype : "formdata",
             created: new Date().getTime(),
-            formItems: toImportedItem(x.formItems)
+            formItems: toImportedItem(x.formItems),
+            auth: {
+                authType: x.auth?.authType || "none",
+                basicPassword: x.auth?.basicPassword || "",
+                basicUsername: x.auth?.basicUsername || "",
+                tokenPrefix: x.auth?.tokenPrefix || "",
+                tokenVal: x.auth?.tokenVal || ""
+            }
         }));
     }
     return [];

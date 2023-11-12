@@ -1,4 +1,5 @@
 import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel, TabData } from '@/common/types';
+import { v4 as uuidv4 } from "uuid";
 
 const DB_NAME = 'store';
 const DB_VERSION = 8;
@@ -102,9 +103,50 @@ export const defaultTabData = (): TabData => ({
   responseOk: false,
   responseMimetype: "",
   error: false,
-  errorMessage: ""
+  errorMessage: "",
+  authConfig: {
+    authType: "none",
+    tokenPrefix: "",
+    tokenVal: "",
+    basicPassword: "",
+    basicUsername: "",
+  }
 });
 
+export const defaultNewCollectionRequestTabData = (collectionId: string, collectionName: string): TabData => ({
+  id: uuidv4(),
+  collectionId,
+  collectionName,
+  name: "unnamed",
+  method: "get",
+  url: '',
+  query: [],
+  headers: [],
+  mode: "update",
+  bodyType: "formdata",
+  formItems: [],
+  enableTextBody: true,
+  textBody: "",
+  loading: false,
+  lock: false,
+  responseStatus: "",
+  responseSize: "",
+  responseTime: "",
+  responseBody: "",
+  responseBodyType: "unknown",
+  responseHeaders: [],
+  responseOk: false,
+  responseMimetype: "",
+  error: false,
+  errorMessage: "",
+  authConfig: {
+    authType: "none",
+    tokenPrefix: "",
+    tokenVal: "",
+    basicPassword: "",
+    basicUsername: "",
+  }
+});
 interface IRepository {
   setDb: (db: IDBDatabase) => void;
   getStore: (mode: IDBTransactionMode) => IDBObjectStore;
@@ -574,7 +616,6 @@ class TabsRepository {
 
   insert(dto: TabModel): Promise<string> {
     return new Promise((resolve, reject) => {
-      console.log(`trying to insert new tab..`);
       const store = this.getStore("readwrite");
       const req = store.add(dto);
       req.addEventListener("success", (_) => resolve(req.result as string));
@@ -584,7 +625,6 @@ class TabsRepository {
 
   update(dto: UpdateTabModel): Promise<string> {
     return new Promise((resolve, reject) => {
-      console.log(`trying to upsert new tab..`);
       const store = this.getStore("readwrite");
       const req = store.put(dto);
       req.addEventListener("success", (_) => resolve(req.result as string));

@@ -8,7 +8,9 @@ import {
     RequestModel,
     RequestTab,
     ResponseHeader,
+    SupportedAuthType,
     SupportedBodyType,
+    TabAuthConfigKey,
     TabData,
     TabDataHolder,
     TabDataKey,
@@ -26,6 +28,12 @@ function tabDataSelector<T>(state: RootState, key: TabDataKey): T {
     const currentActive = state.tabsStore.activeTab;
     const data = state.tabsStore.tabData[currentActive];
     return data[key] as T;
+}
+
+function tabDataAuthSelector<T>(state: RootState, key: TabAuthConfigKey): T {
+    const currentActive = state.tabsStore.activeTab;
+    const data = state.tabsStore.tabData[currentActive];
+    return data.authConfig[key] as T;
 }
 
 export const populatedTabData = (model: RequestModel, mode: RequestFormMode, collectionName?: string): TabData => ({
@@ -53,7 +61,14 @@ export const populatedTabData = (model: RequestModel, mode: RequestFormMode, col
     responseOk: false,
     responseMimetype: "",
     error: false,
-    errorMessage: ""
+    errorMessage: "",
+    authConfig: {
+        authType: model.auth.authType || "none",
+        tokenPrefix: model.auth.tokenPrefix || "",
+        tokenVal: model.auth.tokenVal || "",
+        basicPassword: model.auth.basicPassword || "",
+        basicUsername: model.auth.basicUsername || ""
+    }
 });
 
 
@@ -189,6 +204,13 @@ const tabSlice = createSlice({
                 currentTabData.bodyType = "formdata";
                 currentTabData.enableTextBody = true;
                 currentTabData.textBody = "";
+                currentTabData.authConfig = {
+                    authType: "none",
+                    tokenPrefix: "",
+                    tokenVal: "",
+                    basicPassword: "",
+                    basicUsername: "",
+                };
             }
 
         },
@@ -444,6 +466,43 @@ const tabSlice = createSlice({
                 }
             }
         },
+
+        //auth====================================================================================
+        setAuthType: (state, action: PayloadAction<SupportedAuthType>) => {
+            const activeTab = state.activeTab;
+            const currentTabData = state.tabData[activeTab];
+            if (currentTabData) {
+                currentTabData.authConfig.authType = action.payload
+            }
+        },
+        setBasicAuthUsername: (state, action: PayloadAction<string>) => {
+            const activeTab = state.activeTab;
+            const currentTabData = state.tabData[activeTab];
+            if (currentTabData) {
+                currentTabData.authConfig.basicUsername = action.payload
+            }
+        },
+        setBasicAuthPassword: (state, action: PayloadAction<string>) => {
+            const activeTab = state.activeTab;
+            const currentTabData = state.tabData[activeTab];
+            if (currentTabData) {
+                currentTabData.authConfig.basicPassword = action.payload
+            }
+        },
+        setTokenPrefix: (state, action: PayloadAction<string>) => {
+            const activeTab = state.activeTab;
+            const currentTabData = state.tabData[activeTab];
+            if (currentTabData) {
+                currentTabData.authConfig.tokenPrefix = action.payload
+            }
+        },
+        setTokenValue: (state, action: PayloadAction<string>) => {
+            const activeTab = state.activeTab;
+            const currentTabData = state.tabData[activeTab];
+            if (currentTabData) {
+                currentTabData.authConfig.tokenVal = action.payload
+            }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -508,6 +567,11 @@ const tabSlice = createSlice({
 });
 
 export const {
+    setAuthType,
+    setTokenValue,
+    setTokenPrefix,
+    setBasicAuthPassword,
+    setBasicAuthUsername,
     populateTabsData,
     clearResponseForTab,
     newTab,
@@ -563,6 +627,12 @@ export const selectRequestCollectionName = (state: RootState) => tabDataSelector
 export const selectFormMode = (state: RootState) => tabDataSelector<RequestFormMode>(state, "mode");
 
 export const selectBodyType = (state: RootState) => tabDataSelector<SupportedBodyType>(state, "bodyType");
+
+export const selectAuthType = (state: RootState) => tabDataAuthSelector<SupportedAuthType>(state, "authType");
+export const selectBasicAuthUser = (state: RootState) => tabDataAuthSelector<string>(state, "basicUsername");
+export const selectBasicAuthPass = (state: RootState) => tabDataAuthSelector<string>(state, "basicPassword");
+export const selectTokenPrefix = (state: RootState) => tabDataAuthSelector<string>(state, "tokenPrefix");
+export const selectTokenValue = (state: RootState) => tabDataAuthSelector<string>(state, "tokenVal");
 
 export const selectFormDataItems = (state: RootState) => tabDataSelector<FormDataItem[]>(state, "formItems");
 

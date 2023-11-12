@@ -5,6 +5,7 @@ import {
     RequestMethod,
     RequestModel,
     ResponseModel,
+    SupportedAuthType,
     SupportedBodyType,
     SupportedSnippetLang,
     TabData,
@@ -42,8 +43,13 @@ import {
     updateFormDataItemValue,
     updateFormDataItemEnabled,
     populatedTabData,
+    setAuthType,
+    setBasicAuthUsername,
+    setBasicAuthPassword,
+    setTokenPrefix,
+    setTokenValue,
 } from "./tabs.reducer";
-import { TabModel, UpdateTabModel, defaultTabData, tabRepo, updateTabDataInDB } from "@/lib/db";
+import { TabModel, UpdateTabModel, defaultNewCollectionRequestTabData, defaultTabData, tabRepo, updateTabDataInDB } from "@/lib/db";
 import { RootState } from "@/common/store";
 import { toFetchConfig } from "@/lib/request.utils";
 import { getContentTypeHeader } from "@/lib/header.utils";
@@ -63,9 +69,7 @@ export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, 
 
     const tabData = rootState.tabsStore.tabData[tabId];
 
-    console.log(`making req with following data: ${JSON.stringify(tabData, null, 2)}`);
-
-    const { method, query, headers, formItems, bodyType, enableTextBody, textBody } = tabData
+    const { method, query, headers, formItems, bodyType, enableTextBody, textBody, authConfig, collectionId } = tabData
 
     const { url: fetchUrl, ...fetchConfig } = toFetchConfig(rootState, tabId);
 
@@ -105,7 +109,7 @@ export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, 
     } finally {
         const newReqHistoryItem: RequestModel = {
             id: uuidv4(),
-            collectionId: "",
+            collectionId,
             method,
             name: fetchUrl,
             url: fetchUrl,
@@ -117,7 +121,8 @@ export const makeRequestActionAsync = createAsyncThunk<{ result: ResponseModel, 
                 textBody: textBody,
                 enableTextBody: enableTextBody,
                 formItems
-            } : {})
+            } : {}),
+            auth: authConfig
         }
         dispatch(addtoHistoryAsync(newReqHistoryItem));
     }
@@ -148,11 +153,15 @@ export const generateCodeSnippetAsync = createAsyncThunk<void, SupportedSnippetL
 export const newTabAsync = createAsyncThunk<void, void>("tabs/newTabAsync", async (_, thunkAPI) => {
     const { dispatch } = thunkAPI;
 
+    const tabData = defaultTabData();
     const tabModel: TabModel = {
         id: uuiv4(),
         name: "New Request",
-        data: defaultTabData()
+        data: tabData
     };
+
+    console.log(`populated tab form with ${JSON.stringify(tabData, null, 2)}`);
+
     dispatch(newTab(tabModel));
     try {
         const result = await tabRepo.insert(tabModel);
@@ -163,6 +172,33 @@ export const newTabAsync = createAsyncThunk<void, void>("tabs/newTabAsync", asyn
         console.log(`couldn't add tab to db ${error}`);
     }
 });
+
+export const newCollectionRequestTabAsync = createAsyncThunk<void, { collectionId: string, collectionName: string }>(
+    "tabs/newCollectionRequestTabAsync",
+    async (arg, thunkAPI) => {
+        const { collectionId, collectionName } = arg;
+
+        const { dispatch } = thunkAPI;
+
+        const tabData = defaultNewCollectionRequestTabData(collectionId, collectionName);
+        const tabModel: TabModel = {
+            id: uuiv4(),
+            name: "unnamed",
+            data: tabData
+        };
+
+        dispatch(newTab(tabModel));
+
+        try {
+            const result = await tabRepo.insert(tabModel);
+            if (result) {
+                console.log(`tab added to indexed db`);
+            }
+        } catch (error) {
+            console.log(`couldn't add tab to db ${error}`);
+        }
+    }
+)
 
 export const deleteTabAsync = createAsyncThunk<void, string>("tabs/deleteTabAsync", async (tabId, thunkAPI) => {
     const { dispatch } = thunkAPI;
@@ -782,3 +818,111 @@ export const updateFormDataItemEnabledAsync = createAsyncThunk<void, UpdateEdita
 });
 
 // #endregion request-body-actions
+
+// #region request-auth-actions
+export const setAuthTypeAsync = createAsyncThunk<void, SupportedAuthType>("tabs/setAuthTypeAsync", async (arg, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    dispatch(setAuthType(arg));
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.authConfig.authType = arg
+
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+
+        await updateTabDataInDB(updateModel, "setAuthTypeAsync");
+    }
+});
+
+export const setBasicAuthUsernameAsync = createAsyncThunk<void, string>("tabs/setBasicAuthUsernameAsync", async (arg, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    dispatch(setBasicAuthUsername(arg));
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.authConfig.basicUsername = arg
+
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+
+        await updateTabDataInDB(updateModel, "setBasicAuthUsernameAsync");
+    }
+});
+
+export const setBasicAuthPasswordAsync = createAsyncThunk<void, string>("tabs/setBasicAuthPasswordAsync", async (arg, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    dispatch(setBasicAuthPassword(arg));
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.authConfig.basicPassword = arg
+
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+
+        await updateTabDataInDB(updateModel, "setBasicAuthPasswordAsync");
+    }
+});
+
+
+export const setTokenPrefixAsync = createAsyncThunk<void, string>("tabs/setTokenPrefixAsync", async (arg, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    dispatch(setTokenPrefix(arg));
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.authConfig.tokenPrefix = arg;
+
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+
+        await updateTabDataInDB(updateModel, "setTokenPrefixAsync");
+    }
+});
+
+export const setTokenValueAsync = createAsyncThunk<void, string>("tabs/setTokenValueAsync", async (arg, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    dispatch(setTokenValue(arg));
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.authConfig.tokenVal = arg;
+
+        const updateModel: UpdateTabModel = {
+            id: activeTab,
+            data: tbData
+        };
+
+        await updateTabDataInDB(updateModel, "setTokenValueAsync");
+    }
+});
+// #endregion request-auth-actions

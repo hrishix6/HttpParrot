@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 const REGEX = /({{.*?}})/g;
 
 interface HighlightedInputProps {
+  id?: string;
   placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,6 +12,7 @@ interface HighlightedInputProps {
 }
 
 export function HighlightedInput({
+  id,
   placeholder,
   value,
   onChange,
@@ -37,6 +39,7 @@ export function HighlightedInput({
       } border w-full h-full ${inFocus ? 'border-2 border-primary' : 'border'}`}
     >
       <input
+        {...(id ? { id } : {})}
         value={value}
         onChange={onChange}
         onFocus={(_) => setInFocus(true)}

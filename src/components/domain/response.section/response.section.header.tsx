@@ -30,7 +30,7 @@ export function ResponseSectionHeader() {
     : '';
 
   return (
-    <div className="flex items-stretch text-sm mt-2 px-1">
+    <div className="flex items-stretch text-sm mt-1 px-1">
       <section className="flex-1 flex bg-muted px-1 py-1 gap-1">
         <div className="flex bg-background flex-1 border-solid border-secondary-foreground gap-2 px-2">
           <div className="flex">

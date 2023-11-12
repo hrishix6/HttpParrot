@@ -1,4 +1,4 @@
-import { Settings2 } from 'lucide-react';
+import { Plus, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Trash2, Edit2, FolderDown } from 'lucide-react';
 import {
@@ -19,6 +19,7 @@ import {
   toExportedCollectionModel
 } from '@/lib/import.export.utils';
 import { deleteCollectionAsync } from './redux/request.saved.async.actions';
+import { newCollectionRequestTabAsync } from '../tabs/redux/tabs.async.actions';
 interface CollectionActionsProps {
   model: RequestCollectionModel;
 }
@@ -71,6 +72,19 @@ export function CollectionActions({ model }: CollectionActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() =>
+              dispatch(
+                newCollectionRequestTabAsync({
+                  collectionId: model.id,
+                  collectionName: model.name
+                })
+              )
+            }
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            <span>Add request</span>
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => handleOpenEditCollectionDialogue(true)}
           >

@@ -1,4 +1,4 @@
-import { HeaderItem, ResponseHeader, SupportedBodyType } from "@/common/types";
+import { HeaderItem, InsertEditableItem, RequestAuthConfig, ResponseHeader, SupportedBodyType } from "@/common/types";
 import { substituteText } from "./text.utils";
 
 export function toFetchHeaders(headers: HeaderItem[]): Record<string, any> {
@@ -23,6 +23,66 @@ export function toSubstitutedFetchHeaders(headers: HeaderItem[], map: Record<str
         }
     }
     return fetchHeaders;
+}
+
+export function toAuthHeader(authConfig: RequestAuthConfig): InsertEditableItem | null {
+    switch (authConfig.authType) {
+        case "none":
+            return null;
+        case "basic":
+            return toBasicAuthHeader(authConfig.basicUsername, authConfig.basicPassword);
+        case "token":
+            return toTokenAuthHeader(authConfig.tokenPrefix, authConfig.tokenVal);
+        default:
+            return null
+    }
+}
+
+export function toTokenAuthHeader(prefix: string = "", token: string = ""): InsertEditableItem {
+    return {
+        name: 'Authorization',
+        value: `${prefix} ${token}`
+    };
+}
+
+export function toSubstitutedTokenAuthHeader(prefix: string = "", token: string = "", map: Record<string, string>): InsertEditableItem {
+    return {
+        name: 'Authorization',
+        value: `${substituteText(prefix, map)} ${substituteText(token, map)}`
+    }
+}
+
+export function toBasicAuthHeader(username: string = "", password: string = ""): InsertEditableItem {
+    return {
+        name: 'Authorization',
+        value: `Basic ${btoa(`${username}:${password}`)}`
+    };
+}
+
+export function toSubstitutedBasicAuthHeader(username: string = "", password: string = "", map: Record<string, string>): InsertEditableItem {
+
+    const subbedUsername = substituteText(username, map);
+    const subbedPass = substituteText(password, map);
+
+    const encoded = btoa(`${subbedUsername}:${subbedPass}`);
+
+    return {
+        name: 'Authorization',
+        value: `Basic ${encoded}`
+    }
+}
+
+export function toSubstitutedAuthHeader(authConfig: RequestAuthConfig, map: Record<string, string>): InsertEditableItem | null {
+    switch (authConfig.authType) {
+        case "none":
+            return null;
+        case "basic":
+            return toSubstitutedBasicAuthHeader(authConfig.basicUsername, authConfig.basicPassword, map);
+        case "token":
+            return toSubstitutedTokenAuthHeader(authConfig.tokenPrefix, authConfig.tokenVal, map);
+        default:
+            return null
+    }
 }
 
 export function toResponseHeaders(headers: Headers): ResponseHeader[] {

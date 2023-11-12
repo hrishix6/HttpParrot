@@ -54,8 +54,8 @@ export function RequestQuery() {
 
   return (
     <section className="flex-1 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-2">
-        <h3 className="text-lg">Query Parameters</h3>
+      <div className="flex items-center justify-between py-1 px-2">
+        <h3 className="text-lg self-start">Query Parameters</h3>
         <Button
           variant={'link'}
           size={'icon'}

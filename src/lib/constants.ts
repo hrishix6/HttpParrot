@@ -25,6 +25,8 @@ export const XML_BEATIFY_OPTIONS = {
     lineSeparator: '\n'
 };
 
+export const SUPPORTED_AUTH_TYPES = ["none", "basic", "token"];
+
 export const SUPPORTED_TEXT_FORMATS = ["js", "json", "css", "html", "xml"];
 
 export const PRISM_SUPPORTED_CSS_LANG = ['js', 'css', 'html', 'xml'];
