@@ -1,4 +1,4 @@
-import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel, TabData } from '@/common/types';
+import { MimeDb, MimeRecord, RequestCollectionModel, RequestModel, TabData, TabDbData } from '@/common/types';
 import { v4 as uuidv4 } from "uuid";
 
 const DB_NAME = 'store';
@@ -571,11 +571,76 @@ export interface TabModel {
   data: TabData
 }
 
-export interface UpdateTabModel {
+export function toTabData(arg: TabDbData): TabData {
+  return {
+    id: arg.id,
+    url: arg.url,
+    bodyType: arg.bodyType,
+    collectionId: arg.collectionId,
+    collectionName: arg.collectionName,
+    enableTextBody: arg.enableTextBody,
+    authConfig: arg.authConfig,
+    formItems: arg.formItems,
+    headers: arg.headers,
+    method: arg.method,
+    mode: arg.mode,
+    name: arg.name,
+    query: arg.query,
+    textBody: arg.textBody,
+    loading: false,
+    lock: false,
+    responseStatus: "",
+    responseSize: "",
+    responseTime: "",
+    responseBody: "",
+    responseBodyType: "unknown",
+    responseHeaders: [],
+    responseOk: false,
+    responseMimetype: "",
+    error: false,
+    errorMessage: "",
+  }
+}
+
+export function toTabDbData(arg: TabData): TabDbData {
+  return {
+    id: arg.id,
+    url: arg.url,
+    bodyType: arg.bodyType,
+    collectionId: arg.collectionId,
+    collectionName: arg.collectionName,
+    enableTextBody: arg.enableTextBody,
+    authConfig: arg.authConfig,
+    formItems: arg.formItems,
+    headers: arg.headers,
+    method: arg.method,
+    mode: arg.mode,
+    name: arg.name,
+    query: arg.query,
+    textBody: arg.textBody
+  };
+}
+
+export function toTabDbModel(arg: TabModel): TabDbModel {
+  return {
+    id: arg.id,
+    name: arg.name,
+    data: toTabDbData(arg.data)
+  }
+}
+
+export interface TabDbModel {
+  id: string;
+  name: string;
+  data: TabDbData
+}
+
+export interface UpdateTabDbModel {
   id: string;
   name?: string;
-  data: Partial<TabData>
+  data: Partial<TabDbData>
 }
+
 
 class TabsRepository {
   private db: IDBDatabase;
@@ -603,7 +668,7 @@ class TabsRepository {
     return tx.objectStore(ObjectStore.Tabs);
   }
 
-  getAll(): Promise<TabModel[]> {
+  getAll(): Promise<TabDbModel[]> {
     return new Promise((resolve, reject) => {
 
       const store = this.getStore("readonly");
@@ -614,7 +679,7 @@ class TabsRepository {
     });
   }
 
-  insert(dto: TabModel): Promise<string> {
+  insert(dto: TabDbModel): Promise<string> {
     return new Promise((resolve, reject) => {
       const store = this.getStore("readwrite");
       const req = store.add(dto);
@@ -623,7 +688,7 @@ class TabsRepository {
     });
   }
 
-  update(dto: UpdateTabModel): Promise<string> {
+  update(dto: UpdateTabDbModel): Promise<string> {
     return new Promise((resolve, reject) => {
       const store = this.getStore("readwrite");
       const req = store.put(dto);
@@ -646,7 +711,7 @@ class TabsRepository {
 export const tabRepo = new TabsRepository();
 
 
-export async function updateTabDataInDB(model: UpdateTabModel, __: string) {
+export async function updateTabDataInDB(model: UpdateTabDbModel, __: string) {
   try {
     const et = await tabRepo.checkIfExists(model.id);
     if (et) {

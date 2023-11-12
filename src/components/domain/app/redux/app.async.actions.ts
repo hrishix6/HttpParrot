@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { initDatabase, historyRepo, collectionRepo, requestRepo, mimeRepo, tabRepo } from "@/lib/db";
+import { initDatabase, historyRepo, collectionRepo, requestRepo, mimeRepo, tabRepo, toTabData } from "@/lib/db";
 import { populateHistory } from "../../request.history/redux/history.reducer";
 import { populateSavedCollections, populateSavedRequests } from "../../request.saved/redux/request.saved.reducer";
 import { delay } from "@/lib/utils";
@@ -31,7 +31,7 @@ export const initAppDataAsync = createAsyncThunk<boolean, void>("app/initAppData
         const savedTabs = await tabRepo.getAll();
         const tabs = savedTabs.map(x => ({ id: x.id, name: x.name || "New Request" }))
         const tabDataDictionary = savedTabs.reduce((prev, curr) => {
-            prev[curr.id] = curr.data;
+            prev[curr.id] = toTabData(curr.data);
             return prev;
         }, {} as TabDataHolder);
         const activeTab = tabs[tabs.length - 1]?.id || "";

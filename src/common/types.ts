@@ -173,6 +173,23 @@ export interface TabData {
   authConfig: RequestAuthConfig
 }
 
+export interface TabDbData {
+  id: string;
+  name: string;
+  collectionId: string;
+  collectionName?: string;
+  method: RequestMethod,
+  url: string,
+  query: QueryItem[],
+  headers: HeaderItem[],
+  mode: RequestFormMode,
+  bodyType: SupportedBodyType,
+  formItems: FormDataItem[],
+  enableTextBody: boolean,
+  textBody: string,
+  authConfig: RequestAuthConfig
+}
+
 export type TabDataKey = keyof TabData;
 
 export interface TabDataHolder {

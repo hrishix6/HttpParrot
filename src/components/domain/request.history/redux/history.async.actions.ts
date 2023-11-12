@@ -4,12 +4,13 @@ import { historyRepo } from "@/lib/db";
 
 export const addtoHistoryAsync = createAsyncThunk<RequestModel, RequestModel>('history/addtoHistoryAsync', async (model, _) => {
     //try to store request history item in indexedb
-    try {
-        const id = await historyRepo?.insert(model);
-        console.log(`stored item in db with id ${id}`);
-    } catch (error) {
-        console.log(`couldn't store in indexedDB ${error}`);
-    }
+    //based on user settings (Persist history? -> save and load, else don't save at all.)
+    // try {
+    //     const id = await historyRepo?.insert(model);
+    //     console.log(`stored item in db with id ${id}`);
+    // } catch (error) {
+    //     console.log(`couldn't store in indexedDB ${error}`);
+    // }
 
     return model;
 });

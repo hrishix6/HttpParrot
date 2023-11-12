@@ -49,7 +49,7 @@ import {
     setTokenPrefix,
     setTokenValue,
 } from "./tabs.reducer";
-import { TabModel, UpdateTabModel, defaultNewCollectionRequestTabData, defaultTabData, tabRepo, updateTabDataInDB } from "@/lib/db";
+import { TabModel, UpdateTabDbModel, defaultNewCollectionRequestTabData, defaultTabData, tabRepo, toTabDbData, toTabDbModel, updateTabDataInDB } from "@/lib/db";
 import { RootState } from "@/common/store";
 import { toFetchConfig } from "@/lib/request.utils";
 import { getContentTypeHeader } from "@/lib/header.utils";
@@ -164,7 +164,7 @@ export const newTabAsync = createAsyncThunk<void, void>("tabs/newTabAsync", asyn
 
     dispatch(newTab(tabModel));
     try {
-        const result = await tabRepo.insert(tabModel);
+        const result = await tabRepo.insert(toTabDbModel(tabModel));
         if (result) {
             console.log(`tab added to indexed db`);
         }
@@ -190,7 +190,7 @@ export const newCollectionRequestTabAsync = createAsyncThunk<void, { collectionI
         dispatch(newTab(tabModel));
 
         try {
-            const result = await tabRepo.insert(tabModel);
+            const result = await tabRepo.insert(toTabDbModel(tabModel));
             if (result) {
                 console.log(`tab added to indexed db`);
             }
@@ -223,7 +223,7 @@ export const populateRequestSectionAsync = createAsyncThunk<void, { model: Reque
     };
 
     try {
-        const result = await tabRepo.insert(tab);
+        const result = await tabRepo.insert(toTabDbModel(tab));
         if (result) {
             console.log(`tab added to indexed db`);
         }
@@ -257,10 +257,10 @@ export const clearRequestSectionAsync = createAsyncThunk<void, void>("tabs/clear
         tbData.bodyType = "formdata";
         tbData.enableTextBody = true;
         tbData.textBody = "";
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
             name: "New request",
-            data: tbData
+            data: toTabDbData(tbData)
         };
         await updateTabDataInDB(updateModel, "clearRequestSectionAsync");
     }
@@ -279,9 +279,9 @@ export const setNameAsync = createAsyncThunk<void, string>("tabs/setNameAsync", 
     if (currentTabData) {
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.name = newName;
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
         await updateTabDataInDB(updateModel, "setNameAsync");
     }
@@ -297,9 +297,9 @@ export const setMethodAsync = createAsyncThunk<void, RequestMethod>("tabs/setMet
     if (currentTabData) {
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.method = method;
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
         await updateTabDataInDB(updateModel, "setMethodAsync");
     }
@@ -329,9 +329,9 @@ export const setUrlAsync = createAsyncThunk<void, string>("tabs/setUrlAsync", as
         else {
             tbData.query = [];
         }
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setUrlAsync");
@@ -360,9 +360,9 @@ export const updateQueryItemValueAsync = createAsyncThunk<void, UpdateEditableIt
             tbData.url = getUpdatedUrl(tbData.url, queryStr);
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateQueryItemValueAsync");
@@ -388,9 +388,9 @@ export const updateQueryItemEnabledAsync = createAsyncThunk<void, UpdateEditable
             tbData.url = getUpdatedUrl(tbData.url, queryStr);
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateQueryItemEnabledAsync");
@@ -416,9 +416,9 @@ export const updateQueryItemNameAsync = createAsyncThunk<void, UpdateEditableIte
             tbData.url = getUpdatedUrl(tbData.url, queryStr);
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateQueryItemNameAsync");
@@ -445,16 +445,13 @@ export const addQueryItemAsync = createAsyncThunk<void, void>("tabs/addQueryItem
             enabled: true
         });
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "addQueryItemAsync");
     }
-
-
-
 });
 
 export const removeQueryItemAsync = createAsyncThunk<void, string>("tabs/removeQueryItemAsync", async (arg, thunkAPI) => {
@@ -474,9 +471,9 @@ export const removeQueryItemAsync = createAsyncThunk<void, string>("tabs/removeQ
             tbData.url = getUpdatedUrl(tbData.url, queryStr);
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "removeQueryItemAsync");
@@ -503,9 +500,9 @@ export const updateHeaderNameAsync = createAsyncThunk<void, UpdateEditableItemNa
             tbData.headers[itemIndex].name = name;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateHeaderNameAsync");
@@ -528,9 +525,9 @@ export const updateHeaderValueAsync = createAsyncThunk<void, UpdateEditableItemV
             tbData.headers[itemIndex].value = value;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateHeaderValueAsync");
@@ -554,9 +551,9 @@ export const updateHeaderEnabledAsync = createAsyncThunk<void, UpdateEditableIte
             tbData.headers[itemIndex].enabled = !tbData.headers[itemIndex].enabled;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateHeaderEnabledAsync");
@@ -583,9 +580,9 @@ export const addHeaderAsync = createAsyncThunk<void, void>("tabs/addHeaderAsync"
             enabled: true
         });
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "addHeaderAsync");
@@ -610,9 +607,9 @@ export const removeHeaderAsync = createAsyncThunk<void, string>("tabs/removeHead
         if (itemIndex > -1) {
             tbData.headers.splice(itemIndex, 1);
         }
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "removeHeaderAsync");
@@ -635,9 +632,9 @@ export const setBodyTypeAsync = createAsyncThunk<void, SupportedBodyType>("tabs/
         tbData.textBody = "";
         tbData.formItems = [];
         tbData.bodyType = arg
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setBodyTypeAsync");
@@ -655,9 +652,9 @@ export const setEnableTextBodyAsync = createAsyncThunk<void, boolean>("tabs/setE
     if (currentTabData) {
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.enableTextBody = arg;
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
         await updateTabDataInDB(updateModel, "setEnableTextBodyAsync");
     }
@@ -676,9 +673,9 @@ export const setTextBodyAsync = createAsyncThunk<void, string>("tabs/setTextBody
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.textBody = arg;
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setTextBodyAsync");
@@ -705,9 +702,9 @@ export const addFormDataItemAsync = createAsyncThunk<void, void>("tabs/addFormDa
             enabled: true
         });
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "addFormDataItemAsync");
@@ -730,9 +727,9 @@ export const removeFormDataItemAsync = createAsyncThunk<void, string>("tabs/remo
             tbData.formItems.splice(itemIndex, 1);
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "removeFormDataItemAsync");
@@ -757,9 +754,9 @@ export const updateFormDataItemNameAsync = createAsyncThunk<void, UpdateEditable
             tbData.formItems[itemIndex].name = name;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateFormDataItemNameAsync");
@@ -783,9 +780,9 @@ export const updateFormDataItemValueAsync = createAsyncThunk<void, UpdateEditabl
             tbData.formItems[itemIndex].value = value;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateFormDataItemValueAsync");
@@ -808,9 +805,9 @@ export const updateFormDataItemEnabledAsync = createAsyncThunk<void, UpdateEdita
             tbData.formItems[itemIndex].enabled = !tbData.formItems[itemIndex].enabled;
         }
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "updateFormDataItemEnabledAsync");
@@ -832,9 +829,9 @@ export const setAuthTypeAsync = createAsyncThunk<void, SupportedAuthType>("tabs/
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.authConfig.authType = arg
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setAuthTypeAsync");
@@ -853,9 +850,9 @@ export const setBasicAuthUsernameAsync = createAsyncThunk<void, string>("tabs/se
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.authConfig.basicUsername = arg
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setBasicAuthUsernameAsync");
@@ -874,9 +871,9 @@ export const setBasicAuthPasswordAsync = createAsyncThunk<void, string>("tabs/se
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.authConfig.basicPassword = arg
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setBasicAuthPasswordAsync");
@@ -896,9 +893,9 @@ export const setTokenPrefixAsync = createAsyncThunk<void, string>("tabs/setToken
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.authConfig.tokenPrefix = arg;
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setTokenPrefixAsync");
@@ -917,9 +914,9 @@ export const setTokenValueAsync = createAsyncThunk<void, string>("tabs/setTokenV
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.authConfig.tokenVal = arg;
 
-        const updateModel: UpdateTabModel = {
+        const updateModel: UpdateTabDbModel = {
             id: activeTab,
-            data: tbData
+            data: toTabDbData(tbData)
         };
 
         await updateTabDataInDB(updateModel, "setTokenValueAsync");
