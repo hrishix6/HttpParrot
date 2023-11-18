@@ -11,13 +11,15 @@ export function Navbar() {
   return (
     <nav className="flex items-center justify-between">
       <div className="flex items-center bg-background gap-1 py-1 lg:ml-2">
-        <Button className="lg:hidden" variant={'ghost'} size={'icon'}>
-          <MenuIcon
-            className="lg:hidden h-5 w-5"
-            onClick={() => {
-              dispatch(toggleMobileSidebar(true));
-            }}
-          />
+        <Button
+          className="lg:hidden"
+          variant={'ghost'}
+          size={'icon'}
+          onClick={() => {
+            dispatch(toggleMobileSidebar(true));
+          }}
+        >
+          <MenuIcon className="lg:hidden h-5 w-5" />
         </Button>
         <img src="logo.svg" className="h-5 w-5" />
         <h3 className="ml-1 text-primary font-semibold text-lg border-solid">

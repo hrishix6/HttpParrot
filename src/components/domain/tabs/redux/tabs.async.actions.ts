@@ -57,7 +57,7 @@ import { toResponseModel } from "@/lib/response.utils";
 import { v4 as uuidv4 } from "uuid";
 import { addtoHistoryAsync } from "../../request.history/redux/history.async.actions";
 import { getCodeSnippet } from "@/lib/snippets";
-import { deepCpObj, getQueryItems, getQueryString, getUpdatedUrl } from "@/lib/utils";
+import { deepCpObj, getQueryItems, getQueryString, getUpdatedUrl, formatText } from "@/lib/utils";
 
 // #region form-actions
 
@@ -657,6 +657,30 @@ export const setTextBodyAsync = createAsyncThunk<void, string>("tabs/setTextBody
     if (currentTabData) {
         const tbData = deepCpObj<TabData>(currentTabData);
         tbData.textBody = arg;
+
+        const updateModel: UpdateTabDbModel = {
+            id: activeTab,
+            data: toTabDbData(tbData)
+        };
+
+        await updateTabDataInDB(updateModel, "setTextBodyAsync");
+    }
+});
+
+export const formatTextBodyAsync = createAsyncThunk<void, void>("tabs/formatTextBodyAsync", async (_, thunkAPI) => {
+    const { dispatch, getState } = thunkAPI;
+    const rootState = getState() as RootState;
+
+    const activeTab = rootState.tabsStore.activeTab;
+    const currentTabData = rootState.tabsStore.tabData[activeTab];
+
+    const formattedText = formatText(currentTabData.textBody, currentTabData.bodyType);
+
+    dispatch(setTextBody(formattedText));
+
+    if (currentTabData) {
+        const tbData = deepCpObj<TabData>(currentTabData);
+        tbData.textBody = formattedText;
 
         const updateModel: UpdateTabDbModel = {
             id: activeTab,

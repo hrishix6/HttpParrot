@@ -5,9 +5,9 @@ import { selectTextBodyEnabled } from '../../tabs/redux/tabs.reducer';
 import { useAppDispatch, useAppSelector } from '@/common/hoooks';
 import { Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import {
   addFormDataItemAsync,
+  formatTextBodyAsync,
   setEnableTextBodyAsync
 } from '../../tabs/redux/tabs.async.actions';
 
@@ -23,10 +23,10 @@ export function BodySectionHeader({ bodyType }: BodySectionHeaderProps) {
     return (
       <div className="flex items-center justify-between py-1 px-2">
         <p className="text-lg self-start">Request Body</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <BodyTypeDropdown />
           <Button
-            variant={'link'}
+            variant={'ghost'}
             size={'icon'}
             onClick={(_) => {
               dispatch(addFormDataItemAsync());
@@ -41,20 +41,23 @@ export function BodySectionHeader({ bodyType }: BodySectionHeaderProps) {
     return (
       <div className="flex items-center justify-between py-1 px-2">
         <p className="text-lg self-start">Request Body</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <BodyTypeDropdown />
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={enableTextBody}
-              onCheckedChange={(checked) => {
-                dispatch(setEnableTextBodyAsync(checked));
-              }}
-              id="default_headers_switch"
-            />
-            <Label htmlFor="default_headers_switch">
-              {enableTextBody ? 'disable' : 'enable'}
-            </Label>
-          </div>
+          <Button
+            variant={'outline'}
+            onClick={() => {
+              dispatch(formatTextBodyAsync());
+            }}
+          >
+            Prettify
+          </Button>
+          <Switch
+            checked={enableTextBody}
+            onCheckedChange={(checked) => {
+              dispatch(setEnableTextBodyAsync(checked));
+            }}
+            id="default_headers_switch"
+          />
         </div>
       </div>
     );

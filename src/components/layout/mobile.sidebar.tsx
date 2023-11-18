@@ -44,7 +44,7 @@ export function MobileSidebar() {
           data-[state=open]:slide-in-from-left-1/2
           "
         >
-          <div className="flex items-center gap-1 p-2 mt-2">
+          <div className="flex items-center gap-2 p-2 mt-2">
             <img src="logo.svg" className="h-5 w-5" />
             <h3 className="text-primary font-semibold text-lg border-solid">
               <a

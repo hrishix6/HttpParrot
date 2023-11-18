@@ -1,9 +1,4 @@
-import { useEffect } from 'react';
-import Prism from 'prismjs';
-import {
-  SUPPORTED_TEXT_FORMATS,
-  PRISM_SUPPORTED_CSS_LANG
-} from '@/lib/constants';
+import { CodeEditor } from '@/components/ui/editor';
 
 interface TextBodyProps {
   bodyType: string;
@@ -11,18 +6,14 @@ interface TextBodyProps {
 }
 
 export function TextBody({ bodyType, text }: TextBodyProps) {
-  useEffect(() => {
-    if (SUPPORTED_TEXT_FORMATS.includes(bodyType)) {
-      Prism.highlightAll();
-    }
-  }, [text]);
-
-  const langType = PRISM_SUPPORTED_CSS_LANG.includes(bodyType)
-    ? bodyType
-    : 'js';
   return (
-    <pre>
-      <code className={`language-${langType}`}>{text}</code>
-    </pre>
+    <div className="flex-1">
+      <CodeEditor
+        readonly={true}
+        bodyType={bodyType}
+        text={text}
+        onChange={(_) => {}}
+      />
+    </div>
   );
 }
