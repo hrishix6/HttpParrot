@@ -49,7 +49,7 @@ You can read the full specification [here](/spec.md)
 
 ## Screeshots
 
-<img style="display:block" src="./public/screenshots/tabs.PNG" alt="ui">
+<img style="display:block" src="./screenshots/tabs.PNG" alt="ui">
 
 ## Prerequisites
 

@@ -46,7 +46,7 @@ The application is fully written in [TypeScript](https://www.typescriptlang.org/
 - [Mustache.js](https://mustache.github.io/)
 - [mime-db](https://www.npmjs.com/package/mime-db)
 
-All of the dependencies are included in the application package. Since app is storing all the user data offline in browser provided storage, it can function even when user is completely offline. Of course you wouldn't be able to test remove web services when offline but can still test locally running services.
+All of the dependencies are included in the application package. Since app is storing all the user data offline in browser provided storage, it can function even when user is completely offline. Of course you wouldn't be able to test remote web services when offline but can still test locally running services.
 
 ### 2.3 Platform requirements
 
@@ -129,19 +129,19 @@ Only platform requirement is that user should have chrome version 88 or later.
 
 ### Main Page
 
-![Main Page](/public/screenshots/tabs.PNG)
+![Main Page](/screenshots/tabs.PNG)
 
 ### History & Collections
 
-![Collections](/public/screenshots/collections.PNG)
+![Collections](/screenshots/collections.PNG)
 
 ### Request configuration form
 
-![Request Form](/public/screenshots/request_form.png)
+![Request Form](/screenshots/request_form.png)
 
 ### Response view
 
-![Response View](/public/screenshots/response_view.png)
+![Response View](/screenshots/response_view.png)
 
 ## 7. Data Model
 
