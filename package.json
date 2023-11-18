@@ -1,10 +1,14 @@
 {
-  "name": "shadn",
+  "name": "http-parrot",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": {
+    "name": "Hrishikesh Pethe",
+    "email": "hrishi.pethe@gmail.com",
+    "url": "https://hrishikesh-pethe.netlify.app/"
+  },
   "scripts": {
-    "precompile_snippets": "sh snippets/compile.sh",
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
