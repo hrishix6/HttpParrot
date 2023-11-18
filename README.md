@@ -5,6 +5,10 @@
 
 <p style="text-align:center">API testing tool baked right into chrome</p>
 
+<div style="display:flex;justify-content:center">
+<img style="display:block" src="./screenshots/usage.gif" alt="usage">
+</div>
+
 ## Motivation
 
 Didn't like Postman's decision to move everything online with no offline option, not very fond of other tools, decided to roll my own lightweight tool. It has become a fun little side project.
@@ -46,10 +50,6 @@ You can read the full specification [here](/spec.md)
 - Import open api document and transform into usable collection.
 - Pre-run/ post run scripts (run something before or after running specific requests).
 - Collection runner.
-
-## Screeshots
-
-<img style="display:block" src="./screenshots/tabs.PNG" alt="ui">
 
 ## Prerequisites
 
