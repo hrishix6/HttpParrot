@@ -148,3 +148,7 @@
   color: hsl(var(--secondary-foreground));
   background-color: hsl(var(--secondary));
 }
+
+#body-editor {
+  height: 100%;
+}

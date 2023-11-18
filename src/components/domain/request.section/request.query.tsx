@@ -22,7 +22,7 @@ function EmptyQueryParamsMessage() {
     <div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center">
       <img src="logo.svg" className="h-10 w-10" />
       <p className="text-lg text-muted-foreground font-semibold p-1 bg-background flex items-center">
-        Click <Plus className="text-primary h-5 w-5 mx-1" /> to add query params
+        Click <Plus className="h-5 w-5 mx-1" /> to add query params
       </p>
     </div>
   );
@@ -57,7 +57,7 @@ export function RequestQuery() {
       <div className="flex items-center justify-between py-1 px-2">
         <h3 className="text-lg self-start">Query Parameters</h3>
         <Button
-          variant={'link'}
+          variant={'ghost'}
           size={'icon'}
           onClick={(_) => {
             dispatch(addQueryItemAsync());
