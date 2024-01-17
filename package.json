@@ -12,7 +12,11 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-ext": "node build.js",
+    "build-ext-firefox": "node build.js \"--firefox\"",
+    "build-ext-chrome": "node build.js \"--chrome\"",
+    "clean": "rimraf ./dist ./dist.chrome ./dist.firefox"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.1.2",
@@ -58,11 +62,13 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "fs-extra": "^11.2.0",
     "handlebars": "^4.7.8",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "rimraf": "^5.0.5"
   }
 }
