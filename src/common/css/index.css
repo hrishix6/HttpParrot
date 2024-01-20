@@ -91,59 +91,6 @@
   background-color: hsl(var(--primary));
 }
 
-.rich-input-container {
-  position: relative;
-}
-
-.rich-input-container input {
-  width: 100%;
-  border: none;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  outline: none;
-  padding: 0 0.5rem;
-  font-size: 1rem;
-  line-height: 1.5rem;
-  background: transparent;
-}
-
-.rich-input-container.sm input {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-/* For showing through placeholder */
-.rich-input-container input:not([value='']) {
-  -webkit-text-fill-color: transparent;
-}
-
-.rich-input-container .rich-input-renderer {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  margin: 0 0.5rem;
-  /* This line preserves trailing
-      whitespaces */
-  white-space: pre;
-
-  overflow-x: auto;
-  user-select: none;
-  scrollbar-width: none;
-}
-
-.rich-input-container.sm .rich-input-renderer {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.rich-input-container .rich-input-renderer::-webkit-scrollbar {
-  display: none;
-}
-
 #import_collection_file::file-selector-button {
   color: hsl(var(--secondary-foreground));
   background-color: hsl(var(--secondary));
