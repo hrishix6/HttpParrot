@@ -3,7 +3,7 @@
     <span style="display:block;color:#20B256">HttpParrot</span>
 </h1>
 
-<p style="text-align:center">API testing tool baked right into chrome</p>
+<p style="text-align:center">API testing tool baked right into browser</p>
 
 <div style="display:flex;justify-content:center">
 <img style="display:block" src="./screenshots/usage.gif" alt="usage">
@@ -53,9 +53,9 @@ You can read the full specification [here](/spec.md)
 
 ## Prerequisites
 
-You have Chrome `version 88` or later.
+You have Chrome `version 88` or later or firefox `version 42` or later.
 
-## How to use
+## How to use for chrome
 
 1. clone this repository
 
@@ -63,22 +63,51 @@ You have Chrome `version 88` or later.
 
 3. install dependencies
 
-```bash
-$ npm install
-```
+    ```bash
+    $ npm install
+    ```
 
-4. build
+4. build for chrome.
 
-```bash
-$ npm run build
-```
+    ```bash
+    $ npm run build-ext-chrome
+    ```
 
-5. open `dist` folder in chrome extensions using `Load unpacked` button (make sure you have developer mode on).
+5. open `dist.chrome` folder in chrome extensions using `Load unpacked` button (make sure you have developer mode on).
 
 6. <p style="display:flex; align-items:center; gap:3px;">
     <span style="display:block"> you should see an extension icon in toolbar, click the extension icon</span>
     (<img style="display:block" src="./public/icons/icon16.png">)
    </p>
+
+## How to use for firefox
+
+1. clone this repository
+
+2. install `node >= 16.x.x`
+
+3. install dependencies
+
+    ```bash
+    $ npm install
+    ```
+
+4. build for firefox
+
+    ```bash
+    $ npm run build-ext-firefox
+    ```
+
+5. open `dist.firefox` folder in `about:debugging > This firefox > Load temporary Add-on..`.
+
+6. you should see extension in Add on toolbar, click the extension item. 
+
+    <img style="display:block" src="./screenshots/firefox_add_on_toolbar.png" />
+
+
+### Note 
+These steps only load extension temporarily in firefox , in order to install you need to package the files and get add-on signed
+with AMO. I will do it soon and then only packaged extension will be available that can be installed.
 
 ## Contributions
 

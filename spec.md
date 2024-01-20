@@ -1,6 +1,6 @@
 ## 1. Introduction
 
-HttpParrot is a manual API testing client for testing HTTP servers / REST services. It runs in Chrome browser as an extension.
+HttpParrot is a manual API testing client for testing HTTP servers / REST services. It runs in browser as an extension.
 
 ### 1.1. Purpose
 
@@ -12,13 +12,14 @@ HttpParrot is a manual API testing client that runs as a chrome extension. The i
 
 ## 2. System Overview
 
-This app runs in chrome as an extension so having chrome installed is fundamental requirement. It's using [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) which is supported by Chrome 88 or later. App relies on Indexed DB as offline storage for saving application data.
+This app runs in chrome & firefox as an extension so having them installed is fundamental requirement. For chrome it's using [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) which is supported by Chrome 88 or later. For firefox it's using v2.
+App relies on Indexed DB as offline storage for saving application data.
 
 ### 2.1 Components
 
 Following two are the 2 main components of the app,
 
-#### Service Worker
+#### Service Worker / Background script
 
 Service worker is responsible for bootstrapping the application when user clicks the extension icon in extension toolbar. The service worker is performing following duties -
 
@@ -50,7 +51,7 @@ All of the dependencies are included in the application package. Since app is st
 
 ### 2.3 Platform requirements
 
-Only platform requirement is that user should have chrome version 88 or later.
+Only platform requirement is that user should have chrome version 88 or later & firefox version 42 or later.
 
 ## 3. Functional Requirements
 
